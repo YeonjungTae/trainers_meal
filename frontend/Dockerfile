@@ -5,7 +5,7 @@ FROM nginx:1.25.1-alpine3.17-slim
 RUN rm -rf /etc/nginx/sites-enabled/default
 
 # nginx에 serving할 html의 설정파일을 복사한다.
-COPY nginx.conf /etc/nginx/conf.d
+COPY nginx/nginx.conf /etc/nginx/conf.d
 
 # 작업영역을 선택한다. mkdir, cd를 동시에 진행한다 생각하면 된다.
 WORKDIR /code
