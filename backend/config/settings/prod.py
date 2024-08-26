@@ -2,7 +2,7 @@ import os
 
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 

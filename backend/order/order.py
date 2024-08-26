@@ -69,7 +69,7 @@ class OrderClass:
                 data = {}
                 nutrients = {}
                 data['id'] = str(order.order_detail_id)
-                server_url = 'http://3.38.93.132:8000/media/menu_image/'
+                server_url = 'http://15.165.56.1:8000/media/menu_image/'
                 data['src'] = server_url + 'default.jpg'
 
                 title = str(order.pro_util.name_tag.strip() + order.veg_util.name_tag.strip() + order.base_util.name_tag.strip()).replace(' ', '')
