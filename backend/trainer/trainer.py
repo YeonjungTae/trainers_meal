@@ -111,12 +111,13 @@ class TrainerClass:
 
         trainer_id = kwargs.get('trainer').trainer_id
         username = kwargs.get('trainer').username
+        server = 'http://15.165.56.1:8000/media/'
 
         try:
-            return Profile_Image.objects.get(title=username, trainer=trainer_id)
+            return server + str(Profile_Image.objects.get(title=username, trainer=trainer_id).title) + '.png'
         
         except:
-            return Profile_Image.objects.get(title='default')
+            return server + Profile_Image.objects.get(title='default') + '.png'
 
     def get_gym_list():
         return Gym.objects.all()

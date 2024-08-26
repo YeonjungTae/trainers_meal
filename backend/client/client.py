@@ -10,7 +10,7 @@ from common.logger import Logger
 class ClientClass:
     def get_client_list(request):
         token = bytes(request.GET.get('token'), 'utf-8')
-        decode = jwt.decode(token, str(os.getenv('JWT_SECRET')), algorithms=["HS256"])
+        decode = jwt.decode(token, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithms=["HS256"])
         is_subscribed = bool(request.GET.get('filterStatus'))
         keyword = request.GET.get('searchTerm')
 
@@ -30,7 +30,7 @@ class ClientClass:
 
     def add_client(request):
         token = bytes(request.data['tokenData'], 'utf-8')
-        decode = jwt.decode(token, str(os.getenv('JWT_SECRET')), algorithms=["HS256"])
+        decode = jwt.decode(token, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithms=["HS256"])
         
         name = request.data['name']
         phone = int(str(request.data['phone']).replace('-', ''))
