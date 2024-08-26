@@ -1,0 +1,61 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .client import ClientClass
+from .serializers import *
+
+import os, json, jwt
+
+from common.logger import Logger
+
+class get_client_list(APIView):
+    def get(self, request):
+        result = ClientClass.get_client_list(request)
+
+        serializer = ClientSerializer(result, many=True)
+
+        return Response(serializer.data)
+    
+class get_option_list(APIView):
+    def get(self, request):
+        data = {
+            'activity': get_data_list(Client.Activity),
+            'goal': get_data_list(Client.Goal),
+        }
+        return Response(data)
+    
+class get_delivery_options(APIView):
+    def get(self, request):
+        data = {
+            'deliveryMessage': get_data_list(Delivery.Message),
+            'entryMethod': get_data_list(Delivery.Doorlock_Type)
+        }
+
+        return Response(data)
+
+class add_client(APIView):
+    def post(self, request):
+        try:
+            ClientClass.add_client(request)
+            return Response('회원을 추가하는 데에 성공하였습니다.')
+
+        except:
+            raise ValueError('회원을 추가하는 데에 실패하였습니다.')
+
+class get_client_info(APIView):
+    def get(self, request):
+        try:
+            result = ClientInfoSerializer(request.GET.get('client_id'))
+            Logger.print_main_log('회원 정보를 불러오는 데에 성공하였습니다.')
+            return Response(result)
+
+        except:
+            raise ValueError('회원 정보를 불러오는 데에 실패하였습니다.')
+        
+class add_bia(APIView):
+    def post(self, request):
+        try:
+            ClientClass.add_bia(request)
+            return Response('체성분 데이터를 추가하는 데에 성공하였습니다.')
+
+        except:
+            raise ValueError('체성분 데이터를 추가하는 데에 실패하였습니다.')

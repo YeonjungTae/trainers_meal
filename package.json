@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@tosspayments/tosspayments-sdk": "^2.2.4",
+    "@types/node": "^22.5.0",
+    "react-uuid": "^2.0.0",
+    "vite-tsconfig-paths": "^5.0.1"
+  }
+}
