@@ -52,13 +52,13 @@ class login(APIView):
             
             token = jwt.encode({"exp": datetime.now(timezone(timedelta(hours=9))) + exp_time, "trainer_id": str(result.trainer_id), "username": result.username, "name": result.name, "is_approved": result.is_approved, "gym_id": str(result.gym_id)}, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithm="HS256")
             user = LoginInfoSerializer(result)
-            profile = ProfileImageSerializer(TrainerClass.get_profile_img(**{'trainer': result}))
+            profile = TrainerClass.get_profile_img(**{'trainer': result})
 
             result = {
                 'token': token,
                 'user': user.data,
                 'gym': result.gym.name,
-                'profile': profile.data,
+                'profile': profile,
             }
 
             return Response(result)
