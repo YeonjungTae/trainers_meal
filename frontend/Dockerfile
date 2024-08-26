@@ -14,7 +14,7 @@ WORKDIR /code
 COPY dist/ dist/
 
 # frontend Port를 설정한다.
-EXPOSE 5000
+EXPOSE 80
 
 # container가 종료될 때 정상종료를 유도한다.
 STOPSIGNAL SIGTERM
