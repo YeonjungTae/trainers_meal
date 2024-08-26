@@ -48,10 +48,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': str(os.getenv('SQL_DB_NAME')),
-        'USER': str(os.getenv('SQL_USERNAME')),
-        'PASSWORD': str(os.getenv('SQL_PASSWORD')),
-        'HOST': str(os.getenv('SQL_HOST')),
+        'NAME': 'lesik_server',
+        'USER': 'lesik_db',
+        'PASSWORD': '0607',
+        'HOST': '127.0.0.1',
         'PORT': '5432'
     }
 }
