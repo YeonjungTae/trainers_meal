@@ -47,12 +47,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('SQL_ENGINE'),
-        'NAME': os.environ.get('SQL_DB_NAME'),
-        'USER': os.environ.get('SQL_USERNAME'),
-        'PASSWORD': os.environ.get('SQL_PASSWORD'),
-        'HOST': os.environ.get('SQL_HOST'),
-        'PORT': os.environ.get('SQL_PORT'),
+        'ENGINE': str(os.getenv('SQL_ENGINE')),
+        'NAME': str(os.getenv('SQL_DB_NAME')),
+        'USER': str(os.getenv('SQL_USERNAME')),
+        'PASSWORD': str(os.getenv('SQL_PASSWORD')),
+        'HOST': str(os.getenv('SQL_HOST')),
+        'PORT': str(os.getenv('SQL_PORT'))
     }
 }
 
