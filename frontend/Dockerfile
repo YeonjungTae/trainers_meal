@@ -1,12 +1,17 @@
-FROM nginx:latest
- 
-RUN mkdir /app
+FROM node:18-alpine
+
 WORKDIR /app
-RUN mkdir ./dist
- 
-ADD ./dist ./dist
-COPY ./nginx/nginx.conf /etc/nginx/conf.d
- 
+
+COPY package.json .
+
+RUN npm install
+
+RUN npm i -g serve
+
+COPY . .
+
+RUN npm run build
+
 EXPOSE 80
- 
-CMD ["nginx", "-g", "daemon off;"]
+
+CMD [ "serve", "-s", "dist" ]
