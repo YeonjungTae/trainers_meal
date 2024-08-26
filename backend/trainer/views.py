@@ -13,7 +13,7 @@ class check_token(APIView):
         Logger.print_main_log('CHECK TOKEN')
         try:
             token = bytes(request.GET.get('token'), 'utf-8')
-            decode = jwt.decode(token, str(os.getenv('JWT_SECRET')), algorithms=["HS256"])
+            decode = jwt.decode(token, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithms=["HS256"])
             print(decode)
             return Response('토큰 인증이 완료되었습니다.')
             
@@ -50,7 +50,7 @@ class login(APIView):
                 Logger.print_log('자동 로그인 X')
                 exp_time = timedelta(hours=18)
             
-            token = jwt.encode({"exp": datetime.now(timezone(timedelta(hours=9))) + exp_time, "trainer_id": str(result.trainer_id), "username": result.username, "name": result.name, "is_approved": result.is_approved, "gym_id": str(result.gym_id)}, str(os.getenv('JWT_SECRET')), algorithm="HS256")
+            token = jwt.encode({"exp": datetime.now(timezone(timedelta(hours=9))) + exp_time, "trainer_id": str(result.trainer_id), "username": result.username, "name": result.name, "is_approved": result.is_approved, "gym_id": str(result.gym_id)}, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithm="HS256")
             user = LoginInfoSerializer(result)
             profile = ProfileImageSerializer(TrainerClass.get_profile_img(**{'trainer': result}))
 

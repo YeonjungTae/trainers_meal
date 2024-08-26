@@ -26,7 +26,7 @@ def hash_password(original_pw):
     시드 값으로 고정적인 값을 얻기 위해 추가로 문자열을 넣어 단방향으로 비밀번호를 암호화하는 함수
     """
     Logger.print_main_log('Hashing password with sha256')
-    pw = pbkdf2_sha256.hash(str(original_pw) + str(os.getenv('SALT')))
+    pw = pbkdf2_sha256.hash(str(original_pw) + str('1q2w3e4r'))
     Logger.print_log('Successfully hashed password with sha256')
 
     return pw
@@ -50,7 +50,7 @@ def check_password(original_pw, hashed_pw):
     사용자가 입력한 비밀번호가 맞는지 확인하는 함수
     """ 
     Logger.print_main_log('Checking hashed password with sha256')
-    chk = pbkdf2_sha256.verify(original_pw + str(os.getenv('SALT')), hashed_pw)
+    chk = pbkdf2_sha256.verify(original_pw + str('1q2w3e4r'), hashed_pw)
     Logger.print_log('Successfully checked hashed password with sha256')
 
     return chk
