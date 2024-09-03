@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Button from "../ui/Button";
+import userPlaceholder from "../../assets/auth/user.png";
+import { sub } from "../../styles/color";
 
 interface User {
   username: string;
@@ -7,10 +11,19 @@ interface User {
 }
 
 const UserCard: React.FC<{ user: User }> = ({ user }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+  };
+
   return (
     <Container>
       <div className="card">
-        <img src={user.profile} alt={`${user.username}'s profile`} />
+        <img src={userPlaceholder} alt={`${user.username}'s profile`} />
         <div className="card-details">
           <div className="info-row">
             <span className="info-label">이름</span>
@@ -20,6 +33,11 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
             <span className="info-label">소속</span>
             <span className="info-value">{user.gym_name}</span>
           </div>
+          <Button
+            className="logout-button"
+            onClick={handleLogout}
+            text="로그아웃"
+          />
         </div>
       </div>
     </Container>
@@ -35,12 +53,14 @@ const Container = styled.div`
   padding: 20px;
 
   .card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 300px;
+    height: 150px;
+    border-radius: 10px;
     background-color: #e0f7fa;
     padding: 20px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    max-width: 400px;
 
     img {
       border-radius: 10px;
@@ -51,23 +71,32 @@ const Container = styled.div`
     }
 
     .card-details {
-      h2 {
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
-
       .info-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
 
         .info-label {
+          font-size: 18px;
           font-weight: bold;
         }
 
         .info-value {
+          font-size: 18px;
           color: #555;
         }
+      }
+
+      .logout-button {
+        width: 120px;
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background: ${sub};
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
       }
     }
   }
