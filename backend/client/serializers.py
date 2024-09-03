@@ -51,8 +51,6 @@ class DeliverySerializer(serializers.ModelSerializer):
 
 def ClientInfoSerializer(client_id):
     client = Client.objects.get(client_id=client_id)
-    delivery = Delivery.objects.get(client=client_id)
-    body_data = Body_Data.objects.filter(client=client_id).order_by('-update_dt').first()
 
     result = OrderedDict()
     result['client_id'] = client_id
@@ -60,18 +58,37 @@ def ClientInfoSerializer(client_id):
     result['gender'] = get_label(Client.Gender, client.gender)
     result['birthdate'] = str(client.birth)
     result['height'] = str(client.height)
-    result['weight'] = str(body_data.weight)
-    result['muscleMass'] = str(body_data.skeletal_muscle)
-    result['bodyFatMass'] = str(body_data.body_fat)
-    result['bodyFatPercentage'] = str(body_data.body_fat_ratio)
     result['activityLevel'] = get_label(Client.Activity, client.activity)
     result['goal'] = get_label(Client.Goal, client.goal)
-    result['address'] = delivery.address
-    result['detailAddress'] = delivery.address_detail
-    result['deliveryMessage'] = get_label(Delivery.Message, delivery.message)
-    result['entryMethod'] = get_label(Delivery.Doorlock_Type, delivery.doorlock_type)
-    if delivery.doorlock == 0:
-        delivery.doorlock = ''
-    result['entryPassword'] = delivery.doorlock
+
+    if Delivery.objects.filter(client=client_id).exists:
+        delivery = Delivery.objects.get(client=client_id)
+
+        result['address'] = delivery.address
+        result['detailAddress'] = delivery.address_detail
+        result['deliveryMessage'] = get_label(Delivery.Message, delivery.message)
+        result['entryMethod'] = get_label(Delivery.Doorlock_Type, delivery.doorlock_type)
+        if delivery.doorlock == 0:
+            delivery.doorlock = ''
+        result['entryPassword'] = delivery.doorlock
+    else:
+        result['address'] = ''
+        result['detailAddress'] = ''
+        result['deliveryMessage'] = ''
+        result['entryMethod'] = ''
+        result['entryPassword'] = ''
+
+    if Body_Data.objects.filter(client=client_id).exists:
+        body_data = Body_Data.objects.filter(client=client_id).order_by('-update_dt').first()
+
+        result['weight'] = str(body_data.weight)
+        result['muscleMass'] = str(body_data.skeletal_muscle)
+        result['bodyFatMass'] = str(body_data.body_fat)
+        result['bodyFatPercentage'] = str(body_data.body_fat_ratio)
+    else:
+        result['weight'] = str(0)
+        result['muscleMass'] = str(0)
+        result['bodyFatMass'] = str(0)
+        result['bodyFatPercentage'] = str(0)
 
     return json.dumps(result, ensure_ascii=False, indent=2)
