@@ -4,5 +4,8 @@
     "@types/node": "^22.5.0",
     "react-uuid": "^2.0.0",
     "vite-tsconfig-paths": "^5.0.1"
+  },
+  "devDependencies": {
+    "vite-plugin-favicon": "^1.0.8"
   }
 }
