@@ -61,7 +61,7 @@ def ClientInfoSerializer(client_id):
     result['activityLevel'] = get_label(Client.Activity, client.activity)
     result['goal'] = get_label(Client.Goal, client.goal)
 
-    if Delivery.objects.filter(client=client_id).exists:
+    if Delivery.objects.filter(client=client_id).exists():
         delivery = Delivery.objects.get(client=client_id)
 
         result['address'] = delivery.address
@@ -78,7 +78,7 @@ def ClientInfoSerializer(client_id):
         result['entryMethod'] = ''
         result['entryPassword'] = ''
 
-    if Body_Data.objects.filter(client=client_id).exists:
+    if Body_Data.objects.filter(client=client_id).exists():
         body_data = Body_Data.objects.filter(client=client_id).order_by('-update_dt').first()
 
         result['weight'] = str(body_data.weight)
