@@ -92,3 +92,20 @@ def ClientInfoSerializer(client_id):
         result['bodyFatPercentage'] = str(0)
 
     return json.dumps(result, ensure_ascii=False, indent=2)
+
+def BodyInfoSerializer(client_id):
+    result = OrderedDict()
+    if Body_Data.objects.filter(client=client_id).exists():
+        body_data = Body_Data.objects.filter(client=client_id).order_by('-update_dt').first()
+
+        result['weight'] = str(body_data.weight)
+        result['muscleMass'] = str(body_data.skeletal_muscle)
+        result['bodyFatMass'] = str(body_data.body_fat)
+        result['bodyFatPercentage'] = str(body_data.body_fat_ratio)
+    else:
+        result['weight'] = str(0)
+        result['muscleMass'] = str(0)
+        result['bodyFatMass'] = str(0)
+        result['bodyFatPercentage'] = str(0)
+
+    return json.dumps(result, ensure_ascii=False, indent=2)
