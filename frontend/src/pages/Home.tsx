@@ -46,12 +46,11 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        // 로컬 스토리지에서 토큰 정보 가져오기
         const tokenData = getLoginTokenFromLocalStorage();
         try {
-          await apiClient.get(`/check_token/?token=${tokenData}`)
-        } catch(error) {
-          alert('토큰이 만료되었습니다.');
+          await apiClient.get(`/check_token/?token=${tokenData}`);
+        } catch (error) {
+          alert("토큰이 만료되었습니다.");
           navigate(`/login`);
         }
 
@@ -60,17 +59,15 @@ const Home: React.FC = () => {
           navigate(`/login`);
         }
 
-        // 로컬 스토리지에서 유저 정보 가져오기
         const userData = getUserDataFromLocalStorage();
+        setUserInfo(JSON.parse(userData || ""));
 
-        setUserInfo(JSON.parse(userData || ''));
-
-        // 트레이너에 해당하는 모든 클라이언트 정보 가져오기
         const clientsData = await getClients(tokenData);
 
         const processedClients = clientsData.map((client: any) => ({
           ...client,
           isSubscribed: client.is_subscribed ?? false,
+          isPaused: client.is_paused ?? false,
         }));
 
         setAllMembers(processedClients);
@@ -100,9 +97,15 @@ const Home: React.FC = () => {
     let filtered = allMembers;
 
     if (status) {
-      filtered = filtered.filter((member) =>
-        status === "Active" ? member.isSubscribed : !member.isSubscribed
-      );
+      if (status === "Active") {
+        filtered = filtered.filter((member) => member.isSubscribed);
+      } else if (status === "Paused") {
+        filtered = filtered.filter((member) => member.isPaused);
+      } else if (status === "Inactive") {
+        filtered = filtered.filter(
+          (member) => !member.isSubscribed && !member.isPaused
+        );
+      }
     }
 
     if (term) {
@@ -130,11 +133,12 @@ const Home: React.FC = () => {
 
   return (
     <Container>
-      {userInfo && <UserCard user={{ ...userInfo  }} />}{" "}
+      {userInfo && <UserCard user={{ ...userInfo }} />}{" "}
       <div className="filter-search-bar">
         <select value={filterStatus} onChange={handleFilterChange}>
           <option value="">모두</option>
           <option value="Active">구독중</option>
+          <option value="Paused">구독중단</option>
           <option value="Inactive">구독안함</option>
         </select>
         <InputComponent
@@ -154,7 +158,7 @@ const Home: React.FC = () => {
         <table className="member-table">
           <thead>
             <tr>
-              <th>구독중</th>
+              <th>구독상태</th>
               <th>이름</th>
               <th>성별</th>
               <th>목표</th>
@@ -170,16 +174,20 @@ const Home: React.FC = () => {
                 <td>
                   <div
                     className={`status-indicator ${
-                      member.isSubscribed ? "Active" : "Inactive"
+                      member.isSubscribed
+                        ? "Active"
+                        : member.isPaused
+                        ? "Paused"
+                        : "Inactive"
                     }`}
                   />
                 </td>
                 <td>{member.name}</td>
-                <td>{member.gender === 0 ? "Male" : "Female"}</td>
+                <td>{member.gender === 0 ? "남" : "여"}</td>
                 <td>{member.goal}</td>
                 <td>
                   <Button
-                    text="처방하기"
+                    text="처방"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleOrderClick(member.client_id);
@@ -264,8 +272,10 @@ const Container = styled.div`
     }
 
     .order-button {
+      width: 60px;
+      height: 30px;
       padding: 5px 10px;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 
@@ -276,6 +286,10 @@ const Container = styled.div`
 
     &.Active {
       background-color: green;
+    }
+
+    &.Paused {
+      background-color: orange;
     }
 
     &.Inactive {
