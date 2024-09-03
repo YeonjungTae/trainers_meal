@@ -67,7 +67,7 @@ class ClientClass:
             Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=new_client.update_dt, client_id=new_client.client_id)
 
         
-        if request.data['address'] or request.data['detailAddress'] or request.data['deliveryMessage'] or entryMethod = request.data['entryMethod']:
+        if request.data['address'] or request.data['detailAddress'] or request.data['deliveryMessage'] or request.data['entryMethod']:
             if request.data['address']:
                 address = request.data['address']
             else:
