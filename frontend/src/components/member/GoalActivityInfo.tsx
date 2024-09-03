@@ -103,6 +103,11 @@ const Container = styled.div`
       font-weight: bold;
     }
 
+    label::after {
+      content: ' *';
+      color: #ff0000;
+    }
+
     select {
       padding: 10px;
       border: 1px solid #ccc;
