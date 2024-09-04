@@ -49,7 +49,6 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
   const [entryOptions, setEntryOptions] = useState<[]>([]);
 
   useEffect(() => {
-    // 옵션 목록 호출
     const fetchDeliveryOptions = async () => {
       try {
         const response = await apiClient.get("/client/delivery/");
@@ -64,7 +63,6 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
     fetchDeliveryOptions();
   }, []);
 
-  // 모든 필드가 채워졌는지 확인하는 유효성 검사
   useEffect(() => {
     if (
       address &&

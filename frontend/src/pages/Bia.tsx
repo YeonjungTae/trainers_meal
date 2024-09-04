@@ -42,7 +42,6 @@ const Bia: React.FC = () => {
     }
   }, [clientId]);
 
-  // 모든 필드가 채워졌는지 확인하는 함수
   useEffect(() => {
     if (weight && muscleMass && bodyFatMass && bodyFatPercentage) {
       setIsFormValid(true);
