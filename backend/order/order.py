@@ -2,8 +2,9 @@ from .models import *
 from client.models import Client
 from .serializers import *
 from collections import OrderedDict
-import os, jwt, json
+import os, jwt, json, base64
 import unicodedata
+import http.client
 
 from datetime import datetime, timedelta
 
@@ -216,6 +217,32 @@ class OrderClass:
         order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
         Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt)
         Payment.objects.create(amount=amount, toss_order_id='', payment_key='', request_dt=datetime.today(), order_id=order_id)
+
+    def confirm_payment(request):
+        import ssl
+        ssl._create_default_https_context = ssl._create_unverified_context
+        toss_order_id = request.data['orderId']
+        amount = str(request.data['amount'])
+        payment_key = request.data['paymentKey']
+        print(toss_order_id, amount, payment_key)
+        widgetSecretKey = 'live_gsk_kYG57Eba3GjMMmWQNW798pWDOxmA:'
+        encryptedSecretKey = "Basic " + base64.b64encode(widgetSecretKey.encode("utf-8")).decode("utf-8")
+
+        conn = http.client.HTTPSConnection("api.tosspayments.com")
+
+        payload = "{\"paymentKey\":" + payment_key +",\"orderId\":" + toss_order_id + ",\"amount\":" + amount + "}"
+
+        headers = {
+            "Authorization": encryptedSecretKey,
+            "Content-Type": "application/json"
+        }
+
+        conn.request("POST", "/v1/payments/confirm", payload, headers)
+
+        res = conn.getresponse()
+        data = res.read()
+
+        print(data.decode("utf-8"))
 
     def submit_payment(request):
         client_id = request.data['clientId']

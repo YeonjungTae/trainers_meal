@@ -93,9 +93,10 @@ class ClientClass:
 
     def add_bia(request):
         client_id = request.data['clientId']
-        weight = round(float(request.data['weight']), 2)
-        skeletal_muscle = round(float(request.data['muscleMass']), 2)
-        body_fat = round(float(request.data['bodyFatMass']), 2)
-        body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
+        if request.data['weight'] != '0' and request.data['muscleMass'] != '0' and request.data['bodyFatMass'] != '0' and request.data['bodyFatPercentage'] != '0':
+            weight = round(float(request.data['weight']), 2)
+            skeletal_muscle = round(float(request.data['muscleMass']), 2)
+            body_fat = round(float(request.data['bodyFatMass']), 2)
+            body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
 
-        Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=datetime.today(), client_id=client_id)
+            Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=datetime.today(), client_id=client_id)
