@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Input from "../ui/InputComponent";
 import Button from "../ui/Button";
@@ -17,8 +18,8 @@ interface AddressDeliveryInfoProps {
   setEntryMethod: (value: number) => void;
   entryPassword: string;
   setEntryPassword: (value: string) => void;
-  onRegister: () => void;
-  onPrevious: () => void;
+  onRegister?: () => void;
+  onPrevious?: () => void;
 }
 
 const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
@@ -35,7 +36,9 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
   onRegister,
   onPrevious,
 }) => {
+  const location = useLocation();
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const handleAddressComplete = (data: any) => {
     setAddress(data.address);
@@ -44,6 +47,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
 
   const [deliveryOptions, setDeliveryOptions] = useState<[]>([]);
   const [entryOptions, setEntryOptions] = useState<[]>([]);
+
   useEffect(() => {
     // 옵션 목록 호출
     const fetchDeliveryOptions = async () => {
@@ -60,18 +64,26 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
     fetchDeliveryOptions();
   }, []);
 
-  const handleSkipAndRegister = () => {
-    onRegister();
-  };
+  // 모든 필드가 채워졌는지 확인하는 유효성 검사
+  useEffect(() => {
+    if (
+      address &&
+      detailAddress &&
+      deliveryMessage &&
+      (entryMethod !== 0 || (entryMethod === 0 && entryPassword))
+    ) {
+      setIsFormValid(true); // 모든 필드가 채워졌다면 폼 유효
+    } else {
+      setIsFormValid(false); // 하나라도 비어있다면 폼 유효하지 않음
+    }
+  }, [address, detailAddress, deliveryMessage, entryMethod, entryPassword]);
 
   return (
     <Container>
       <div className="skip-button">
-        <Button
-          text="다음에 입력하기"
-          onClick={handleSkipAndRegister}
-          color="sub"
-        />
+        {location.pathname === "/add" && (
+          <Button text="다음에 입력하기" onClick={onRegister} color="sub" />
+        )}
       </div>
       <div className="address-section">
         <label>배송지 주소</label>
@@ -151,11 +163,17 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
           )}
         </div>
       </div>
-
-      <div className="button-group">
-        <Button onClick={onPrevious} text="이전" color="sub" />
-        <Button onClick={onRegister} text="등록" color="main" />
-      </div>
+      {location.pathname === "/add" && (
+        <div className="button-group">
+          <Button onClick={onPrevious} text="이전" color="sub" />
+          <Button
+            onClick={onRegister}
+            text="등록"
+            color="main"
+            disabled={!isFormValid}
+          />
+        </div>
+      )}
     </Container>
   );
 };

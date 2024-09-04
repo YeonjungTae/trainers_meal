@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Input from "../ui/InputComponent";
 import Button from "../ui/Button";
@@ -33,13 +33,32 @@ const PhysicalInfo: React.FC<PhysicalInfoProps> = ({
   onPrevious,
 }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  // 숫자만 입력되도록 필터링하는 함수
+  const handleNumberInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: (value: string) => void
+  ) => {
+    const value = e.target.value;
+    const onlyNumbers = value.replace(/[^0-9.]/g, ""); // 숫자와 소수점만 허용
+    setter(onlyNumbers);
+  };
+
+  // 키와 체중이 모두 입력되었는지 확인하여 버튼 활성화 상태를 설정
+  useEffect(() => {
+    if (height && weight) {
+      setIsFormValid(true);
+      setErrorMessage("");
+    } else {
+      setIsFormValid(false);
+    }
+  }, [height, weight]);
 
   const handleNext = () => {
-    // 키와 체중이 비어있는지 확인
     if (!height || !weight) {
       setErrorMessage("키와 체중은 필수 입력 사항입니다.");
     } else {
-      setErrorMessage("");
       onNext();
     }
   };
@@ -48,53 +67,58 @@ const PhysicalInfo: React.FC<PhysicalInfoProps> = ({
     <Container>
       {/* 필수 입력 사항 */}
       <div className="form-section">
-        <SectionTitle>필수 입력 사항</SectionTitle>
+        <h3>필수 입력 사항</h3>
         <Input
-          type="number"
+          type="text"
           label="키(cm) *"
           placeholder="키(cm)를 입력하세요"
           value={height}
-          onChange={(e) => setHeight(e.target.value)}
+          onChange={(e) => handleNumberInput(e, setHeight)}
         />
         <Input
-          type="number"
+          type="text"
           label="체중(kg) *"
           placeholder="체중(kg)을 입력하세요"
           value={weight}
-          onChange={(e) => setWeight(e.target.value)}
+          onChange={(e) => handleNumberInput(e, setWeight)}
         />
       </div>
 
       {/* 선택 입력 사항 */}
       <div className="form-section optional">
-        <SectionTitle>선택 입력 사항</SectionTitle>
+        <h3>선택 입력 사항</h3>
         <Input
-          type="number"
+          type="text"
           label="골격근량(kg)"
           placeholder="골격근량(kg)을 입력하세요"
           value={muscleMass}
-          onChange={(e) => setMuscleMass(e.target.value)}
+          onChange={(e) => handleNumberInput(e, setMuscleMass)}
         />
         <Input
-          type="number"
+          type="text"
           label="체지방량(kg)"
           placeholder="체지방량(kg)을 입력하세요"
           value={bodyFatMass}
-          onChange={(e) => setBodyFatMass(e.target.value)}
+          onChange={(e) => handleNumberInput(e, setBodyFatMass)}
         />
         <Input
-          type="number"
+          type="text"
           label="체지방률(%)"
           placeholder="체지방률(%)을 입력하세요"
           value={bodyFatPercentage}
-          onChange={(e) => setBodyFatPercentage(e.target.value)}
+          onChange={(e) => handleNumberInput(e, setBodyFatPercentage)}
         />
       </div>
 
-      {errorMessage && <Error>{errorMessage}</Error>}
+      {errorMessage && <div className="error">{errorMessage}</div>}
       <div className="button-group">
         <Button onClick={onPrevious} text="이전" color="sub" />
-        <Button onClick={handleNext} text="다음" color="main" />
+        <Button
+          onClick={handleNext}
+          text="다음"
+          color="main"
+          disabled={!isFormValid}
+        />
       </div>
     </Container>
   );
@@ -111,6 +135,13 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 15px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
   }
 
   .optional {
@@ -121,17 +152,10 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
   }
-`;
 
-const SectionTitle = styled.h3`
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #333;
-`;
-
-const Error = styled.div`
-  color: red;
-  font-size: 14px;
-  margin-top: -10px;
+  .error {
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
+  }
 `;

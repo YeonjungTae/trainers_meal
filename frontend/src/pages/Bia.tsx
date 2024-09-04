@@ -64,15 +64,12 @@ const Bia: React.FC = () => {
   const handleWeightChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleNumberInput(e, setWeight);
   };
-
   const handleMuscleMassChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleNumberInput(e, setMuscleMass);
   };
-
   const handleBodyFatMassChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleNumberInput(e, setBodyFatMass);
   };
-
   const handleBodyFatPercentageChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleNumberInput(e, setBodyFatPercentage);
   };
