@@ -1,10 +1,10 @@
 import { useLocation } from "react-router-dom";
-import uuid from 'react-uuid'
 import styled from "styled-components";
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
+import { apiClient } from "../api";
 
-const Toss: React.FC = () => {
+const NormalPayment: React.FC = () => {
   const location = useLocation();
 
   const state = location.state as {
@@ -20,14 +20,43 @@ const Toss: React.FC = () => {
     return null;
   }
 
-  const clientKey = "live_gck_Z1aOwX7K8myOK7pQMNXQ8yQxzvNP";
-  const customerKey = state?.clientId;
-  const orderId = uuid();
-
+  const [clientKey, setClientKey] = useState<string>("");
+  const [customerKey, setCustomerKey] = useState<string>("");
+  const [orderId, setOrderId] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [amount] = useState({
     currency: "KRW",
     value: state?.totalPrice,
   });
+
+  useEffect(() => {
+    const fetchPaymentInfo = async () => {
+      try {
+        const response = await apiClient.get(`order/payInfo/?client_id=${state?.clientId}`);
+        setClientKey(JSON.parse(response.data).clientKey)
+        setCustomerKey(state?.clientId || "")
+        setOrderId(JSON.parse(response.data).orderId)
+        setName(JSON.parse(response.data).name)
+        setPhone(JSON.parse(response.data).phone)
+
+        localStorage.setItem(
+          "paymentData",
+          JSON.stringify({
+            orderId: orderId,
+            amount: amount,
+            deliveryDate: state?.deliveryDate,
+            deliveryType: state?.deliveryType,
+            clientId: state?.clientId,
+          })
+        );
+      } catch (error) {
+        console.error("Error fetching payment details:", error);
+        alert("결제 정보를 가져오는데 실패했습니다.");
+      }
+    };
+    fetchPaymentInfo();
+  }, []);
 
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState<any>();
@@ -96,15 +125,19 @@ const Toss: React.FC = () => {
               className="button"
               disabled={!ready}
               onClick={async () => {
+                // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도
                 try {
                   // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-                  // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
-                  // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
                   await widgets.requestPayment({
                     orderId: orderId,
                     orderName: "트레이너스밀 결제",
-                    successUrl: window.location.origin + "/confirm?clientId=" + state.clientId + "&deliveryDate=" + state.deliveryDate + "&deliveryType=" + state.deliveryType,
-                    failUrl: window.location.origin + "/fail",
+                    successUrl: window.location.origin + "/normal-payment/success",
+                    failUrl: window.location.origin + "/normal-payment/fail",
+                    customerName: name,
+                    customerMobilePhone: phone,
+
+                    // successUrl: window.location.origin + "/confirm?clientId=" + state.clientId + "&deliveryDate=" + state.deliveryDate + "&deliveryType=" + state.deliveryType,
+                    // failUrl: window.location.origin + "/fail",
                   });
                 } catch (error) {
                   // 에러 처리하기
@@ -121,7 +154,7 @@ const Toss: React.FC = () => {
   );
 };
 
-export default Toss;
+export default NormalPayment;
 
 const Container = styled.div`
   display: flex;
