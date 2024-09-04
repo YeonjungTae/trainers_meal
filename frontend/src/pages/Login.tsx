@@ -44,7 +44,6 @@ const Login = () => {
           gym_name: response.data.gym,
           trainer_id: response.data.user.trainer_id,
           username: response.data.user.username,
-          profile: 'http://127.0.0.1:8000' + response.data.profile.image,
         })
       );
 

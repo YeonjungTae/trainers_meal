@@ -14,7 +14,7 @@ def hash_password(original_pw):
     Parameters
     ----------
     original_pw (str)
-        기존 비밀번호
+        기존 비밀번호
 
     Returns
     ----------
@@ -36,14 +36,14 @@ def check_password(original_pw, hashed_pw):
     Parameters
     ----------
     original_pw (str)
-        기존 비밀번호
+        기존 비밀번호
     hashed_pw (str)
         암호화된 비밀번호
 
     Returns
     ----------
     chk (Boolean)
-        비밀번호 일치 유무
+        비밀번호 일치 유무
         
     Note
     ----

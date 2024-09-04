@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { apiClient } from "../api";
@@ -12,6 +12,22 @@ const Bia: React.FC = () => {
   const [bodyFatPercentage, setBodyFatPercentage] = useState<string>("");
   const navigate = useNavigate();
   const clientId = useParams().id;
+
+  useEffect(() => {
+    const fetchBodyInfo = async () => {
+      try {
+        const response = await apiClient.get(`client/bia/?client_id=${clientId}`);
+        setWeight(JSON.parse(response.data).weight)
+        setMuscleMass(JSON.parse(response.data).muscleMass)
+        setBodyFatMass(JSON.parse(response.data).bodyFatMass)
+        setBodyFatPercentage(JSON.parse(response.data).bodyFatPercentage)
+      } catch (error) {
+        console.error("Error fetching member details:", error);
+        alert("회원 정보를 가져오는데 실패했습니다.");
+      }
+    };
+    fetchBodyInfo();
+  }, []);
 
   const handleWeightChange = (e: ChangeEvent<HTMLInputElement>) => {
     setWeight(e.target.value);
