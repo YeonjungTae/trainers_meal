@@ -19,7 +19,7 @@ const Add: React.FC = () => {
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [detailAddress, setDetailAddress] = useState<string>("");
-  const [gender, setGender] = useState<string>("남");
+  const [gender, setGender] = useState<string>("");
   const [birthdate, setBirthdate] = useState<string>("");
   const [height, setHeight] = useState<string>("");
   const [weight, setWeight] = useState<string>("");
