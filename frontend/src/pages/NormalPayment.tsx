@@ -24,7 +24,7 @@ const NormalPayment: React.FC = () => {
   const [customerKey, setCustomerKey] = useState<string>("");
   const [orderId, setOrderId] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
+  // const [phone, setPhone] = useState<string>("");
   const [amount] = useState({
     currency: "KRW",
     value: state?.totalPrice,
@@ -38,7 +38,7 @@ const NormalPayment: React.FC = () => {
         setCustomerKey(state?.clientId || "")
         setOrderId(JSON.parse(response.data).orderId)
         setName(JSON.parse(response.data).name)
-        setPhone(JSON.parse(response.data).phone)
+        // setPhone(JSON.parse(response.data).phone)
 
         localStorage.setItem(
           "paymentData",
@@ -134,7 +134,7 @@ const NormalPayment: React.FC = () => {
                     successUrl: window.location.origin + "/normal-payment/success",
                     failUrl: window.location.origin + "/normal-payment/fail",
                     customerName: name,
-                    customerMobilePhone: phone,
+                    // customerMobilePhone: phone,
 
                     // successUrl: window.location.origin + "/confirm?clientId=" + state.clientId + "&deliveryDate=" + state.deliveryDate + "&deliveryType=" + state.deliveryType,
                     // failUrl: window.location.origin + "/fail",
