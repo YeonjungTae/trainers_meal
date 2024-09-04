@@ -1,29 +1,41 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { main } from "../styles/color";
 
 const DeliveryPickup: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Diet 페이지에서 전달된 상태값을 가져옵니다.
   const state = location.state as {
-    selectedMenus: any[]; // 실제 메뉴 리스트 타입으로 변경 필요
+    selectedMenus: any[];
     totalPrice: number;
     clientId: string;
   };
 
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [finalPrice, setFinalPrice] = useState<number>(state.totalPrice);
+  const DELIVERY_THRESHOLD = 264000;
+  const DELIVERY_FEE = 16000;
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
-    const deliveryType = option === "delivery";
-    // 메뉴 리스트와 함께 deliveryType을 delivery-date 페이지로 전달합니다.
+
+    if (option === "delivery" && state.totalPrice < DELIVERY_THRESHOLD) {
+      setFinalPrice(state.totalPrice + DELIVERY_FEE);
+    } else {
+      setFinalPrice(state.totalPrice);
+    }
+  };
+
+  const handleNext = () => {
+    const deliveryType = selectedOption === "delivery";
+
     navigate("/delivery-date", {
       state: {
         deliveryType: deliveryType,
         selectedMenus: state.selectedMenus,
-        totalPrice: state.totalPrice,
+        totalPrice: finalPrice,
         clientId: state.clientId,
       },
     });
@@ -40,6 +52,9 @@ const DeliveryPickup: React.FC = () => {
           onClick={() => handleSelect("delivery")}
         >
           <h2>배송</h2>
+          {state.totalPrice < DELIVERY_THRESHOLD && (
+            <p className="delivery-fee-info">+ 16,000원</p>
+          )}
           <p>집 앞으로 배송을 받아보세요.</p>
         </div>
         <div
@@ -50,6 +65,17 @@ const DeliveryPickup: React.FC = () => {
           <p>운동 후 음식을 픽업하세요.</p>
         </div>
       </div>
+
+      <BottomBar>
+        <p>{finalPrice.toLocaleString()}원</p>
+        <button
+          className="next-button"
+          onClick={handleNext}
+          disabled={!selectedOption}
+        >
+          다음
+        </button>
+      </BottomBar>
     </Container>
   );
 };
@@ -60,10 +86,10 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* justify-content: space-around; */
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
-  height: 100vh;
   box-sizing: border-box;
 
   .header {
@@ -79,37 +105,77 @@ const Container = styled.div`
 
   .options-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
     width: 100%;
   }
 
   .card {
-    flex: 1;
-    padding: 20px;
-    margin: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 300px;
+    height: 200px;
+    padding: 30px;
+    margin: 10px 0;
     border: 2px solid #ccc;
     border-radius: 10px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
 
+    .delivery-fee-info {
+      font-size: 20px;
+      color: ${main};
+    }
+
     &.selected {
-      border-color: #007bff;
+      border-color: ${main};
       background-color: #f0f8ff;
     }
 
     h2 {
-      font-size: 22px;
+      font-size: 24px;
       margin-bottom: 10px;
     }
 
     p {
-      font-size: 16px;
+      font-size: 18px;
       color: #555;
     }
+  }
+`;
 
-    &:hover {
-      background-color: #f9f9f9;
+const BottomBar = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  background-color: #f7f7f7;
+
+  p {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .next-button {
+    background-color: ${main};
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
   }
 `;

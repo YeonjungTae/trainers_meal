@@ -2,7 +2,7 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { apiClient } from "../api";
-import InputComponent from "../components/ui/InputComponent";
+import Input from "../components/ui/InputComponent";
 import Button from "../components/ui/Button";
 
 const Bia: React.FC = () => {
@@ -25,7 +25,6 @@ const Bia: React.FC = () => {
         console.error("기존 체성분 데이터를 불러오는 데 실패했습니다:", error);
       }
     };
-
     if (clientId) {
       fetchBodyCompositionData();
     }
@@ -34,15 +33,12 @@ const Bia: React.FC = () => {
   const handleWeightChange = (e: ChangeEvent<HTMLInputElement>) => {
     setWeight(e.target.value);
   };
-
   const handleMuscleMassChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMuscleMass(e.target.value);
   };
-
   const handleBodyFatMassChange = (e: ChangeEvent<HTMLInputElement>) => {
     setBodyFatMass(e.target.value);
   };
-
   const handleBodyFatPercentageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setBodyFatPercentage(e.target.value);
   };
@@ -55,15 +51,12 @@ const Bia: React.FC = () => {
       bodyFatMass,
       bodyFatPercentage,
     };
-    console.log("Updated Body Composition Data:", updatedData);
 
     try {
       await apiClient.post(`/client/bia/`, updatedData);
-      console.log("체성분 데이터가 성공적으로 저장되었습니다.");
       navigate(`/meal/${clientId}`);
     } catch (error) {
       console.error("체성분 데이터 저장에 실패했습니다:", error);
-      alert("체성분 데이터 저장에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -76,16 +69,16 @@ const Bia: React.FC = () => {
           {biaData ? (
             <>
               <p>
-                <strong>체중</strong> {biaData.weight} kg
+                <strong>체중</strong> {biaData.weight}kg
               </p>
               <p>
-                <strong>골격근량</strong> {biaData.muscleMass} kg
+                <strong>골격근량</strong> {biaData.muscleMass}kg
               </p>
               <p>
-                <strong>체지방량</strong> {biaData.bodyFatMass} kg
+                <strong>체지방량</strong> {biaData.bodyFatMass}kg
               </p>
               <p>
-                <strong>체지방률</strong> {biaData.bodyFatPercentage} %
+                <strong>체지방률</strong> {biaData.bodyFatPercentage}%
               </p>
             </>
           ) : (
@@ -95,7 +88,7 @@ const Bia: React.FC = () => {
         <div className="input-section">
           <div className="input-group">
             <label htmlFor="weight">체중</label>
-            <InputComponent
+            <Input
               type="text"
               id="weight"
               placeholder="체중을 입력하세요"
@@ -105,7 +98,7 @@ const Bia: React.FC = () => {
           </div>
           <div className="input-group">
             <label htmlFor="muscleMass">골격근량</label>
-            <InputComponent
+            <Input
               type="text"
               id="muscleMass"
               placeholder="골격근량을 입력하세요"
@@ -115,7 +108,7 @@ const Bia: React.FC = () => {
           </div>
           <div className="input-group">
             <label htmlFor="bodyFatMass">체지방량</label>
-            <InputComponent
+            <Input
               type="text"
               id="bodyFatMass"
               placeholder="체지방량을 입력하세요"
@@ -125,7 +118,7 @@ const Bia: React.FC = () => {
           </div>
           <div className="input-group">
             <label htmlFor="bodyFatPercentage">체지방률</label>
-            <InputComponent
+            <Input
               type="text"
               id="bodyFatPercentage"
               placeholder="체지방률을 입력하세요"
