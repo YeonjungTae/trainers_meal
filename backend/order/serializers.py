@@ -1,6 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 from collections import OrderedDict
+import uuid, json
 
 from .models import *
 
@@ -23,6 +24,19 @@ class MealSerializer(serializers.ModelSerializer):
             'group'
         )
         model = Meal
+
+def RegularPaySerializer(client_id):
+    result = OrderedDict()
+
+    result['clientKey'] = 'live_gck_Z1aOwX7K8myOK7pQMNXQ8yQxzvNP'
+    result['customerKey'] = str(uuid.uuid4())
+    result['orderId'] = str(uuid.uuid4())
+
+    client_data = Client.objects.get(client_id=client_id)
+    result['name'] = client_data.name
+    result['phone'] = '0' + str(client_data.contact)
+
+    return json.dumps(result, ensure_ascii=False, indent=2)
 
 # class Body_DataSerializer(serializers.ModelSerializer):
 #     class Meta:

@@ -105,6 +105,11 @@ const Container = styled.div`
   flex-direction: column;
   gap: 20px;
 
+  label::after {
+    content: ' *';
+    color: #ff0000;
+  }
+
   .gender-section {
     display: flex;
     flex-direction: column;
