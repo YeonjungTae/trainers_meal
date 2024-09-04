@@ -38,6 +38,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
 }) => {
   const location = useLocation();
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const handleAddressComplete = (data: any) => {
     setAddress(data.address);
@@ -46,8 +47,8 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
 
   const [deliveryOptions, setDeliveryOptions] = useState<[]>([]);
   const [entryOptions, setEntryOptions] = useState<[]>([]);
+
   useEffect(() => {
-    // 옵션 목록 호출
     const fetchDeliveryOptions = async () => {
       try {
         const response = await apiClient.get("/client/delivery/");
@@ -61,6 +62,19 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
 
     fetchDeliveryOptions();
   }, []);
+
+  useEffect(() => {
+    if (
+      address &&
+      detailAddress &&
+      deliveryMessage &&
+      (entryMethod !== 0 || (entryMethod === 0 && entryPassword))
+    ) {
+      setIsFormValid(true); // 모든 필드가 채워졌다면 폼 유효
+    } else {
+      setIsFormValid(false); // 하나라도 비어있다면 폼 유효하지 않음
+    }
+  }, [address, detailAddress, deliveryMessage, entryMethod, entryPassword]);
 
   return (
     <Container>
@@ -150,7 +164,12 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
       {location.pathname === "/add" && (
         <div className="button-group">
           <Button onClick={onPrevious} text="이전" color="sub" />
-          <Button onClick={onRegister} text="등록" color="main" />
+          <Button
+            onClick={onRegister}
+            text="등록"
+            color="main"
+            disabled={!isFormValid}
+          />
         </div>
       )}
     </Container>

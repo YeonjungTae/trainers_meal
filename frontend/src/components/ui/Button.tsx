@@ -38,6 +38,10 @@ const ButtonComponent = styled.button`
   background: ${(props) => props.color === "sub" && sub};
   color: ${(props) => props.color === "main" && "#fff"};
   color: ${(props) => props.color === "sub" && "#fff"};
+
+  &:disabled {
+    background: #ccc;
+  }
 `;
 
 export default Button;

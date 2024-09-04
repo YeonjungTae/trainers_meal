@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Input from "../ui/InputComponent";
 import Button from "../ui/Button";
@@ -28,6 +28,15 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   onNext,
 }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (name && phone && gender && birthdate) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  }, [name, phone, gender, birthdate]);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -93,7 +102,12 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         />
       </div>
       {errorMessage && <Error>{errorMessage}</Error>}
-      <Button onClick={handleNext} text="다음" color="main" />
+      <Button
+        onClick={handleNext}
+        text="다음"
+        color="main"
+        disabled={!isFormValid}
+      />
     </Container>
   );
 };
@@ -106,7 +120,7 @@ const Container = styled.div`
   gap: 20px;
 
   label::after {
-    content: ' *';
+    content: " *";
     color: #ff0000;
   }
 
