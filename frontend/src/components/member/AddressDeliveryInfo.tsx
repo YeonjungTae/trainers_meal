@@ -56,12 +56,23 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
         alert("옵션을 불러오는데 실패했습니다. 다시 시도해주세요.");
       }
     };
-  
+
     fetchDeliveryOptions();
   }, []);
 
+  const handleSkipAndRegister = () => {
+    onRegister();
+  };
+
   return (
     <Container>
+      <div className="skip-button">
+        <Button
+          text="다음에 입력하기"
+          onClick={handleSkipAndRegister}
+          color="sub"
+        />
+      </div>
       <div className="address-section">
         <label>배송지 주소</label>
         <div className="address-input-group">
@@ -91,7 +102,6 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
         )}
         <Input
           type="text"
-          label="상세 주소"
           placeholder="상세 주소를 입력하세요"
           value={detailAddress}
           onChange={(e) => setDetailAddress(e.target.value)}
@@ -106,27 +116,27 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
             value={deliveryMessage}
             onChange={(e) => setDeliveryMessage(e.target.value)}
           >
-          <option value="">배송메시지를 선택해주세요.</option>
-          {deliveryOptions.map((delivery: any) =>(
-            <option key={delivery.index} value={delivery.index}>
-              {delivery.data}
-            </option>
-          ))}
+            <option value="">배송메시지를 선택해주세요.</option>
+            {deliveryOptions.map((delivery: any) => (
+              <option key={delivery.index} value={delivery.index}>
+                {delivery.data}
+              </option>
+            ))}
           </select>
         </div>
         <div className="entry-method">
           <label>공동현관 출입방법</label>
           <div>
-            {entryOptions.map((entry: any) =>(
+            {entryOptions.map((entry: any) => (
               <div key={entry.index}>
-              <Input
-                type="radio"
-                id={entry.index}
-                name="entry"
-                onChange={() => setEntryMethod(entry.index)}
-                checked={entryMethod === entry.index}
-              />
-              <label htmlFor={entry.index}>{entry.data}</label>
+                <Input
+                  type="radio"
+                  id={entry.index}
+                  name="entry"
+                  onChange={() => setEntryMethod(entry.index)}
+                  checked={entryMethod === entry.index}
+                />
+                <label htmlFor={entry.index}>{entry.data}</label>
               </div>
             ))}
           </div>
@@ -143,7 +153,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
       </div>
 
       <div className="button-group">
-        <Button onClick={onPrevious} text="이전" color="main" />
+        <Button onClick={onPrevious} text="이전" color="sub" />
         <Button onClick={onRegister} text="등록" color="main" />
       </div>
     </Container>
@@ -156,6 +166,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  .skip-button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
 
   .address-section {
     display: flex;
@@ -214,7 +230,7 @@ const Container = styled.div`
 
   .button-group {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
   }
 `;
 

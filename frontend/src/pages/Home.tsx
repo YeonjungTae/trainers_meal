@@ -14,14 +14,12 @@ interface User {
 
 // 로컬스토리지에서 유저 정보 가져오기
 const getLoginTokenFromLocalStorage = () => {
-  const token = localStorage.getItem("token");
-  return token;
+  return localStorage.getItem("token");
 };
 
 // 로컬스토리지에서 유저 정보 가져오기
 const getUserDataFromLocalStorage = () => {
-  const userData = localStorage.getItem("user");
-  return userData;
+  return localStorage.getItem("user");
 };
 
 // 트레이너에 해당하는 모든 클라이언트 리스트 가져오기
@@ -47,6 +45,7 @@ const Home: React.FC = () => {
     const fetchUserInfo = async () => {
       try {
         const tokenData = getLoginTokenFromLocalStorage();
+
         try {
           await apiClient.get(`/check_token/?token=${tokenData}`);
         } catch (error) {
@@ -57,10 +56,13 @@ const Home: React.FC = () => {
         if (!tokenData) {
           console.log("No login info found in localStorage");
           navigate(`/login`);
+          return;
         }
 
         const userData = getUserDataFromLocalStorage();
-        setUserInfo(JSON.parse(userData || ""));
+        if (userData) {
+          setUserInfo(JSON.parse(userData));
+        }
 
         const clientsData = await getClients(tokenData);
 
@@ -72,14 +74,13 @@ const Home: React.FC = () => {
 
         setAllMembers(processedClients);
         setFilteredMembers(processedClients);
-        console.log("Clients Data:", processedClients);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchUserInfo();
-  }, []);
+  }, [navigate]);
 
   const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const status = e.target.value;
@@ -98,7 +99,9 @@ const Home: React.FC = () => {
 
     if (status) {
       if (status === "Active") {
-        filtered = filtered.filter((member) => member.isSubscribed);
+        filtered = filtered.filter(
+          (member) => member.isSubscribed && !member.isPaused
+        );
       } else if (status === "Paused") {
         filtered = filtered.filter((member) => member.isPaused);
       } else if (status === "Inactive") {
@@ -133,7 +136,7 @@ const Home: React.FC = () => {
 
   return (
     <Container>
-      {userInfo && <UserCard user={{ ...userInfo }} />}{" "}
+      {userInfo && <UserCard user={userInfo} />}{" "}
       <div className="filter-search-bar">
         <select value={filterStatus} onChange={handleFilterChange}>
           <option value="">모두</option>
@@ -175,9 +178,9 @@ const Home: React.FC = () => {
                   <div
                     className={`status-indicator ${
                       member.isSubscribed
-                        ? "Active"
-                        : member.isPaused
-                        ? "Paused"
+                        ? member.isPaused
+                          ? "Paused"
+                          : "Active"
                         : "Inactive"
                     }`}
                   />
@@ -272,8 +275,8 @@ const Container = styled.div`
     }
 
     .order-button {
-      width: 60px;
-      height: 30px;
+      width: 50px;
+      height: 25px;
       padding: 5px 10px;
       font-size: 12px;
     }
