@@ -2,13 +2,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styled from "styled-components";
-import { apiClient } from "../api"; // apiClient를 가져옵니다.
+import { apiClient } from "../api";
 
 const DeliveryDate: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // location.state가 null이 아닌지 확인
   const state = location.state as {
     deliveryType: boolean;
     selectedMenus: any[];
@@ -16,7 +15,6 @@ const DeliveryDate: React.FC = () => {
     clientId: string;
   } | null;
 
-  // state가 null일 경우에 대한 처리
   if (!state) {
     alert("잘못된 접근입니다. 처음부터 다시 시도해주세요.");
     navigate("/delivery-pickup");
@@ -25,14 +23,19 @@ const DeliveryDate: React.FC = () => {
 
   const isMonday = (date: Date) => date.getDay() === 1;
 
+  const isPastWednesdayCutoff = () => {
+    const now = new Date();
+    const isWednesday = now.getDay() === 3;
+    const isAfter10PM = now.getHours() >= 22;
+    return isWednesday && isAfter10PM;
+  };
+
   const getNextMonday = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
     const nextMonday = new Date(today);
 
-    if (dayOfWeek === 3 && today.getHours() >= 17) {
-      nextMonday.setDate(today.getDate() + ((15 - dayOfWeek) % 7));
-    } else if (dayOfWeek > 3 || (dayOfWeek === 3 && today.getHours() >= 17)) {
+    if (dayOfWeek > 3 || (dayOfWeek === 3 && today.getHours() >= 22)) {
       nextMonday.setDate(today.getDate() + ((15 - dayOfWeek) % 7));
     } else {
       nextMonday.setDate(today.getDate() + ((8 - dayOfWeek) % 7));
@@ -42,14 +45,13 @@ const DeliveryDate: React.FC = () => {
   };
 
   const handleDateChange = async (selectedDate: Date) => {
-    const formattedDate = selectedDate.toISOString().split("T")[0]; // "YYYY-MM-DD" 형식
+    const formattedDate = selectedDate.toISOString().split("T")[0];
 
     if (isMonday(selectedDate) && selectedDate >= getNextMonday()) {
       try {
-        // 서버로 데이터 전송
         const response = await apiClient.post("/order/submit/", {
           deliveryType: state.deliveryType,
-          deliveryDate: formattedDate, // YYYY-MM-DD 형식으로 날짜 전송
+          deliveryDate: formattedDate,
           selectedMenus: state.selectedMenus,
           totalPrice: state.totalPrice,
           clientId: state.clientId,
@@ -57,7 +59,6 @@ const DeliveryDate: React.FC = () => {
 
         console.log("서버 응답:", response.data);
 
-        // 결제 페이지로 이동
         navigate("/payment", {
           state: {
             totalPrice: state.totalPrice,
@@ -81,8 +82,13 @@ const DeliveryDate: React.FC = () => {
       <Calendar
         onClickDay={handleDateChange}
         value={getNextMonday()}
-        tileDisabled={({ date }) => !isMonday(date) || date < getNextMonday()}
-        locale="en-US"
+        tileDisabled={({ date }) =>
+          !isMonday(date) ||
+          date < getNextMonday() ||
+          (isPastWednesdayCutoff() && date <= getNextMonday())
+        }
+        locale="ko-KR"
+        calendarType="gregory"
       />
     </Container>
   );
@@ -93,22 +99,35 @@ export default DeliveryDate;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
   height: 100vh;
   box-sizing: border-box;
 
   h1 {
-    margin-bottom: 20px;
-    font-size: 28px;
+    margin-bottom: 40px;
+    font-size: 32px;
+    text-align: center;
   }
 
   .react-calendar {
-    border: none;
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+
+  .react-calendar__navigation button {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .react-calendar__month-view__weekdays__weekday {
+    font-size: 20px;
+    font-weight: bold;
   }
 
   .react-calendar__tile--disabled {
@@ -117,7 +136,7 @@ const Container = styled.div`
   }
 
   .react-calendar__tile {
-    height: 60px;
+    height: 80px;
     font-size: 18px;
   }
 `;
