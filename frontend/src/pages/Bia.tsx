@@ -18,13 +18,24 @@ const Bia: React.FC = () => {
   useEffect(() => {
     const fetchBodyCompositionData = async () => {
       try {
-        const response = await apiClient.get(`bia/${clientId}`);
+        const response = await apiClient.get(
+          `/client/bia/?client_id=${clientId}`
+        );
         const data = response.data;
         setBiaData(data);
+
+        // 기존 데이터를 가져와서 상태에 설정
+        if (data) {
+          setWeight(data.weight || "");
+          setMuscleMass(data.muscleMass || "");
+          setBodyFatMass(data.bodyFatMass || "");
+          setBodyFatPercentage(data.bodyFatPercentage || "");
+        }
       } catch (error) {
         console.error("기존 체성분 데이터를 불러오는 데 실패했습니다:", error);
       }
     };
+
     if (clientId) {
       fetchBodyCompositionData();
     }

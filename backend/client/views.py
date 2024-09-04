@@ -52,6 +52,14 @@ class get_client_info(APIView):
             raise ValueError('회원 정보를 불러오는 데에 실패하였습니다.')
         
 class add_bia(APIView):
+    def get(self, request):
+        try:
+            result = BodyInfoSerializer(request.GET.get('client_id'))
+            Logger.print_main_log('체성분 데이터를 불러오는 데에 성공하였습니다.')
+            return Response(result)
+        
+        except:
+            raise ValueError('체성분 데이터를 추가하는 데에 실패하였습니다.')
     def post(self, request):
         try:
             ClientClass.add_bia(request)

@@ -12,7 +12,9 @@ import Option from "./pages/Option";
 import DeliveryPickup from "./pages/DeliveryPickup";
 import DeliveryDate from "./pages/DeliveryDate";
 import Payment from "./pages/Payment";
-import Toss from "./pages/Toss";
+import NormalPayment from "./pages/NormalPayment";
+import NormalPaymentSuccess from "./pages/NormalPaymentSuccess";
+import NormalPaymentFail from "./pages/NormalPaymentFail";
 import Confirmation from "./pages/Confirmation";
 import GlobalStyle from "./GlobalStyle";
 
@@ -34,7 +36,9 @@ function App() {
         <Route path="/delivery-pickup" element={<DeliveryPickup />} />
         <Route path="/delivery-date" element={<DeliveryDate />} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/toss" element={<Toss />} />
+        <Route path="/normal-payment" element={<NormalPayment />} />
+        <Route path="/normal-payment/success" element={<NormalPaymentSuccess />} />
+        <Route path="/normal-payment/fail" element={<NormalPaymentFail />} />
         <Route path="/confirm" element={<Confirmation />} />
       </Routes>
     </Router>
