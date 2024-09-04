@@ -2,7 +2,7 @@ from .models import *
 from client.models import Client
 from .serializers import *
 from collections import OrderedDict
-import os, jwt, json, base64
+import os, jwt, json, base64,requests
 import unicodedata
 import http.client
 
@@ -218,31 +218,57 @@ class OrderClass:
         Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt)
         Payment.objects.create(amount=amount, toss_order_id='', payment_key='', request_dt=datetime.today(), order_id=order_id)
 
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+
     def confirm_payment(request):
-        import ssl
-        ssl._create_default_https_context = ssl._create_unverified_context
         toss_order_id = request.data['orderId']
         amount = str(request.data['amount'])
         payment_key = request.data['paymentKey']
+        paymentType = request.data['paymentType']
         print(toss_order_id, amount, payment_key)
         widgetSecretKey = 'live_gsk_kYG57Eba3GjMMmWQNW798pWDOxmA:'
         encryptedSecretKey = "Basic " + base64.b64encode(widgetSecretKey.encode("utf-8")).decode("utf-8")
 
-        conn = http.client.HTTPSConnection("api.tosspayments.com")
+        # conn = http.client.HTTPSConnection("api.tosspayments.com")
 
-        payload = "{\"paymentKey\":" + payment_key +",\"orderId\":" + toss_order_id + ",\"amount\":" + amount + "}"
+        base_url = "https://api.tosspayments.com/"
+        api_version = "v1"
+
+        data={
+            "paymentKey": payment_key,
+            "orderId": toss_order_id,
+            "amount": amount,
+        },
+        # payload = "{\"paymentType\":" + paymentType +"\"paymentKey\":" + payment_key +",\"orderId\":" + toss_order_id + ",\"amount\":" + amount + "}"
 
         headers = {
             "Authorization": encryptedSecretKey,
             "Content-Type": "application/json"
         }
 
-        conn.request("POST", "/v1/payments/confirm", payload, headers)
+        requests_session = requests.Session()
+        requests_adapters = requests.adapters.HTTPAdapter(max_retries=3)
+        requests_session.mount("https://", requests_adapters)
 
-        res = conn.getresponse()
-        data = res.read()
+        response = requests_session.post(base_url + api_version + '/payments/confirm',
+            data={
+                "paymentKey": payment_key,
+                "orderId": toss_order_id,
+                "amount": amount,
+            }
+        )
 
-        print(data.decode("utf-8"))
+        result = response.json()
+
+        print(result)
+
+        # conn.request("POST", "/v1/payments/confirm", payload, headers)
+
+        # res = conn.getresponse()
+        # data = res.read()
+
+        # print(data.decode("utf-8"))
 
     def submit_payment(request):
         client_id = request.data['clientId']
