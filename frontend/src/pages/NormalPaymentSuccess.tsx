@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { apiClient } from "../api";
@@ -10,15 +10,15 @@ const getPaymentDataFromLocalStorage = () => {
 };
 
 const NormalPaymentSuccess: React.FC = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  // const location = useLocation();
+  // const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [clientId, setClientId] = useState<string>("");
+  // const [clientId, setClientId] = useState<string>("");
   const [orderId, setOrderId] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
-  const [deliveryDate, setDeliveryDate] = useState<string>("");
-  const [deliveryType, setDeliveryType] = useState<string>("");
+  // const [deliveryDate, setDeliveryDate] = useState<string>("");
+  // const [deliveryType, setDeliveryType] = useState<string>("");
 
   const requestData = {
     orderId: searchParams.get("orderId"),
@@ -32,11 +32,11 @@ const NormalPaymentSuccess: React.FC = () => {
         // 로컬 스토리지에서 결제 정보 가져오기
         const paymentData = getPaymentDataFromLocalStorage();
 
-        setClientId(JSON.parse(paymentData || '').clientId);
+        // setClientId(JSON.parse(paymentData || '').clientId);
         setOrderId(requestData.orderId || '');
         setAmount(requestData.amount || '');
-        setDeliveryDate(JSON.parse(paymentData || '').deliveryDate);
-        setDeliveryType(JSON.parse(paymentData || '').deliveryType);
+        // setDeliveryDate(JSON.parse(paymentData || '').deliveryDate);
+        // setDeliveryType(JSON.parse(paymentData || '').deliveryType);
 
         console.log("Payment Data:", paymentData);
 
@@ -52,6 +52,7 @@ const NormalPaymentSuccess: React.FC = () => {
           amount: requestData.amount,
           paymentKey: requestData.paymentKey,
         });
+        console.log(response);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
