@@ -12,6 +12,8 @@ interface InputProps {
   name?: string;
   checked?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,6 +26,8 @@ const Input: React.FC<InputProps> = ({
   label,
   readonly,
   name,
+  onClick,
+  onBlur, // onBlur 추가
 }) => {
   return (
     <>
@@ -37,6 +41,8 @@ const Input: React.FC<InputProps> = ({
         onChange={onChange}
         readOnly={readonly}
         name={name}
+        onClick={onClick}
+        onBlur={onBlur}
       />
     </>
   );
@@ -44,7 +50,6 @@ const Input: React.FC<InputProps> = ({
 
 const InputComponent = styled.input`
   border: 1px solid ${mainBlack};
-
   padding: 8px;
   font-size: 16px;
 
