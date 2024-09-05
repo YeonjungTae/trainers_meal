@@ -24,7 +24,7 @@ class ClientClass:
             client = Client.objects.filter(trainer_id=decode['trainer_id'], is_subscribed=is_subscribed)
 
         else:
-            client = Client.objects.filter(trainer_id=decode['trainer_id'])
+            client = Client.objects.filter(trainer_id=decode['trainer_id']).order_by('name')
         
         return client
 
@@ -92,16 +92,16 @@ class ClientClass:
             Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id, update_dt=new_client.update_dt)
 
     def add_bia(request):
+        print(request.data)
         client_id = request.data['clientId']
-        if request.data['weight'] != '0' and request.data['muscleMass'] != '0' and request.data['bodyFatMass'] != '0' and request.data['bodyFatPercentage'] != '0':
-            weight = round(float(request.data['weight']), 2)
-            skeletal_muscle = round(float(request.data['muscleMass']), 2)
-            body_fat = round(float(request.data['bodyFatMass']), 2)
-            body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
-            update_dt = datetime.today()
+        weight = round(float(request.data['weight']), 2)
+        skeletal_muscle = round(float(request.data['muscleMass']), 2)
+        body_fat = round(float(request.data['bodyFatMass']), 2)
+        body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
+        update_dt = datetime.today()
 
-            Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=update_dt, client_id=client_id)
-            Client.objects.filter(client_id=client_id).update(update_dt=update_dt)
+        Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=update_dt, client_id=client_id)
+        Client.objects.filter(client_id=client_id).update(update_dt=update_dt)
 
     def add_address(request):
         client_id = request.data['clientId']
