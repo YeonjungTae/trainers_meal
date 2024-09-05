@@ -73,8 +73,8 @@ const Diet: React.FC = () => {
         });
 
         // 서버에서 총 금액을 받아오는 경우 설정
-        if (response.data.totalPrice) {
-          setTotalPrice(response.data.totalPrice);
+        if (menus[0][0]['totalPrice']) {
+          setTotalPrice(menus[0][0]['totalPrice']);
         } else {
           setTotalPrice(0);
         }
@@ -121,6 +121,7 @@ const Diet: React.FC = () => {
         menuIndex,
         mealId: state?.selectedMeals,
         clientId: state?.clientId,
+        menuId: selectedMenu.id,
         menuName: selectedMenu.menu_name,
         blockIds: {
           base: selectedMenu.block?.base.id,

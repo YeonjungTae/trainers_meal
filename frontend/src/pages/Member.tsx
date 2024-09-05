@@ -31,7 +31,7 @@ const Member: React.FC = () => {
   useEffect(() => {
     const fetchMemberDetail = async () => {
       try {
-        const response = await apiClient.get(`client/detail/?client_id=${clientId}`);
+        const response = await apiClient.get(`client/detail?client_id=${clientId}`);
         setMemberDetail(JSON.parse(response.data));
       } catch (error) {
         console.error("Error fetching member details:", error);

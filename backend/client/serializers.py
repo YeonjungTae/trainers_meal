@@ -21,6 +21,7 @@ def get_text_value(TABLE_NAME, val):
 
 def get_label(TABLE_NAME, val):
     for data in TABLE_NAME:
+        print(val)
         if data == val:
             result = data.label
     return result
