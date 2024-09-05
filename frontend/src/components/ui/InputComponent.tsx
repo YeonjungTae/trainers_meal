@@ -11,7 +11,9 @@ interface InputProps {
   readonly?: boolean;
   name?: string;
   checked?: boolean;
+  pattern?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,6 +26,8 @@ const Input: React.FC<InputProps> = ({
   label,
   readonly,
   name,
+  pattern,
+  onClick,
 }) => {
   return (
     <>
@@ -37,6 +41,8 @@ const Input: React.FC<InputProps> = ({
         onChange={onChange}
         readOnly={readonly}
         name={name}
+        pattern={pattern}
+        onClick={onClick}
       />
     </>
   );
@@ -44,7 +50,6 @@ const Input: React.FC<InputProps> = ({
 
 const InputComponent = styled.input`
   border: 1px solid ${mainBlack};
-
   padding: 8px;
   font-size: 16px;
 

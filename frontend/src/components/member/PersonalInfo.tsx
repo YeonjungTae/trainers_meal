@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Input from "../ui/InputComponent";
 import Button from "../ui/Button";
@@ -26,6 +27,39 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
   setBirthdate,
   onNext,
 }) => {
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (name && phone && gender && birthdate) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  }, [name, phone, gender, birthdate]);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setName(value);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const regex = /^[0-9]*$/;
+    if (regex.test(value)) {
+      setPhone(value);
+    }
+  };
+
+  const handleNext = () => {
+    if (!name || !phone || !gender || !birthdate) {
+      setErrorMessage("모든 필드를 입력해주세요.");
+    } else {
+      setErrorMessage("");
+      onNext();
+    }
+  };
+
   return (
     <Container>
       <Input
@@ -33,14 +67,14 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         label="이름"
         placeholder="이름을 입력하세요"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={handleNameChange}
       />
       <Input
         type="text"
         label="전화번호"
-        placeholder="전화번호를 입력하세요"
+        placeholder="ex.01000000000"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={handlePhoneChange}
       />
       <div className="gender-section">
         <label>성별</label>
@@ -57,13 +91,23 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
           />
         </div>
       </div>
-      <Input
-        type="date"
-        label="생년월일"
-        value={birthdate}
-        onChange={(e) => setBirthdate(e.target.value)}
+      <div className="date-section">
+        <label>생년월일</label>
+        <Input
+          type="date"
+          label=""
+          placeholder="클릭하여 생년월일을 선택하세요"
+          value={birthdate}
+          onChange={(e) => setBirthdate(e.target.value)}
+        />
+      </div>
+      {errorMessage && <Error>{errorMessage}</Error>}
+      <Button
+        onClick={handleNext}
+        text="다음"
+        color="main"
+        disabled={!isFormValid}
       />
-      <Button onClick={onNext} text="다음" color="main" />
     </Container>
   );
 };
@@ -76,7 +120,7 @@ const Container = styled.div`
   gap: 20px;
 
   label::after {
-    content: ' *';
+    content: " *";
     color: #ff0000;
   }
 
@@ -109,4 +153,27 @@ const Container = styled.div`
       }
     }
   }
+
+  .date-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+`;
+
+const Error = styled.div`
+  color: red;
+  font-size: 14px;
+  margin-top: -10px;
 `;

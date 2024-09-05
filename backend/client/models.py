@@ -76,6 +76,7 @@ class Client(models.Model):
     goal = models.IntegerField(choices=Goal.choices, null=True, verbose_name = '운동 목표')
     memo = models.TextField(null=True, verbose_name = '메모')
     is_subscribed = models.BooleanField(default=False, verbose_name = '구독 유무')
+    subscribe_dt = models.DateTimeField(auto_now=True, verbose_name='구독일자')
     create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '등록일자')
     update_dt = models.DateTimeField(auto_now=True, verbose_name = '수정일자')
     trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE)

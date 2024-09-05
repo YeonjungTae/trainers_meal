@@ -6,11 +6,23 @@ interface ButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   color?: string;
+  disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ text, onClick, className, color }) => {
+const Button: React.FC<ButtonProps> = ({
+  text,
+  onClick,
+  className,
+  color,
+  disabled,
+}) => {
   return (
-    <ButtonComponent onClick={onClick} className={className} color={color}>
+    <ButtonComponent
+      onClick={onClick}
+      className={className}
+      color={color}
+      disabled={disabled}
+    >
       {text}
     </ButtonComponent>
   );
@@ -26,6 +38,10 @@ const ButtonComponent = styled.button`
   background: ${(props) => props.color === "sub" && sub};
   color: ${(props) => props.color === "main" && "#fff"};
   color: ${(props) => props.color === "sub" && "#fff"};
+
+  &:disabled {
+    background: #ccc;
+  }
 `;
 
 export default Button;

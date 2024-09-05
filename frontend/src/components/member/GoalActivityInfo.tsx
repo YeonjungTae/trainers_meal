@@ -25,11 +25,12 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
   onNext,
   onPrevious,
 }) => {
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [activityOptions, setActivityOptions] = useState<[]>([]);
   const [goalOptions, setGoalOptions] = useState<[]>([]);
+
   useEffect(() => {
-    // 옵션 목록 호출
     const fetchActivityOptions = async () => {
       try {
         const response = await apiClient.get("/client/option/");
@@ -40,9 +41,18 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
         alert("옵션을 불러오는데 실패했습니다. 다시 시도해주세요.");
       }
     };
-  
+
     fetchActivityOptions();
   }, []);
+
+  const handleNext = () => {
+    if (!activityLevel || !goal) {
+      setErrorMessage("모든 필드를 입력해주세요.");
+    } else {
+      setErrorMessage("");
+      onNext();
+    }
+  };
 
   return (
     <Container>
@@ -52,7 +62,7 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
           value={activityLevel}
           onChange={(e) => setActivityLevel(e.target.value)}
         >
-          {activityOptions.map((activity: any) =>(
+          {activityOptions.map((activity: any) => (
             <option key={activity.index} value={activity.index}>
               {activity.data}
             </option>
@@ -63,7 +73,7 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
       <div className="select-wrapper">
         <label>운동 목표</label>
         <select value={goal} onChange={(e) => setGoal(e.target.value)}>
-        {goalOptions.map((goalOption: any) =>(
+          {goalOptions.map((goalOption: any) => (
             <option key={goalOption.index} value={goalOption.index}>
               {goalOption.data}
             </option>
@@ -79,9 +89,10 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
         onChange={(e) => setNotes(e.target.value)}
       />
 
+      {errorMessage && <Error>{errorMessage}</Error>}
       <div className="button-group">
         <Button onClick={onPrevious} text="이전" color="sub" />
-        <Button onClick={onNext} text="다음" color="main" />
+        <Button onClick={handleNext} text="다음" color="main" />
       </div>
     </Container>
   );
@@ -119,4 +130,10 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
   }
+`;
+
+const Error = styled.div`
+  color: red;
+  font-size: 14px;
+  margin-top: -10px;
 `;

@@ -10,4 +10,5 @@ urlpatterns = [
     path('delivery/', views.get_delivery_options.as_view(), name='delivery'),
     path('detail/', views.get_client_info.as_view(), name='client_info'),
     path('bia/', views.add_bia.as_view(), name='bia'),
+    path('address/', views.get_address_info.as_view(), name='address'),
 ]

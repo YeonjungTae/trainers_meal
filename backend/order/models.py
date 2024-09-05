@@ -428,6 +428,7 @@ Note
 """   
 class Order(models.Model):
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '주문 고유 ID')
+    amount = models.IntegerField(verbose_name = '총 결제 금액', default=0)
     is_pickup = models.BooleanField(default=False, verbose_name = '픽업 유무')
     delivery_dt = models.DateField(verbose_name = '배송일자')
     create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '신청일자')
@@ -539,7 +540,6 @@ class Payment(models.Model):
         EXPIRED = 7, '시간 초과'
         
     payment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '결제 고유 ID')
-    amount = models.IntegerField(verbose_name = '총 결제 금액')
     status = models.IntegerField(choices=Status.choices, null=True, verbose_name = '결제 처리 상태')
     toss_order_id = models.CharField(max_length=100, verbose_name = '토스 주문 ID')
     customer_key = models.CharField(max_length=100, null=True, verbose_name = '고객 KEY (정기 결제)')
@@ -552,20 +552,7 @@ class Payment(models.Model):
         db_table = 'payment'
     
     def __str__(self):
-        return '결제 상태: ' + str(self.status) + ', 금액: ' + str(self.amount) + ', 결제 요청일: ' + str(self.request_dt)
-
-class Menu_Image(models.Model):
-    menu_image_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '메뉴 사진 고유 ID')
-    title = models.CharField(unique=True, max_length=50, null=True)
-    image = models.ImageField(upload_to='menu_image', blank=True)
-    create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '등록일자')
-    update_dt = models.DateTimeField(auto_now=True, verbose_name = '수정일자')
-
-    class Meta:
-        db_table = 'menu_image'
-    
-    def __str__(self):
-        return '사진 제목: ' + self.title
+        return '결제 상태: ' + str(self.status) + ', 결제 요청일: ' + str(self.request_dt)
 
 class Add_Pro(models.Model):
     add_pro_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '추가 단백질 고유 ID')

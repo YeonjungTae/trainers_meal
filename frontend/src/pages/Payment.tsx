@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { main, sub } from "../styles/color";
 
 const Payment: React.FC = () => {
   const navigate = useNavigate();
@@ -13,19 +14,17 @@ const Payment: React.FC = () => {
     deliveryType: string;
   } | null;
 
-  // state가 없거나 필수 데이터가 없을 경우 처리
   if (!state || !state.clientId) {
     alert("잘못된 접근입니다. 처음부터 다시 시도해주세요.");
     return null;
   }
 
   const { totalPrice, clientId } = state;
-
   const [paymentType, setPaymentType] = useState<number>(0); // 0: 일반결제, 1: 정기결제
 
   const handlePayment = async () => {
     try {
-      if(paymentType === 0) {
+      if (paymentType === 0) {
         // 결제가 성공적으로 생성되면 결제 확인 페이지로 이동
         navigate("/normal-payment", {
           state: {
@@ -54,12 +53,14 @@ const Payment: React.FC = () => {
 
   return (
     <Container>
-      <h1>결제 선택</h1>
-      <div className="summary">
+      <div className="header">
+        <h1>결제 선택</h1>
+      </div>
+      <div className="summary-box">
         <h2>주문 요약</h2>
         <div className="total">
           <p>총 금액</p>
-          <p>{totalPrice.toLocaleString()}원</p>
+          <p className="price">{totalPrice.toLocaleString()}원</p>
         </div>
       </div>
       <div className="payment-type">
@@ -85,7 +86,7 @@ const Payment: React.FC = () => {
       <div className="button-wrapper">
         <button onClick={handlePayment}>결제하기</button>
       </div>
-      <div className="payment-widget"/>
+      <div className="payment-widget" />
     </Container>
   );
 };
@@ -96,64 +97,80 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 400px;
   padding: 20px;
-  max-width: 600px;
   margin: 0 auto;
-  height: 100vh;
-  box-sizing: border-box;
 
-  h1 {
-    margin-bottom: 20px;
-    font-size: 28px;
+  .header {
+    margin-bottom: 40px;
+    h1 {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      color: #343a40;
+    }
   }
 
-  .summary {
+  .summary-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
     width: 100%;
     margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     h2 {
-      font-size: 22px;
-      margin-bottom: 10px;
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #495057;
     }
 
     .total {
       display: flex;
       justify-content: space-between;
-      padding: 15px 0;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
+      color: #343a40;
+
+      .price {
+        color: ${main};
+        font-size: 22px;
+      }
     }
   }
 
   .payment-type {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 30px;
 
     label {
       font-size: 18px;
-      margin-right: 20px;
+      display: flex;
+      align-items: center;
 
       input {
-        margin-right: 8px;
+        margin-right: 10px;
       }
     }
   }
 
   .button-wrapper {
-    margin-top: 20px;
     width: 100%;
     display: flex;
     justify-content: center;
 
     button {
       padding: 15px 30px;
-      font-size: 18px;
-      background-color: #007bff;
+      font-size: 20px;
       color: white;
+      background: ${sub};
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
   }
 `;
