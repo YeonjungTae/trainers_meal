@@ -76,3 +76,11 @@ class get_address_info(APIView):
             return Response(result)
         except:
             raise ValueError('주소 데이터를 얻는 데에 실패하였습니다.')
+        
+    def post(self, request):
+        try:
+            ClientClass.add_address(request)
+            return Response('주소 데이터를 추가하는 데에 성공하였습니다.')
+        
+        except:
+            raise ValueError('주소 데이터를 추가하는 데에 실패하였습니다.')

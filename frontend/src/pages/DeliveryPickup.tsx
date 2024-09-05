@@ -66,7 +66,7 @@ const DeliveryPickup: React.FC = () => {
         entryPassword,
       };
 
-      await apiClient.post(`/client/address`, payload);
+      await apiClient.post(`/client/address/`, payload);
       alert("주소가 성공적으로 저장되었습니다.");
       setIsAddressModalOpen(false);
     } catch (error) {
