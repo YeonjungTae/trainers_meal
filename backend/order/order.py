@@ -20,7 +20,9 @@ class OrderClass:
         meal_cnt = request.data['mealCount']
         meal_list = request.data['selectedMeals']
 
-        order_data = Order.objects.create(is_pickup=False, delivery_dt=datetime.today(), create_dt=datetime.today(), client_id=client_id)
+        amount = 132000 * int(meal_cnt)
+
+        order_data = Order.objects.create(amount=amount, is_pickup=False, delivery_dt=datetime.today(), create_dt=datetime.today(), client_id=client_id)
 
         for idx, meal_id in enumerate(meal_list):
             base_info = BaseInfo.objects.filter(is_default=True, meal=meal_id)
@@ -35,7 +37,7 @@ class OrderClass:
             
             week_info.save()
         
-        week_info.save()
+        order_data.save()
 
     def get_meal_list(request):
         client_id = request.GET.get('clientId')
@@ -68,6 +70,8 @@ class OrderClass:
             for index, order in enumerate(order_detail):
                 data = {}
                 nutrients = {}
+                block = {}
+                add_block = {}
                 data['id'] = str(order.order_detail_id)
                 data['day'] = index
                 data['menu_name'] = str(order.pro_util.name_tag) + ' ' + str(order.veg_util.name_tag) + ' ' + str(order.base_util.name_tag)
@@ -78,6 +82,39 @@ class OrderClass:
                 nutrients['sodium'] = str(order.base_util.nutrients.sodium + order.pro_util.nutrients.sodium + order.veg_util.nutrients.sodium + order.flavor_util.nutrients.sodium)
                 nutrients['sugar'] = str(order.base_util.nutrients.sugar + order.pro_util.nutrients.sugar + order.veg_util.nutrients.sugar + order.flavor_util.nutrients.sugar)
                 data['nutrients'] = nutrients
+                block['base'] = {'id': str(order.base_util.base_util_id), 'name': order.base_util.block_name}
+                block['protein'] = {'id': str(order.pro_util.pro_util_id), 'name': order.pro_util.block_name}
+                block['veg'] = {'id': str(order.veg_util.veg_util_id), 'name': order.veg_util.block_name}
+                block['flavor'] = {'id': str(order.flavor_util.flavor_util_id), 'name': order.flavor_util.block_name}
+                data['block'] = block
+
+                try:
+                    if Add_Pro.objects.filter(order_detail=order).exists():
+                        add_protein = Add_Pro.objects.filter(order_detail=order)
+                        for index, protein in enumerate(add_protein):
+                            add_block['protein' + str(index)] = {'id': str(protein.pro_util.pro_util_id), 'name': protein.pro_util.block_name}
+                            add_money += protein.pro_util.price
+                except:
+                    pass
+
+                try:
+                    if Add_Veg.objects.filter(order_detail=order).exists():
+                        add_vegetables = Add_Veg.objects.filter(order_detail=order)
+                        for index, vegetables in enumerate(add_vegetables):
+                            add_block['veg' + str(index)] = {'id': str(vegetables.veg_util.veg_util_id), 'name': vegetables.veg_util.block_name}
+                            add_money += vegetables.veg_util.price
+                except:
+                    pass
+
+                try:
+                    if Add_Flavor.objects.filter(order_detail=order).exists():
+                        add_flavor = Add_Flavor.objects.filter(order_detail=order).first()
+                        add_block['flavor'] = {'id': str(add_flavor.flavor_util.flavor_util_id), 'name': add_flavor.flavor_util.block_name}
+                        add_money += add_flavor.flavor_util.price
+                except:
+                    pass
+                    
+                data['add_block'] = add_block
                 data['price'] = order.base_util.price.selling_price + order.pro_util.price.selling_price + order.veg_util.price.selling_price + order.flavor_util.price.selling_price + add_money
                 
                 week_dict.append(data)
