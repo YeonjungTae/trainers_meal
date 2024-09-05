@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { useEffect, useState, ChangeEvent } from "react";
-=======
-import { useState, useEffect, ChangeEvent } from "react";
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { apiClient } from "../api";
@@ -19,23 +15,6 @@ const Bia: React.FC = () => {
   const navigate = useNavigate();
   const clientId = useParams().id;
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const fetchBodyInfo = async () => {
-      try {
-        const response = await apiClient.get(`client/bia/?client_id=${clientId}`);
-        setWeight(JSON.parse(response.data).weight)
-        setMuscleMass(JSON.parse(response.data).muscleMass)
-        setBodyFatMass(JSON.parse(response.data).bodyFatMass)
-        setBodyFatPercentage(JSON.parse(response.data).bodyFatPercentage)
-      } catch (error) {
-        console.error("Error fetching member details:", error);
-        alert("회원 정보를 가져오는데 실패했습니다.");
-      }
-    };
-    fetchBodyInfo();
-  }, []);
-=======
   // 기존 데이터를 불러오는 함수
   useEffect(() => {
     const fetchBodyCompositionData = async () => {
@@ -80,7 +59,6 @@ const Bia: React.FC = () => {
     const onlyNumbers = value.replace(/[^0-9.]/g, "");
     setValue(onlyNumbers);
   };
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
 
   const handleWeightChange = (e: ChangeEvent<HTMLInputElement>) => {
     handleNumberInput(e, setWeight);

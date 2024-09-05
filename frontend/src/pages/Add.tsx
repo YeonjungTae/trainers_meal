@@ -65,10 +65,6 @@ const Add: React.FC = () => {
       const response = await apiClient.post("/client/add", formData);
       console.log("서버 응답:", response.data);
       alert("회원 등록이 성공적으로 완료되었습니다.");
-<<<<<<< HEAD
-
-=======
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
       navigate("/", { replace: true });
     } catch (error) {
       console.error("회원 등록 실패:", error);

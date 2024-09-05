@@ -6,6 +6,9 @@ import Button from "../components/ui/Button";
 import styled from "styled-components";
 import { main } from "../styles/color";
 
+const DELIVERY_THRESHOLD = 264000;
+const DELIVERY_FEE = 16000;
+
 const DeliveryPickup: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,9 +30,6 @@ const DeliveryPickup: React.FC = () => {
   const [isAddressFetched, setIsAddressFetched] = useState<boolean>(false); // 주소 정보가 있는지 여부
   const [isAddressRequired, setIsAddressRequired] = useState<boolean>(false); // 주소가 필요한지 여부
 
-  const DELIVERY_THRESHOLD = 264000;
-  const DELIVERY_FEE = 16000;
-
   // 주소 정보를 서버에서 가져오는 함수
   useEffect(() => {
     const fetchAddressInfo = async () => {
@@ -37,17 +37,19 @@ const DeliveryPickup: React.FC = () => {
         const response = await apiClient.get(
           `/client/address?client_id=${state.clientId}`
         );
-        const { address, detailAddress, deliveryMessage, entryMethod, entryPassword } = JSON.parse(response.data);
+        const { address, detailAddress } = JSON.parse(response.data);
+
+        // 주소와 상세 주소의 존재 여부만 확인하여 상태 업데이트
         if (address && detailAddress) {
           setAddress(address);
           setDetailAddress(detailAddress);
-          setDeliveryMessage(deliveryMessage || "");
-          setEntryMethod(entryMethod || 0);
-          setEntryPassword(entryPassword || "");
-          setIsAddressFetched(true); // 주소 정보가 있으면 true로 설정
+          setIsAddressFetched(true); // 주소 정보가 있을 때 true
+        } else {
+          setIsAddressFetched(false); // 주소 정보가 없을 때 false
         }
       } catch (error) {
         console.error("주소 정보를 불러오는 데 실패했습니다:", error);
+        setIsAddressFetched(false); // 오류 발생 시 주소 정보가 없다고 간주
       }
     };
 
@@ -69,6 +71,7 @@ const DeliveryPickup: React.FC = () => {
       await apiClient.post(`/client/address/`, payload);
       alert("주소가 성공적으로 저장되었습니다.");
       setIsAddressModalOpen(false);
+      setIsAddressFetched(true); // 주소가 저장되면 결제 가능하게 업데이트
     } catch (error) {
       console.error("주소 저장 실패:", error);
       // alert("주소를 저장하는 데 실패했습니다. 다시 시도해주세요.");
@@ -92,7 +95,12 @@ const DeliveryPickup: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (isAddressRequired && (!address || !detailAddress)) {
+    // 배송이 선택되었을 때 주소 정보가 없으면 주소 입력 요청
+    if (
+      isAddressRequired &&
+      !isAddressFetched &&
+      (!address || !detailAddress)
+    ) {
       alert("배송지 정보를 입력해주세요.");
       return;
     }
@@ -121,7 +129,7 @@ const DeliveryPickup: React.FC = () => {
         >
           <h2>배송</h2>
           {state.totalPrice < DELIVERY_THRESHOLD && (
-            <p className="delivery-fee-info">+ 16,000원</p>
+            <p className="delivery-fee-info">+ {DELIVERY_FEE}원</p>
           )}
           <p>집 앞으로 배송을 받아보세요.</p>
         </div>
