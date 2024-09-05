@@ -92,7 +92,6 @@ class ClientClass:
             Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id, update_dt=new_client.update_dt)
 
     def add_bia(request):
-        print(request.data)
         client_id = request.data['clientId']
         weight = round(float(request.data['weight']), 2)
         skeletal_muscle = round(float(request.data['muscleMass']), 2)
