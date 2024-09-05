@@ -45,7 +45,7 @@ ROOT_URLCONF = "config.urls"
 # ALLOWED_HOSTS = ['15.165.56.1', 'localhost']
 # CSRF_TRUSTED_ORIGINS = ['http://15.165.56.1:8000/', 'http://15.165.56.1:3000/']
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['http://*']
+CSRF_TRUSTED_ORIGINS = ['http://*', '*']
 
 WSGI_APPLICATION = "config.wsgi.application"
 
