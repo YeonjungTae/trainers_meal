@@ -42,7 +42,6 @@ class OrderClass:
 
         order_data = Order.objects.filter(client_id=client_id).order_by('-create_dt').first()
         week_info = Order_Week.objects.filter(order_id=order_data.order_id)
-        images = Menu_Image.objects.all().values_list('title', flat=True)
 
         result = []
         for idx, week in enumerate(week_info):
@@ -70,17 +69,6 @@ class OrderClass:
                 data = {}
                 nutrients = {}
                 data['id'] = str(order.order_detail_id)
-                server_url = 'http://15.165.56.1:8000/media/menu_image/'
-                data['src'] = server_url + 'default.jpg'
-
-                title = str(order.pro_util.name_tag.strip() + order.veg_util.name_tag.strip() + order.base_util.name_tag.strip()).replace(' ', '')
-
-                for img in images:
-                    img_title = unicodedata.normalize('NFD',img.strip())
-                    meal_name = unicodedata.normalize('NFD',title.strip())
-                    if img_title == meal_name:
-                        data['src'] = server_url + meal_name + '.png'
-
                 data['day'] = index
                 data['menu_name'] = str(order.pro_util.name_tag) + ' ' + str(order.veg_util.name_tag) + ' ' + str(order.base_util.name_tag)
                 nutrients['calories'] = str(order.base_util.nutrients.calories + order.pro_util.nutrients.calories + order.veg_util.nutrients.calories + order.flavor_util.nutrients.calories)
@@ -215,8 +203,7 @@ class OrderClass:
         delivery_dt = request.data['deliveryDate']
 
         order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
-        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt)
-        Payment.objects.create(amount=amount, toss_order_id='', payment_key='', request_dt=datetime.today(), order_id=order_id)
+        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, amount=amount)
 
     import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
