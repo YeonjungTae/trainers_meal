@@ -35,13 +35,15 @@ const DeliveryPickup: React.FC = () => {
     const fetchAddressInfo = async () => {
       try {
         const response = await apiClient.get(
-          `/client/address/${state.clientId}`
+          `/client/address?client_id=${state.clientId}`
         );
-        const { address, detailAddress, deliveryMessage } = response.data;
+        const { address, detailAddress, deliveryMessage, entryMethod, entryPassword } = JSON.parse(response.data);
         if (address && detailAddress) {
           setAddress(address);
           setDetailAddress(detailAddress);
           setDeliveryMessage(deliveryMessage || "");
+          setEntryMethod(entryMethod || 0);
+          setEntryPassword(entryPassword || "");
           setIsAddressFetched(true); // 주소 정보가 있으면 true로 설정
         }
       } catch (error) {
