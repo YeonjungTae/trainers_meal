@@ -45,11 +45,7 @@ class ClientClass:
         notes = request.data['notes']
         update_dt = datetime.today()
 
-<<<<<<< HEAD
-        new_client = Client.objects.create(name=name, contact=phone, gender=gender, birth=birthdate, height=height, activity=activity, goal=goal, memo=notes, is_subscribed=False, create_dt=datetime.today(), update_dt=datetime.today(), trainer_id=decode['trainer_id'])
-=======
         new_client = Client.objects.create(name=name, contact=phone, gender=gender, birth=birthdate, height=height, activity=activity, goal=goal, memo=notes, is_subscribed=False, create_dt=update_dt, update_dt=update_dt, trainer_id=decode['trainer_id'])
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
 
         if request.data['weight'] or request.data['muscleMass'] or request.data['bodyFatMass'] or request.data['bodyFatPercentage']:
             if request.data['weight']:
@@ -71,10 +67,6 @@ class ClientClass:
 
             Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=new_client.update_dt, client_id=new_client.client_id)
 
-<<<<<<< HEAD
-        
-=======
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
         if request.data['address'] or request.data['detailAddress'] or request.data['deliveryMessage'] or request.data['entryMethod']:
             if request.data['address']:
                 address = request.data['address']
@@ -97,19 +89,6 @@ class ClientClass:
             else:
                 entryPassword = 0
 
-<<<<<<< HEAD
-            Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id)
-
-    def add_bia(request):
-        client_id = request.data['clientId']
-        if request.data['weight'] != '0' and request.data['muscleMass'] != '0' and request.data['bodyFatMass'] != '0' and request.data['bodyFatPercentage'] != '0':
-            weight = round(float(request.data['weight']), 2)
-            skeletal_muscle = round(float(request.data['muscleMass']), 2)
-            body_fat = round(float(request.data['bodyFatMass']), 2)
-            body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
-
-            Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=datetime.today(), client_id=client_id)
-=======
             Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id, update_dt=new_client.update_dt)
 
     def add_bia(request):
@@ -137,4 +116,3 @@ class ClientClass:
         
         Delivery.objects.filter(client_id=client_id).update(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock_type=entryMethod, doorlock=entryPassword, update_dt=update_dt)
         Client.objects.filter(client_id=client_id).update(update_dt=update_dt)
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
