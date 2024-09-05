@@ -50,21 +50,6 @@ class OrderClass:
             order_detail = Order_Detail.objects.filter(order_week_id=week.order_week_id).order_by('day')
             add_money = 0
 
-            if Add_Pro.objects.filter(order_detail=order_detail.values_list('order_detail_id', flat=True).first()).exists():
-                add_pro_info = Add_Pro.objects.filter(order_detail=order_detail)
-                for add_pro in add_pro_info:
-                    add_money += add_pro.pro_util.price.selling_price
-
-            if Add_Veg.objects.filter(order_detail=order_detail.values_list('order_detail_id', flat=True).first()).exists():
-                add_veg_info = Add_Veg.objects.filter(order_detail=order_detail)
-                for add_veg in add_veg_info:
-                    add_money += add_veg.veg_util.price.selling_price
-
-            if Add_Flavor.objects.filter(order_detail=order_detail.values_list('order_detail_id', flat=True).first()).exists():
-                add_flavor_info = Add_Flavor.objects.filter(order_detail=order_detail)
-                for add_flavor in add_flavor_info:
-                    add_money += add_flavor.flavor_util.price.selling_price
-
             week_dict = []
 
             for index, order in enumerate(order_detail):
