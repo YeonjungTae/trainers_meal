@@ -203,8 +203,7 @@ class OrderClass:
         delivery_dt = request.data['deliveryDate']
 
         order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
-        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt)
-        Payment.objects.create(amount=amount, toss_order_id='', payment_key='', request_dt=datetime.today(), order_id=order_id)
+        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, amount=amount)
 
     import ssl
     ssl._create_default_https_context = ssl._create_unverified_context
