@@ -19,7 +19,7 @@ const Add: React.FC = () => {
   const [phone, setPhone] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [detailAddress, setDetailAddress] = useState<string>("");
-  const [gender, setGender] = useState<string>("남");
+  const [gender, setGender] = useState<string>("");
   const [birthdate, setBirthdate] = useState<string>("");
   const [height, setHeight] = useState<string>("");
   const [weight, setWeight] = useState<string>("");
@@ -36,7 +36,8 @@ const Add: React.FC = () => {
   const navigate = useNavigate();
 
   const submitForm = async () => {
-    const formData = {
+    // 항상 포함되어야 하는 필드
+    const formData: any = {
       tokenData,
       name,
       phone,
@@ -44,24 +45,30 @@ const Add: React.FC = () => {
       birthdate,
       height,
       weight,
-      muscleMass,
-      bodyFatMass,
-      bodyFatPercentage,
-      activityLevel,
       goal,
-      notes,
-      address,
-      detailAddress,
-      deliveryMessage,
-      entryMethod,
-      entryPassword: entryMethod === 0 ? entryPassword : null,
+      activityLevel,
     };
 
+    // 값이 있을 때만 추가할 필드들
+    if (muscleMass) formData.muscleMass = muscleMass;
+    if (bodyFatMass) formData.bodyFatMass = bodyFatMass;
+    if (bodyFatPercentage) formData.bodyFatPercentage = bodyFatPercentage;
+    if (notes) formData.notes = notes;
+    if (address) formData.address = address;
+    if (detailAddress) formData.detailAddress = detailAddress;
+    if (deliveryMessage) formData.deliveryMessage = deliveryMessage;
+    if (entryMethod !== null) formData.entryMethod = entryMethod;
+    if (entryMethod === 0 && entryPassword)
+      formData.entryPassword = entryPassword;
+
     try {
-      const response = await apiClient.post("/client/add/", formData);
+      const response = await apiClient.post("/client/add", formData);
       console.log("서버 응답:", response.data);
       alert("회원 등록이 성공적으로 완료되었습니다.");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
       navigate("/", { replace: true });
     } catch (error) {
       console.error("회원 등록 실패:", error);
