@@ -100,8 +100,7 @@ class OrderClass:
                     pass
                     
                 data['add_block'] = add_block
-                data['price'] = order.base_util.price.selling_price + order.pro_util.price.selling_price + order.veg_util.price.selling_price + order.flavor_util.price.selling_price + add_money
-                
+                data['totalPrice'] = order_data.amount + add_money
                 week_dict.append(data)
 
             result.append(week_dict)
