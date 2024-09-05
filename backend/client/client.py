@@ -31,6 +31,8 @@ class ClientClass:
     def add_client(request):
         token = bytes(request.data['tokenData'], 'utf-8')
         decode = jwt.decode(token, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithms=["HS256"])
+
+        print(request.data)
         
         name = request.data['name']
         phone = int(str(request.data['phone']).replace('-', ''))
@@ -42,12 +44,15 @@ class ClientClass:
             height = float(0)
         activity = request.data['activityLevel']
         goal = request.data['goal']
-        notes = request.data['notes']
+        try:
+            notes = request.data['notes']
+        except:
+            notes = ''
         update_dt = datetime.today()
 
         new_client = Client.objects.create(name=name, contact=phone, gender=gender, birth=birthdate, height=height, activity=activity, goal=goal, memo=notes, is_subscribed=False, create_dt=update_dt, update_dt=update_dt, trainer_id=decode['trainer_id'])
 
-        if request.data['weight'] or request.data['muscleMass'] or request.data['bodyFatMass'] or request.data['bodyFatPercentage']:
+        try:
             if request.data['weight']:
                 weight = round(float(request.data['weight']), 2)
             else:
@@ -66,8 +71,11 @@ class ClientClass:
                 body_fat_ratio = float(0)
 
             Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=new_client.update_dt, client_id=new_client.client_id)
+        except:
+            print('No Body Data')
 
-        if request.data['address'] or request.data['detailAddress'] or request.data['deliveryMessage'] or request.data['entryMethod']:
+
+        try:
             if request.data['address']:
                 address = request.data['address']
             else:
@@ -90,6 +98,8 @@ class ClientClass:
                 entryPassword = 0
 
             Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id, update_dt=new_client.update_dt)
+        except:
+            print('No Delivery Data')
 
     def add_bia(request):
         client_id = request.data['clientId']
