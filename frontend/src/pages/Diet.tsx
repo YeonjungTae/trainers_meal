@@ -48,7 +48,6 @@ const Diet: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(state?.totalPrice || 0);
 
-  // 요일 숫자를 요일 이름으로 변환하는 함수
   const getDayName = (day: number | string): string => {
     const days = ["월", "화", "수", "목", "금", "토"];
     const dayIndex = typeof day === "string" ? parseInt(day, 10) : day;
@@ -57,7 +56,6 @@ const Diet: React.FC = () => {
       : "Invalid Day";
   };
 
-  // 메뉴를 가져오는 함수
   const fetchMenus = async () => {
     try {
       const response = await apiClient.get(
@@ -73,8 +71,8 @@ const Diet: React.FC = () => {
         });
 
         // 서버에서 총 금액을 받아오는 경우 설정
-        if (menus[0][0]['totalPrice']) {
-          setTotalPrice(menus[0][0]['totalPrice']);
+        if (menus[0][0]["totalPrice"]) {
+          setTotalPrice(menus[0][0]["totalPrice"]);
         } else {
           setTotalPrice(0);
         }
@@ -179,31 +177,26 @@ const Diet: React.FC = () => {
                 {/* 예시: 블록 정보 표시 */}
                 {menu.block && (
                   <>
-                    <p>베이스 블록: {menu.block.base.name}</p>
-                    <p>단백질 블록: {menu.block.protein.name}</p>
-                    <p>채소 블록: {menu.block.veg.name}</p>
-                    <p>플레이버 블록: {menu.block.flavor.name}</p>
+                    <p> {menu.block.base.name}</p>
+                    <p>{menu.block.protein.name}</p>
+                    <p> {menu.block.veg.name}</p>
+                    <p>{menu.block.flavor.name}</p>
                   </>
                 )}
               </div>
               <div className="add-info">
-                {/* 예시: 추가 블록 정보 표시 */}
                 {menu.add_block && (
                   <>
                     {menu.add_block.protein1 && (
-                      <p>✚ 추가 단백질 블록1: {menu.add_block.protein1.name}</p>
+                      <p>✚ {menu.add_block.protein1.name}</p>
                     )}
                     {menu.add_block.protein2 && (
-                      <p>✚ 추가 단백질 블록2: {menu.add_block.protein2.name}</p>
+                      <p>✚ {menu.add_block.protein2.name}</p>
                     )}
-                    {menu.add_block.veg1 && (
-                      <p>✚ 추가 채소 블록1: {menu.add_block.veg1.name}</p>
-                    )}
-                    {menu.add_block.veg2 && (
-                      <p>✚ 추가 채소 블록2: {menu.add_block.veg2.name}</p>
-                    )}
+                    {menu.add_block.veg1 && <p>✚ {menu.add_block.veg1.name}</p>}
+                    {menu.add_block.veg2 && <p>✚ {menu.add_block.veg2.name}</p>}
                     {menu.add_block.flavor && (
-                      <p>✚ 추가 플레이버 블록: {menu.add_block.flavor.name}</p>
+                      <p>✚ {menu.add_block.flavor.name}</p>
                     )}
                   </>
                 )}

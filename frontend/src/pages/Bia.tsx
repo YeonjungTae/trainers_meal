@@ -11,7 +11,7 @@ const Bia: React.FC = () => {
   const [bodyFatMass, setBodyFatMass] = useState<string>("");
   const [bodyFatPercentage, setBodyFatPercentage] = useState<string>("");
   const [biaData, setBiaData] = useState<any>(null);
-  const [isFormValid, setIsFormValid] = useState<boolean>(false); // 버튼 활성화 상태
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const navigate = useNavigate();
   const clientId = useParams().id;
 
@@ -99,16 +99,16 @@ const Bia: React.FC = () => {
           {biaData ? (
             <>
               <p>
-                <strong>체중:</strong> {biaData.weight}kg
+                <strong>체중</strong> {biaData.weight}kg
               </p>
               <p>
-                <strong>골격근량:</strong> {biaData.muscleMass}kg
+                <strong>골격근량</strong> {biaData.muscleMass}kg
               </p>
               <p>
-                <strong>체지방량:</strong> {biaData.bodyFatMass}kg
+                <strong>체지방량</strong> {biaData.bodyFatMass}kg
               </p>
               <p>
-                <strong>체지방률:</strong> {biaData.bodyFatPercentage}%
+                <strong>체지방률</strong> {biaData.bodyFatPercentage}%
               </p>
             </>
           ) : (

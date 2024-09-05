@@ -74,7 +74,6 @@ const DeliveryPickup: React.FC = () => {
       setIsAddressFetched(true); // 주소가 저장되면 결제 가능하게 업데이트
     } catch (error) {
       console.error("주소 저장 실패:", error);
-      // alert("주소를 저장하는 데 실패했습니다. 다시 시도해주세요.");
     }
   };
 
