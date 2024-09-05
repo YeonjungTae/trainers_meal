@@ -109,7 +109,10 @@ class ClientClass:
         detailAddress = request.data['detailAddress']
         deliveryMessage = request.data['deliveryMessage']
         entryMethod = request.data['entryMethod']
-        entryPassword = request.data['entryPassword']
+        if request.data['entryPassword'] == '':
+            entryPassword = 0
+        else:
+            entryPassword = request.data['entryPassword']
         update_dt = datetime.today()
         
         Delivery.objects.filter(client_id=client_id).update(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock_type=entryMethod, doorlock=entryPassword, update_dt=update_dt)
