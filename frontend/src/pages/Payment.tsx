@@ -24,7 +24,7 @@ const Payment: React.FC = () => {
 
   const handlePayment = async () => {
     try {
-      if(paymentType === 0) {
+      if (paymentType === 0) {
         // 결제가 성공적으로 생성되면 결제 확인 페이지로 이동
         navigate("/normal-payment", {
           state: {
