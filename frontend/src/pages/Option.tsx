@@ -22,6 +22,7 @@ const Option: React.FC = () => {
     mealId: string;
     tabIndex: number;
     menuIndex: number;
+    menuId: string;
     menuName: string;
     blockIds: {
       base?: string;
@@ -193,6 +194,8 @@ const Option: React.FC = () => {
         clientId: state?.clientId,
         tabIndex: state?.tabIndex,
         menuIndex: state?.menuIndex,
+        menuId: state?.menuId,
+        menuName: state?.menuName,
         selectedBase,
         selectedProtein,
         selectedVeg,

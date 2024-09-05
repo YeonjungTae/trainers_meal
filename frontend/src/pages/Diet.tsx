@@ -121,6 +121,7 @@ const Diet: React.FC = () => {
         menuIndex,
         mealId: state?.selectedMeals,
         clientId: state?.clientId,
+        menuId: selectedMenu.id,
         menuName: selectedMenu.menu_name,
         blockIds: {
           base: selectedMenu.block?.base.id,

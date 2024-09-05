@@ -77,7 +77,7 @@ class OrderClass:
                     if Add_Pro.objects.filter(order_detail=order).exists():
                         add_protein = Add_Pro.objects.filter(order_detail=order)
                         for index, protein in enumerate(add_protein):
-                            add_block['protein' + str(index)] = {'id': str(protein.pro_util.pro_util_id), 'name': protein.pro_util.block_name}
+                            add_block['protein' + str(index+1)] = {'id': str(protein.pro_util.pro_util_id), 'name': protein.pro_util.block_name}
                             add_money += protein.pro_util.price
                 except:
                     pass
@@ -86,7 +86,7 @@ class OrderClass:
                     if Add_Veg.objects.filter(order_detail=order).exists():
                         add_vegetables = Add_Veg.objects.filter(order_detail=order)
                         for index, vegetables in enumerate(add_vegetables):
-                            add_block['veg' + str(index)] = {'id': str(vegetables.veg_util.veg_util_id), 'name': vegetables.veg_util.block_name}
+                            add_block['veg' + str(index+1)] = {'id': str(vegetables.veg_util.veg_util_id), 'name': vegetables.veg_util.block_name}
                             add_money += vegetables.veg_util.price
                 except:
                     pass
@@ -188,8 +188,11 @@ class OrderClass:
     
     def edit_order_list(request):
         client_id = request.data['clientId']
-        week_info = request.data['tabIndex']
-        day_info = request.data['menuIndex']
+        order_detail_id = request.data['menuId']
+
+        order_detail = Order_Detail.objects.get(order_detail_id=order_detail_id)
+        order = Order.objects.get(order_id=order_detail.order_week.order.order_id)
+
         selectedBase = request.data['selectedBase']
         selectedProtein = request.data['selectedProtein']
         selectedVeg = request.data['selectedVeg']
@@ -198,24 +201,51 @@ class OrderClass:
         additionalVeg = request.data['additionalVeg']
         additionalFlavor = request.data['additionalFlavor']
 
-        order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
-        order_week_info = Order_Week.objects.filter(week=week_info, order=order_id).values_list('order_week_id', flat=True).first()
-        order_detail_info = Order_Detail.objects.filter(day=day_info, order_week=order_week_info)
+        addedPrice = request.data['addedCost']
+
+        # 초기화
+        cnt = len(Order_Week.objects.filter(order_id=order.order_id))
+        if cnt == 2:
+            order_detail.order_week.order.amount = 132000
+        else:
+            order_detail.order_week.order.amount = 132000 * 2
+
+        try:
+            Add_Pro.objects.filter(order_detail_id=order_detail_id).delete()
+        except:
+            pass
+
+        try:
+            Add_Veg.objects.filter(order_detail_id=order_detail_id).delete()
+        except:
+            pass
+
+        try:
+            Add_Flavor.objects.filter(order_detail_id=order_detail_id).delete()
+        except:
+            pass
+
+        # 기본 메뉴 저장
+        order_detail.base_util = Base_Util.objects.get(base_util_id=selectedBase)
+        order_detail.pro_util = Pro_Util.objects.get(pro_util_id=selectedProtein)
+        order_detail.veg_util = Veg_Util.objects.get(veg_util_id=selectedVeg)
+        order_detail.flavor_util = Flavor_Util.objects.get(flavor_util_id=selectedFlavor)
+        order.amount = order_detail.order_week.order.amount + addedPrice
+        order.save()
+        order_detail.save()
         
-        if additionalProtein != None:
+        # 추가 메뉴 저장
+        if len(additionalProtein) > 0:
             for pro in additionalProtein:
-                Add_Pro.objects.create(pro_util=Pro_Util.objects.get(pro_util_id=pro), order_detail=Order_Detail.objects.get(day=day_info, order_week=order_week_info))
+                Add_Pro.objects.create(pro_util=Pro_Util.objects.get(pro_util_id=pro), order_detail_id=order_detail_id).save()
 
-        if additionalVeg != None:
+        if len(additionalVeg) > 0:
             for veg in additionalVeg:
-                Add_Veg.objects.create(veg_util=Veg_Util.objects.get(veg_util_id=veg), order_detail=Order_Detail.objects.get(day=day_info, order_week=order_week_info))
+                Add_Veg.objects.create(veg_util=Veg_Util.objects.get(veg_util_id=veg), order_detail_id=order_detail_id).save()
 
-        if additionalFlavor != None:
+        if len(additionalFlavor) > 0:
             for flavor in additionalFlavor:
-                Add_Flavor.objects.create(flavor_util=Flavor_Util.objects.get(flavor_util_id=flavor), order_detail=Order_Detail.objects.get(day=day_info, order_week=order_week_info))
-
-        order_detail_info.update(base_util=selectedBase, pro_util=selectedProtein, veg_util=selectedVeg, flavor_util=selectedFlavor)
-
+                Add_Flavor.objects.create(flavor_util=Flavor_Util.objects.get(flavor_util_id=flavor), order_detail_id=order_detail_id).save()
 
     def submit_order(request):
         client_id = request.data['clientId']
