@@ -52,54 +52,54 @@ class ClientClass:
 
         new_client = Client.objects.create(name=name, contact=phone, gender=gender, birth=birthdate, height=height, activity=activity, goal=goal, memo=notes, is_subscribed=False, create_dt=update_dt, update_dt=update_dt, trainer_id=decode['trainer_id'])
 
+        weight = round(float(request.data['weight']), 2)
         try:
-            if request.data['weight']:
-                weight = round(float(request.data['weight']), 2)
-            else:
-                weight = float(0)
             if request.data['muscleMass']:
                 skeletal_muscle = round(float(request.data['muscleMass']), 2)
-            else:
-                skeletal_muscle = float(0)
+        except:
+            skeletal_muscle = float(0)
+        
+        try:
             if request.data['bodyFatMass']:
                 body_fat = round(float(request.data['bodyFatMass']), 2)
-            else:
-                body_fat = float(0)
+        except:
+            body_fat = float(0)
+        try:
             if request.data['bodyFatPercentage']:
                 body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
-            else:
-                body_fat_ratio = float(0)
-
-            Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=new_client.update_dt, client_id=new_client.client_id)
         except:
-            print('No Body Data')
+            body_fat_ratio = float(0)
 
+        Body_Data.objects.create(weight=weight, skeletal_muscle=skeletal_muscle, body_fat=body_fat, body_fat_ratio=body_fat_ratio, update_dt=new_client.update_dt, client_id=new_client.client_id)
 
         try:
             if request.data['address']:
                 address = request.data['address']
-            else:
-                address = ''
+        except:
+            address = ''
+        try:
             if request.data['detailAddress']:
                 detailAddress = request.data['detailAddress']
-            else:
-                detailAddress = ''
+        except:
+            detailAddress = ''
+        try:
             if request.data['deliveryMessage']:
                 deliveryMessage = request.data['deliveryMessage']
-            else:
-                deliveryMessage = 0
+        except:
+            deliveryMessage = 0
+        try:
             if request.data['entryMethod']:
                 entryMethod = request.data['entryMethod']
-            else:
-                entryMethod = 2
+        except:
+            entryMethod = 2
+        try:
             if request.data['entryPassword']:
                 entryPassword = int(request.data['entryPassword'])
-            else:
-                entryPassword = 0
-
-            Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id, update_dt=new_client.update_dt)
         except:
-            print('No Delivery Data')
+            entryPassword = 0
+
+        if address != '':
+            Delivery.objects.create(address=address, address_detail=detailAddress, message=deliveryMessage, doorlock=entryPassword, doorlock_type=entryMethod, client_id=new_client.client_id, update_dt=new_client.update_dt)
 
     def add_bia(request):
         client_id = request.data['clientId']
