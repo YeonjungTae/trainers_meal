@@ -61,7 +61,7 @@ const Add: React.FC = () => {
       formData.entryPassword = entryPassword;
 
     try {
-      const response = await apiClient.post("/client/add", formData);
+      const response = await apiClient.post("/client/add/", formData);
       console.log("서버 응답:", response.data);
       alert("회원 등록이 성공적으로 완료되었습니다.");
       navigate("/", { replace: true });
