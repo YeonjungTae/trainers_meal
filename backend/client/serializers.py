@@ -108,8 +108,6 @@ def BodyInfoSerializer(client_id):
         result['muscleMass'] = str(0)
         result['bodyFatMass'] = str(0)
         result['bodyFatPercentage'] = str(0)
-<<<<<<< HEAD
-=======
 
     return json.dumps(result, ensure_ascii=False, indent=2)
 
@@ -125,6 +123,5 @@ def AddressInfoSerializer(client_id):
         if delivery_data.doorlock == 0:
             delivery_data.doorlock = ''
         result['entryPassword'] = delivery_data.doorlock
->>>>>>> 4b48b2129ae1effd3871d5616b4f1b4767432647
 
     return json.dumps(result, ensure_ascii=False, indent=2)
