@@ -167,8 +167,8 @@ const Container = styled.div`
   align-items: center;
   padding: 0;
   margin: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   max-width: 100%;
   box-sizing: border-box;
   background-color: #f5f5f5;
