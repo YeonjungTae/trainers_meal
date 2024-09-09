@@ -2,6 +2,7 @@ export interface MenuItem {
   id: string;
   day: string;
   menu_name: string;
+  totalPrice: number;
   nutrients: {
     calories: number;
     carbohydrate: number;
