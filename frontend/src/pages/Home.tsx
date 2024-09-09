@@ -211,10 +211,10 @@ const Home: React.FC = () => {
 export default Home;
 
 const Container = styled.div`
-  padding: 20px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
+  height: 100dvh;
+  padding: 20px;
 
   .filter-search-bar {
     margin-bottom: 20px;

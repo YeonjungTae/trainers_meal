@@ -1,36 +1,21 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { apiClient } from "../api";
+import styled from "styled-components";
+import { MenuItem } from "../types";
+import BlockInfo from "../components/menu/BlockInfo";
+import Nutrients from "../components/menu/Nutrients";
+import AddBlockInfo from "../components/menu/AddBlockInfo";
 import Button from "../components/ui/Button";
 import { main, sub } from "../styles/color";
 
-interface MenuItem {
-  id: string;
-  day: string;
-  menu_name: string;
-  nutrients: {
-    calories: number;
-    carbohydrate: number;
-    protein: number;
-    fat: number;
-    sodium: number;
-    sugar: number;
-  };
-  block: {
-    base: { id: string; name: string };
-    protein: { id: string; name: string };
-    veg: { id: string; name: string };
-    flavor: { id: string; name: string };
-  };
-  add_block?: {
-    protein1?: { id: string; name: string };
-    protein2?: { id: string; name: string };
-    veg1?: { id: string; name: string };
-    veg2?: { id: string; name: string };
-    flavor?: { id: string; name: string };
-  };
-}
+const getDayName = (day: number | string): string => {
+  const days = ["월", "화", "수", "목", "금", "토"];
+  const dayIndex = typeof day === "string" ? parseInt(day, 10) : day;
+  return !isNaN(dayIndex) && dayIndex >= 0 && dayIndex <= 5
+    ? days[dayIndex]
+    : "Invalid Day";
+};
 
 const Diet: React.FC = () => {
   const location = useLocation();
@@ -48,12 +33,14 @@ const Diet: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(state?.totalPrice || 0);
 
-  const getDayName = (day: number | string): string => {
-    const days = ["월", "화", "수", "목", "금", "토"];
-    const dayIndex = typeof day === "string" ? parseInt(day, 10) : day;
-    return !isNaN(dayIndex) && dayIndex >= 0 && dayIndex <= 5
-      ? days[dayIndex]
-      : "Invalid Day";
+  const updateMenus = (menus: MenuItem[][]) => {
+    setSelectedMenus((prevMenus) => {
+      const updatedMenus = [...prevMenus];
+      updatedMenus[activeTab] = menus[activeTab];
+      return updatedMenus;
+    });
+
+    setTotalPrice(menus[0][0]?.totalPrice || 0);
   };
 
   const fetchMenus = async () => {
@@ -62,48 +49,15 @@ const Diet: React.FC = () => {
         `/order/list?clientId=${state?.clientId}`
       );
       const menus = JSON.parse(response.data);
-
       if (Array.isArray(menus)) {
-        setSelectedMenus((prevMenus) => {
-          const updatedMenus = [...prevMenus];
-          updatedMenus[activeTab] = menus[activeTab];
-          return updatedMenus;
-        });
-
-        // 서버에서 총 금액을 받아오는 경우 설정
-        if (menus[0][0]["totalPrice"]) {
-          setTotalPrice(menus[0][0]["totalPrice"]);
-        } else {
-          setTotalPrice(0);
-        }
-
-        console.log(`Menus for meal ${activeTab} fetched successfully:`, menus);
-      } else {
-        console.error("Fetched menus is not an array:", menus);
+        updateMenus(menus);
       }
     } catch (error) {
-      console.error(`Failed to fetch menus for meal ${activeTab}:`, error);
+      console.error(error);
       setTotalPrice(0);
       alert("메뉴 데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
     }
   };
-
-  useEffect(() => {
-    if (state?.updatedMenu) {
-      setSelectedMenus((prevMenus) => {
-        const updatedMenus = [...prevMenus];
-        const menuIndex = prevMenus[activeTab].findIndex(
-          (menu) => menu.id === state.updatedMenu?.id
-        );
-        if (menuIndex !== -1) {
-          updatedMenus[activeTab][menuIndex] = state.updatedMenu!;
-        }
-        return updatedMenus;
-      });
-    } else if (state?.selectedMeals) {
-      fetchMenus();
-    }
-  }, [activeTab, state?.selectedMeals, state?.updatedMenu]);
 
   const handleTabClick = (index: number) => {
     setActiveTab(index);
@@ -148,6 +102,23 @@ const Diet: React.FC = () => {
     });
   };
 
+  useEffect(() => {
+    if (state?.updatedMenu) {
+      setSelectedMenus((prevMenus) => {
+        const updatedMenus = [...prevMenus];
+        const menuIndex = prevMenus[activeTab].findIndex(
+          (menu) => menu.id === state.updatedMenu?.id
+        );
+        if (menuIndex !== -1) {
+          updatedMenus[activeTab][menuIndex] = state.updatedMenu!;
+        }
+        return updatedMenus;
+      });
+    } else if (state?.selectedMeals) {
+      fetchMenus();
+    }
+  }, [activeTab, state?.selectedMeals, state?.updatedMenu]);
+
   return (
     <Container>
       <div className="tabs">
@@ -173,70 +144,9 @@ const Diet: React.FC = () => {
               <span className="menu-name">{menu.menu_name}</span>
             </div>
             <div className="option-details">
-              <div className="block-info">
-                {/* 예시: 블록 정보 표시 */}
-                {menu.block && (
-                  <>
-                    <p> {menu.block.base.name}</p>
-                    <p>{menu.block.protein.name}</p>
-                    <p> {menu.block.veg.name}</p>
-                    <p>{menu.block.flavor.name}</p>
-                  </>
-                )}
-              </div>
-              <div className="add-info">
-                {menu.add_block && (
-                  <>
-                    {menu.add_block.protein1 && (
-                      <p>✚ {menu.add_block.protein1.name}</p>
-                    )}
-                    {menu.add_block.protein2 && (
-                      <p>✚ {menu.add_block.protein2.name}</p>
-                    )}
-                    {menu.add_block.veg1 && <p>✚ {menu.add_block.veg1.name}</p>}
-                    {menu.add_block.veg2 && <p>✚ {menu.add_block.veg2.name}</p>}
-                    {menu.add_block.flavor && (
-                      <p>✚ {menu.add_block.flavor.name}</p>
-                    )}
-                  </>
-                )}
-              </div>
-              <div className="nutrients">
-                <div className="nutrient-item">
-                  <span className="nutrient-name">칼로리</span>
-                  <span className="nutrient-value">
-                    {menu.nutrients.calories} kcal
-                  </span>
-                </div>
-                <div className="nutrient-item">
-                  <span className="nutrient-name">탄수화물</span>
-                  <span className="nutrient-value">
-                    {menu.nutrients.carbohydrate} g
-                  </span>
-                </div>
-                <div className="nutrient-item">
-                  <span className="nutrient-name">단백질</span>
-                  <span className="nutrient-value">
-                    {menu.nutrients.protein} g
-                  </span>
-                </div>
-                <div className="nutrient-item">
-                  <span className="nutrient-name">지방</span>
-                  <span className="nutrient-value">{menu.nutrients.fat} g</span>
-                </div>
-                <div className="nutrient-item">
-                  <span className="nutrient-name">나트륨</span>
-                  <span className="nutrient-value">
-                    {menu.nutrients.sodium} mg
-                  </span>
-                </div>
-                <div className="nutrient-item">
-                  <span className="nutrient-name">당</span>
-                  <span className="nutrient-value">
-                    {menu.nutrients.sugar} g
-                  </span>
-                </div>
-              </div>
+              <BlockInfo block={menu.block} />
+              <AddBlockInfo addBlock={menu.add_block} />
+              <Nutrients nutrients={menu.nutrients} />
             </div>
           </div>
         ))}
@@ -257,8 +167,8 @@ const Container = styled.div`
   align-items: center;
   padding: 0;
   margin: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100dvw;
+  height: 100dvh;
   max-width: 100%;
   box-sizing: border-box;
   background-color: #f5f5f5;
