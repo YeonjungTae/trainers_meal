@@ -117,10 +117,10 @@ class OrderClass:
         veg_info = VegInfo.objects.filter(day=day, meal_id=meal_id)
         flavor_info = FlavorInfo.objects.filter(day=day, meal_id=meal_id)
 
-        base_price = BaseInfo.objects.get(day=day, meal_id=meal_id, is_default=True).base_util.price.selling_price
-        pro_price = ProInfo.objects.get(day=day, meal_id=meal_id, is_default=True).pro_util.price.selling_price
-        veg_price = VegInfo.objects.get(day=day, meal_id=meal_id, is_default=True).veg_util.price.selling_price
-        flavor_price = FlavorInfo.objects.get(day=day, meal_id=meal_id, is_default=True).flavor_util.price.selling_price
+        base_price = BaseInfo.objects.get(day=day, meal_id=meal_id, is_default=True).base_util.price.price
+        pro_price = ProInfo.objects.get(day=day, meal_id=meal_id, is_default=True).pro_util.price.price
+        veg_price = VegInfo.objects.get(day=day, meal_id=meal_id, is_default=True).veg_util.price.price
+        flavor_price = FlavorInfo.objects.get(day=day, meal_id=meal_id, is_default=True).flavor_util.price.price
 
         result = {}
 
@@ -129,11 +129,11 @@ class OrderClass:
             data = OrderedDict()
             data['id'] = str(base.base_util.base_util_id)
             data['block_name'] = str(base.base_util.block_name)
-            difference = int(base.base_util.price.selling_price) - int(base_price)
+            difference = int(base.base_util.price.price) - int(base_price)
             if difference < 0:
                 difference = 0
             data['difference'] = difference
-            data['price'] = base.base_util.price.selling_price
+            data['price'] = base.base_util.price.price
             data['is_default'] = str(base.is_default)
             base_block.append(data)
 
@@ -144,11 +144,11 @@ class OrderClass:
             data = OrderedDict()
             data['id'] = str(pro.pro_util.pro_util_id)
             data['block_name'] = str(pro.pro_util.block_name)
-            difference = int(pro.pro_util.price.selling_price) - int(pro_price)
+            difference = int(pro.pro_util.price.price) - int(pro_price)
             if difference < 0:
                 difference = 0
             data['difference'] = difference
-            data['price'] = pro.pro_util.price.selling_price
+            data['price'] = pro.pro_util.price.price
             data['is_default'] = str(pro.is_default)
             pro_block.append(data)
 
@@ -159,11 +159,11 @@ class OrderClass:
             data = OrderedDict()
             data['id'] = str(veg.veg_util.veg_util_id)
             data['block_name'] = str(veg.veg_util.block_name)
-            difference = int(veg.veg_util.price.selling_price) - int(veg_price)
+            difference = int(veg.veg_util.price.price) - int(veg_price)
             if difference < 0:
                 difference = 0
             data['difference'] = difference
-            data['price'] = veg.veg_util.price.selling_price
+            data['price'] = veg.veg_util.price.price
             data['is_default'] = str(veg.is_default)
             veg_block.append(data)
 
@@ -174,11 +174,11 @@ class OrderClass:
             data = OrderedDict()
             data['id'] = str(flavor.flavor_util.flavor_util_id)
             data['block_name'] = str(flavor.flavor_util.block_name)
-            difference = int(flavor.flavor_util.price.selling_price) - int(flavor_price)
+            difference = int(flavor.flavor_util.price.price) - int(flavor_price)
             if difference < 0:
                 difference = 0
             data['difference'] = difference
-            data['price'] = flavor.flavor_util.price.selling_price
+            data['price'] = flavor.flavor_util.price.price
             data['is_default'] = str(flavor.is_default)
             flavor_block.append(data)
 
