@@ -2,7 +2,7 @@ from .models import *
 from client.models import Client
 from .serializers import *
 from collections import OrderedDict
-import os, jwt, json, base64,requests
+import os, jwt, json, base64,requests, math
 import unicodedata
 import http.client
 
@@ -108,6 +108,9 @@ class OrderClass:
         return json.dumps(result, ensure_ascii=False, indent=2)
     
     def get_order_option(request):
+        def round_up(n):
+            return math.ceil(n * 0.01) * 100
+            
         tab_index = int(request.GET.get('tabIndex'))
         meal_id = request.GET.get('mealId').split(',')[tab_index]
         day = int(request.GET.get('day'))
@@ -132,8 +135,8 @@ class OrderClass:
             difference = int(base.base_util.price.price) - int(base_price)
             if difference < 0:
                 difference = 0
-            data['difference'] = difference
-            data['price'] = base.base_util.price.price
+            data['difference'] = round_up(difference)
+            data['price'] = round_up(base.base_util.price.price)
             data['is_default'] = str(base.is_default)
             base_block.append(data)
 
@@ -147,8 +150,8 @@ class OrderClass:
             difference = int(pro.pro_util.price.price) - int(pro_price)
             if difference < 0:
                 difference = 0
-            data['difference'] = difference
-            data['price'] = pro.pro_util.price.price
+            data['difference'] = round_up(difference)
+            data['price'] = round_up(pro.pro_util.price.price)
             data['is_default'] = str(pro.is_default)
             pro_block.append(data)
 
@@ -162,8 +165,8 @@ class OrderClass:
             difference = int(veg.veg_util.price.price) - int(veg_price)
             if difference < 0:
                 difference = 0
-            data['difference'] = difference
-            data['price'] = veg.veg_util.price.price
+            data['difference'] = round_up(difference)
+            data['price'] = round_up(veg.veg_util.price.price)
             data['is_default'] = str(veg.is_default)
             veg_block.append(data)
 
@@ -177,8 +180,8 @@ class OrderClass:
             difference = int(flavor.flavor_util.price.price) - int(flavor_price)
             if difference < 0:
                 difference = 0
-            data['difference'] = difference
-            data['price'] = flavor.flavor_util.price.price
+            data['difference'] = round_up(difference)
+            data['price'] = round_up(flavor.flavor_util.price.price)
             data['is_default'] = str(flavor.is_default)
             flavor_block.append(data)
 
