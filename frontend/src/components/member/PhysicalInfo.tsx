@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Input from "../ui/InputComponent";
 import Button from "../ui/Button";
@@ -14,8 +15,8 @@ interface PhysicalInfoProps {
   setBodyFatMass: (value: string) => void;
   bodyFatPercentage: string;
   setBodyFatPercentage: (value: string) => void;
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 const PhysicalInfo: React.FC<PhysicalInfoProps> = ({
@@ -34,18 +35,17 @@ const PhysicalInfo: React.FC<PhysicalInfoProps> = ({
 }) => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const location = useLocation();
 
-  // 숫자만 입력되도록 필터링하는 함수
   const handleNumberInput = (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (value: string) => void
   ) => {
     const value = e.target.value;
-    const onlyNumbers = value.replace(/[^0-9.]/g, ""); // 숫자와 소수점만 허용
+    const onlyNumbers = value.replace(/[^0-9.]/g, "");
     setter(onlyNumbers);
   };
 
-  // 키와 체중이 모두 입력되었는지 확인하여 버튼 활성화 상태를 설정
   useEffect(() => {
     if (height && weight) {
       setIsFormValid(true);
@@ -58,7 +58,7 @@ const PhysicalInfo: React.FC<PhysicalInfoProps> = ({
   const handleNext = () => {
     if (!height || !weight) {
       setErrorMessage("키와 체중은 필수 입력 사항입니다.");
-    } else {
+    } else if (onNext) {
       onNext();
     }
   };
@@ -111,15 +111,17 @@ const PhysicalInfo: React.FC<PhysicalInfoProps> = ({
       </div>
 
       {errorMessage && <div className="error">{errorMessage}</div>}
-      <div className="button-group">
-        <Button onClick={onPrevious} text="이전" color="sub" />
-        <Button
-          onClick={handleNext}
-          text="다음"
-          color="main"
-          disabled={!isFormValid}
-        />
-      </div>
+      {location.pathname === "/add" && (
+        <div className="button-group">
+          <Button onClick={onPrevious} text="이전" color="sub" />
+          <Button
+            onClick={handleNext}
+            text="다음"
+            color="main"
+            disabled={!isFormValid}
+          />
+        </div>
+      )}
     </Container>
   );
 };

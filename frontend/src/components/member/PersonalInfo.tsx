@@ -13,7 +13,7 @@ interface PersonalInfoProps {
   setGender: (value: string) => void;
   birthdate: string;
   setBirthdate: (value: string) => void;
-  onNext: () => void;
+  onNext?: () => void;
 }
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({
@@ -56,7 +56,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
       setErrorMessage("모든 필드를 입력해주세요.");
     } else {
       setErrorMessage("");
-      onNext();
+      if (onNext) onNext(); // onNext가 있을 경우에만 실행
     }
   };
 
@@ -102,12 +102,14 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
         />
       </div>
       {errorMessage && <Error>{errorMessage}</Error>}
-      <Button
-        onClick={handleNext}
-        text="다음"
-        color="main"
-        disabled={!isFormValid}
-      />
+      {onNext && ( // onNext가 있을 경우에만 버튼을 렌더링
+        <Button
+          onClick={handleNext}
+          text="다음"
+          color="main"
+          disabled={!isFormValid}
+        />
+      )}
     </Container>
   );
 };
@@ -158,10 +160,6 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
-
-    label {
-      font-weight: bold;
-    }
 
     input {
       padding: 10px;
