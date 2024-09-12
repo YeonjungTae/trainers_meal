@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import { Header } from "./layout";
+import { Header } from "./layout";
 import Home from "./pages/Home";
 import Member from "./pages/Member";
 import EditMember from "./pages/EditMember";
@@ -23,7 +23,7 @@ function App() {
   return (
     <Router>
       <GlobalStyle />
-      {/* <Header /> */}
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/member/:id" element={<Member />} />

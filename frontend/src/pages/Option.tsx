@@ -213,6 +213,7 @@ const Option: React.FC = () => {
         state: {
           clientId: state?.clientId,
           selectedMeals: state?.mealId,
+          activeTab: state.tabIndex,
         },
       });
     } catch (error) {
@@ -221,10 +222,20 @@ const Option: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate("/diet", {
+      state: {
+        clientId: state.clientId,
+        selectedMeals: state.mealId,
+        activeTab: state.tabIndex,
+      },
+    });
+  };
+
   return (
     <Container>
       <div className="header">
-        <div className="back-button" onClick={() => navigate(-1)}>
+        <div className="back-button" onClick={handleBack}>
           <IoMdArrowRoundBack />
         </div>
         <h1 className="title">{state?.menuName}</h1>
@@ -396,14 +407,14 @@ export default Option;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   height: 100dvh;
-  padding: 20px;
+  padding: 50px;
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 50px 0;
   }
 
   .back-button {

@@ -50,17 +50,17 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 30px;
 
   .card {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 300px;
-    height: 150px;
+    width: 350px;
+    height: 170px;
     border-radius: 10px;
     background-color: #e0f7fa;
-    padding: 20px;
+    padding: 25px;
 
     img {
       border-radius: 10px;

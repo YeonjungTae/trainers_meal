@@ -26,11 +26,12 @@ const Diet: React.FC = () => {
     selectedMeals: string[];
     updatedMenu?: MenuItem;
     totalPrice?: number;
+    activeTab?: number;
   } | null;
 
   const mealCount = state?.mealCount ?? 1;
   const [selectedMenus, setSelectedMenus] = useState<MenuItem[][]>([]);
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number>(state?.activeTab || 0);
   const [totalPrice, setTotalPrice] = useState<number>(state?.totalPrice || 0);
 
   const updateMenus = (menus: MenuItem[][]) => {
@@ -55,7 +56,6 @@ const Diet: React.FC = () => {
     } catch (error) {
       console.error(error);
       setTotalPrice(0);
-      alert("메뉴 데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -183,17 +183,15 @@ const Container = styled.div`
     .tab {
       flex: 1;
       padding: 15px;
-      text-align: center;
       cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: border-color 0.3s ease;
+      border-bottom: 4px solid transparent;
       background-color: white;
-      &:hover {
-        background-color: #e9e9e9;
-      }
+      font-size: 20px;
+      text-align: center;
+      transition: border-color 0.3s ease;
 
       &.active {
-        border-color: #007bff;
+        border-color: ${main};
         font-weight: bold;
       }
     }

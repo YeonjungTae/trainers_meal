@@ -212,7 +212,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  padding: 20px;
+  padding: 50px;
 
   .filter-search-bar {
     margin-bottom: 20px;
