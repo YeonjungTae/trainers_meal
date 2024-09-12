@@ -28,14 +28,13 @@ Note
 """   
 class Price(models.Model):
     price_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '가격 고유 ID')
-    price = models.IntegerField(verbose_name = '실제 원가')
-    selling_price = models.IntegerField(verbose_name = '소비자가')
+    price = models.IntegerField(verbose_name = '소비자가')
 
     class Meta:
         db_table = 'price'
 
     def __str__(self):
-        return '원가: ' + str(self.price) + ' 원, 소비자가: ' + str(self.selling_price) + ' 원'
+        return '소비자가: ' + str(self.price) + ' 원'
 
 """
 Parameters
@@ -73,14 +72,14 @@ Note
 """   
 class Nutrients(models.Model):
     nutrients_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '영양 성분 고유 ID')
-    calories = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '에너지 (kcal)')
-    carbohydrate = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '탄수화물 (g)')
-    protein = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '단백질 (g)')
-    sugar = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '총 당류 (g)')
-    sodium = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '나트륨 (mg)')
-    fat = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '지방 (g)')
-    total_fatty_acids = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '총 포화 지방산 (g)')
-    trans_fatty_acid = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '트랜스 지방산 (g)')
+    calories = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '에너지 (kcal)')
+    carbohydrate = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '탄수화물 (g)')
+    protein = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '단백질 (g)')
+    sugar = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '총 당류 (g)')
+    sodium = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '나트륨 (mg)')
+    fat = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '지방 (g)')
+    total_fatty_acids = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '총 포화 지방산 (g)')
+    trans_fatty_acid = models.DecimalField(max_digits=6, decimal_places=2, null=True, verbose_name = '트랜스 지방산 (g)')
 
     class Meta:
         db_table = 'nutrients'
