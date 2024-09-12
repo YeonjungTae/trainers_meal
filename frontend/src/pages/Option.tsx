@@ -213,6 +213,7 @@ const Option: React.FC = () => {
         state: {
           clientId: state?.clientId,
           selectedMeals: state?.mealId,
+          activeTab: state.tabIndex,
         },
       });
     } catch (error) {
@@ -221,10 +222,20 @@ const Option: React.FC = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate("/diet", {
+      state: {
+        clientId: state.clientId,
+        selectedMeals: state.mealId,
+        activeTab: state.tabIndex,
+      },
+    });
+  };
+
   return (
     <Container>
       <div className="header">
-        <div className="back-button" onClick={() => navigate(-1)}>
+        <div className="back-button" onClick={handleBack}>
           <IoMdArrowRoundBack />
         </div>
         <h1 className="title">{state?.menuName}</h1>

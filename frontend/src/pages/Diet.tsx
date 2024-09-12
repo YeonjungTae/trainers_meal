@@ -26,11 +26,12 @@ const Diet: React.FC = () => {
     selectedMeals: string[];
     updatedMenu?: MenuItem;
     totalPrice?: number;
+    activeTab?: number;
   } | null;
 
   const mealCount = state?.mealCount ?? 1;
   const [selectedMenus, setSelectedMenus] = useState<MenuItem[][]>([]);
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number>(state?.activeTab || 0);
   const [totalPrice, setTotalPrice] = useState<number>(state?.totalPrice || 0);
 
   const updateMenus = (menus: MenuItem[][]) => {
