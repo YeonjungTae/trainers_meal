@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import { Header } from "./layout";
 import Home from "./pages/Home";
 import Member from "./pages/Member";
+import EditMember from "./pages/EditMember";
 import Login from "./pages/Login";
 import Add from "./pages/Add";
 import Register from "./pages/Register";
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/member/:id" element={<Member />} />
+        <Route path="/edit/:id/:section" element={<EditMember />} />
         <Route path="/login" element={<Login />} />
         <Route path="/add" element={<Add />} />
         <Route path="/register" element={<Register />} />
@@ -37,7 +39,10 @@ function App() {
         <Route path="/delivery-date" element={<DeliveryDate />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/normal-payment" element={<NormalPayment />} />
-        <Route path="/normal-payment/success" element={<NormalPaymentSuccess />} />
+        <Route
+          path="/normal-payment/success"
+          element={<NormalPaymentSuccess />}
+        />
         <Route path="/normal-payment/fail" element={<NormalPaymentFail />} />
         <Route path="/confirm" element={<Confirmation />} />
       </Routes>

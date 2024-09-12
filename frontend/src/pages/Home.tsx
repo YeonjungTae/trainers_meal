@@ -49,12 +49,10 @@ const Home: React.FC = () => {
         try {
           await apiClient.get(`/check_token/?token=${tokenData}`);
         } catch (error) {
-          alert("토큰이 만료되었습니다.");
           navigate(`/login`);
         }
 
         if (!tokenData) {
-          console.log("No login info found in localStorage");
           navigate(`/login`);
           return;
         }

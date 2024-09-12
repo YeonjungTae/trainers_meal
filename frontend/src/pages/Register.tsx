@@ -1,11 +1,11 @@
 import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../api";
 import Input from "../components/ui/InputComponent";
 import Button from "../components/ui/Button";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import { lineGray } from "../styles/color";
-import { apiClient } from "../api";
 
 interface GymOption {
   gym_id: string;
@@ -13,6 +13,7 @@ interface GymOption {
 }
 
 const Register = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -23,7 +24,6 @@ const Register = () => {
   const [confirmIdError, setConfirmIdError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
-  const navigate = useNavigate();
 
   const validatePassword = (password: string) => {
     const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -101,12 +101,14 @@ const Register = () => {
         navigate("/login");
       } catch (error) {
         console.error(error);
-        alert("회원 가입에 실패하였습니다. 다시 시도해 주세요.")
+        alert("회원 가입에 실패하였습니다. 다시 시도해 주세요.");
       }
     }
   };
 
-  const handleDuplicateCheck = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDuplicateCheck = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     // 아이디 중복체크 로직
     try {

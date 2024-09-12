@@ -21,7 +21,6 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
 
     overflow: hidden;
-    border: 1px solid blue;
   }
 
   h1,
