@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
 import styled from "styled-components";
 import { main, sub } from "../styles/color";
 
@@ -51,6 +52,8 @@ const Payment: React.FC = () => {
     }
   };
 
+  const handleMenu = (): void => navigate(-3);
+
   return (
     <Container>
       <div className="header">
@@ -84,7 +87,8 @@ const Payment: React.FC = () => {
         </label>
       </div>
       <div className="button-wrapper">
-        <button onClick={handlePayment}>결제하기</button>
+        <Button onClick={handleMenu} text="다시 선택하기" color="sub" />
+        <Button onClick={handlePayment} text="결제하기" color="main" />
       </div>
       <div className="payment-widget" />
     </Container>
@@ -163,14 +167,14 @@ const Container = styled.div`
     justify-content: center;
 
     button {
-      padding: 15px 30px;
+      /* padding: 15px 30px;
       font-size: 20px;
       color: white;
       background: ${sub};
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease; */
     }
   }
 `;

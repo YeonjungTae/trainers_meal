@@ -396,14 +396,14 @@ export default Option;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   height: 100dvh;
-  padding: 20px;
+  padding: 50px;
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 50px 0;
   }
 
   .back-button {
