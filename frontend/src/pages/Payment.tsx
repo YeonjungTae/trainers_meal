@@ -23,7 +23,7 @@ const Payment: React.FC = () => {
   }
 
   const { totalPrice, clientId } = state;
-  const [paymentType, setPaymentType] = useState<number>(0); // 0: 일반결제, 1: 정기결제, 2: 현장결제
+  const [paymentType, setPaymentType] = useState<number>(2); // 0: 일반결제, 1: 정기결제, 2: 현장결제
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handlePayment = async () => {
