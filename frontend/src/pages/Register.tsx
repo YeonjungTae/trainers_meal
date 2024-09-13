@@ -18,7 +18,9 @@ const Register = () => {
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  const [emailId, setEmailId] = useState<string>(""); // 이메일 아이디 부분
+  const [emailDomain, setEmailDomain] = useState<string>(""); // 이메일 도메인 부분
+  const [customDomain, setCustomDomain] = useState<string>(""); // 직접 입력 도메인
   const [gymOptions, setGymOptions] = useState<GymOption[]>([]);
   const [selectedGym, setSelectedGym] = useState<string>("");
   const [confirmIdError, setConfirmIdError] = useState<string>("");
@@ -31,18 +33,15 @@ const Register = () => {
   };
 
   useEffect(() => {
-    // 체육관 목록 호출
     const fetchGymOptions = async () => {
       try {
         const response = await apiClient.get("/get_gym_list/");
         setGymOptions(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("헬스장 목록을 불러오는데 실패했습니다:", error);
         alert("헬스장 목록을 불러오는데 실패했습니다. 다시 시도해주세요.");
       }
     };
-
     fetchGymOptions();
   }, []);
 
@@ -71,33 +70,21 @@ const Register = () => {
       setConfirmPasswordError("");
     }
 
+    // 이메일 도메인 결정 (직접 입력 or 선택)
+    const finalEmailDomain =
+      emailDomain === "custom" ? customDomain : emailDomain;
+    const email = `${emailId}@${finalEmailDomain}`;
+
     if (isValid) {
       try {
-        console.log(
-          "Name:",
-          name,
-          "ID:",
-          id,
-          "Email:",
-          email,
-          "Password:",
-          password,
-          "Gym:",
-          selectedGym
-        );
-
-        const response = await apiClient.post("/register/", {
+        await apiClient.post("/register/", {
           username: id,
           password: password,
           name: name,
           email: email,
           selectedGym: selectedGym,
         });
-
-        console.error(response.data);
-
         alert("회원 가입에 성공했습니다. 로그인 화면으로 돌아갑니다.");
-
         navigate("/login");
       } catch (error) {
         console.error(error);
@@ -110,16 +97,12 @@ const Register = () => {
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
-    // 아이디 중복체크 로직
     try {
-      const response = await apiClient.get(`/register?username=${id}`);
-      console.log(response.data);
+      await apiClient.get(`/register?username=${id}`);
       setConfirmIdError("");
       alert("등록 가능한 아이디입니다.");
     } catch (error) {
-      console.error("아이디 중복 체크 실패:", error);
       setConfirmIdError("이미 존재하는 아이디입니다.");
-      throw error;
     }
   };
 
@@ -198,16 +181,43 @@ const Register = () => {
         </div>
         <div className="form-group">
           <label htmlFor="email">이메일 주소</label>
-          <Input
-            type="email"
-            id="email"
-            placeholder="이메일 주소를 입력하세요"
-            className="text-input"
-            value={email}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-          />
+          <div className="email-group">
+            <Input
+              type="text"
+              id="emailId"
+              placeholder="이메일 아이디를 입력하세요"
+              className="text-input"
+              value={emailId}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setEmailId(e.target.value)
+              }
+            />
+            <span className="at-symbol">@</span>
+            <select
+              value={emailDomain}
+              onChange={(e) => setEmailDomain(e.target.value)}
+              className="email-select"
+            >
+              <option value="" disabled>
+                도메인을 선택하세요
+              </option>
+              <option value="gmail.com">gmail.com</option>
+              <option value="naver.com">naver.com</option>
+              <option value="daum.net">daum.net</option>
+              <option value="custom">직접 입력</option>
+            </select>
+          </div>
+          {emailDomain === "custom" && (
+            <Input
+              type="text"
+              placeholder="직접 도메인을 입력하세요"
+              className="text-input"
+              value={customDomain}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setCustomDomain(e.target.value)
+              }
+            />
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="gym">헬스장 선택</label>
@@ -269,16 +279,6 @@ const Container = styled.main`
       width: 100%;
       padding: 0 1.5em;
 
-      .id-group {
-        display: flex;
-        justify-content: space-between;
-        width: inherit;
-
-        .duplicate-check-button {
-          height: 100%;
-        }
-      }
-
       label {
         margin-bottom: 5px;
       }
@@ -292,6 +292,56 @@ const Container = styled.main`
         padding: 0 10px;
         font-size: 16px;
       }
+
+      .id-group {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .text-input {
+          width: 70%;
+          height: 40px;
+          border-radius: 5px;
+          border: 1px solid ${lineGray};
+          padding: 0 10px;
+          font-size: 16px;
+        }
+
+        .duplicate-check-button {
+          width: 25%;
+          height: 40px;
+        }
+      }
+
+      .email-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+
+        .text-input {
+          width: 40%;
+          height: 40px;
+          border-radius: 5px;
+          border: 1px solid ${lineGray};
+          padding: 0 10px;
+          font-size: 16px;
+        }
+
+        .at-symbol {
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+        }
+
+        .email-select {
+          width: 50%;
+          height: 40px;
+          border-radius: 5px;
+          border: 1px solid ${lineGray};
+          padding: 0 10px;
+        }
+      }
     }
 
     .register-button {
@@ -299,8 +349,9 @@ const Container = styled.main`
     }
 
     .error-message {
-      font-size: 12px;
       margin-top: 5px;
+      color: red;
+      font-size: 12px;
     }
   }
 `;
