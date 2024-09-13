@@ -6,7 +6,6 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import Button from "../components/ui/Button";
 import { main } from "../styles/color";
 
-// OptionBlock 타입 정의
 interface OptionBlock {
   id: string;
   block_name: string;
@@ -213,7 +212,7 @@ const Option: React.FC = () => {
         state: {
           clientId: state?.clientId,
           selectedMeals: state?.mealId,
-          activeTab: state.tabIndex,
+          activeTab: state?.tabIndex,
         },
       });
     } catch (error) {
@@ -225,9 +224,9 @@ const Option: React.FC = () => {
   const handleBack = () => {
     navigate("/diet", {
       state: {
-        clientId: state.clientId,
-        selectedMeals: state.mealId,
-        activeTab: state.tabIndex,
+        clientId: state?.clientId,
+        selectedMeals: state?.mealId,
+        activeTab: state?.tabIndex,
       },
     });
   };

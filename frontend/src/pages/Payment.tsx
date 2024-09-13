@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { apiClient } from "../api";
 import Button from "../components/ui/Button";
+import Modal from "../components/ui/Modal";
 import styled from "styled-components";
-import { main, sub } from "../styles/color";
+import { main } from "../styles/color";
 
 const Payment: React.FC = () => {
   const navigate = useNavigate();
@@ -21,34 +23,56 @@ const Payment: React.FC = () => {
   }
 
   const { totalPrice, clientId } = state;
-  const [paymentType, setPaymentType] = useState<number>(0); // 0: 일반결제, 1: 정기결제
+  const [paymentType, setPaymentType] = useState<number>(0); // 0: 일반결제, 1: 정기결제, 2: 현장결제
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handlePayment = async () => {
     try {
       if (paymentType === 0) {
-        // 결제가 성공적으로 생성되면 결제 확인 페이지로 이동
+        // 일반결제
         navigate("/normal-payment", {
           state: {
             clientId,
-            totalPrice: 100,
+            totalPrice,
             deliveryDate: state?.deliveryDate,
             deliveryType: state?.deliveryType,
           },
         });
-      } else {
-        // 결제가 성공적으로 생성되면 결제 확인 페이지로 이동
+      } else if (paymentType === 1) {
+        // 정기결제
         navigate("/regular-payment", {
           state: {
             clientId,
-            totalPrice: 100,
+            totalPrice,
             deliveryDate: state?.deliveryDate,
             deliveryType: state?.deliveryType,
           },
         });
+      } else if (paymentType === 2) {
+        // 현장결제 선택 시 모달 띄움
+        setIsModalOpen(true);
       }
     } catch (error) {
       console.error("결제 요청 생성에 실패했습니다:", error);
       alert("결제 요청 생성에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  // 모달에서 확인 버튼 클릭 시 실행되는 함수
+  const handleConfirmPayment = async () => {
+    try {
+      await apiClient.post("/cash-payment/", {
+        clientId,
+        totalPrice,
+        deliveryDate: state?.deliveryDate,
+        deliveryType: state?.deliveryType,
+      });
+
+      alert("현장 결제가 완료되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("현장 결제 실패:", error);
+      alert("현장 결제 요청에 실패했습니다.");
     }
   };
 
@@ -85,12 +109,30 @@ const Payment: React.FC = () => {
           />
           정기결제
         </label>
+        <label>
+          <input
+            type="radio"
+            value={2}
+            checked={paymentType === 2}
+            onChange={() => setPaymentType(2)}
+          />
+          현장결제
+        </label>
       </div>
       <div className="button-wrapper">
         <Button onClick={handleMenu} text="다시 선택하기" color="sub" />
         <Button onClick={handlePayment} text="결제하기" color="main" />
       </div>
-      <div className="payment-widget" />
+
+      {/* Modal 컴포넌트 */}
+      {isModalOpen && (
+        <Modal
+          title="현장 결제 확인"
+          description="현장 결제를 진행하시겠습니까?"
+          onConfirm={handleConfirmPayment}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      )}
     </Container>
   );
 };
@@ -165,16 +207,5 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
-
-    button {
-      /* padding: 15px 30px;
-      font-size: 20px;
-      color: white;
-      background: ${sub};
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease; */
-    }
   }
 `;
