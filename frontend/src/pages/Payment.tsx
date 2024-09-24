@@ -108,8 +108,6 @@ const Payment: React.FC = () => {
         <Button onClick={handleMenu} text="다시 선택하기" color="sub" />
         <Button onClick={handlePayment} text="결제하기" color="main" />
       </div>
-
-      {/* Modal 컴포넌트 */}
       {isModalOpen && (
         <Modal
           title="현장 결제 확인"

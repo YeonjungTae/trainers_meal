@@ -30,26 +30,24 @@ const DeliveryPickup: React.FC = () => {
   const [isAddressFetched, setIsAddressFetched] = useState<boolean>(false); // 주소 정보가 있는지 여부
   const [isAddressRequired, setIsAddressRequired] = useState<boolean>(false); // 주소가 필요한지 여부
 
-  // 주소 정보를 서버에서 가져오는 함수
   useEffect(() => {
     const fetchAddressInfo = async () => {
       try {
-        const response = await apiClient.get(
+        const { data } = await apiClient.get(
           `/client/address?client_id=${state.clientId}`
         );
-        const { address, detailAddress } = JSON.parse(response.data);
+        const { address, detailAddress } = JSON.parse(data);
 
-        // 주소와 상세 주소의 존재 여부만 확인하여 상태 업데이트
         if (address && detailAddress) {
           setAddress(address);
           setDetailAddress(detailAddress);
-          setIsAddressFetched(true); // 주소 정보가 있을 때 true
+          setIsAddressFetched(true);
         } else {
-          setIsAddressFetched(false); // 주소 정보가 없을 때 false
+          setIsAddressFetched(false);
         }
       } catch (error) {
-        console.error("주소 정보를 불러오는 데 실패했습니다:", error);
-        setIsAddressFetched(false); // 오류 발생 시 주소 정보가 없다고 간주
+        console.error(error);
+        setIsAddressFetched(false);
       }
     };
 
@@ -71,13 +69,12 @@ const DeliveryPickup: React.FC = () => {
       await apiClient.post(`/client/address/`, payload);
       alert("주소가 성공적으로 저장되었습니다.");
       setIsAddressModalOpen(false);
-      setIsAddressFetched(true); // 주소가 저장되면 결제 가능하게 업데이트
+      setIsAddressFetched(true);
     } catch (error) {
       console.error("주소 저장 실패:", error);
     }
   };
 
-  // 배송/픽업 선택 처리
   const handleSelect = (option: string) => {
     setSelectedOption(option);
 
@@ -94,7 +91,6 @@ const DeliveryPickup: React.FC = () => {
   };
 
   const handleNext = () => {
-    // 배송이 선택되었을 때 주소 정보가 없으면 주소 입력 요청
     if (
       isAddressRequired &&
       !isAddressFetched &&

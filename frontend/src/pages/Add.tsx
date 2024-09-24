@@ -35,7 +35,6 @@ const Add: React.FC = () => {
   const navigate = useNavigate();
 
   const submitForm = async () => {
-    // 항상 포함되어야 하는 필드
     const formData: any = {
       tokenData,
       name,
@@ -48,7 +47,6 @@ const Add: React.FC = () => {
       activityLevel,
     };
 
-    // 값이 있을 때만 추가할 필드들
     if (muscleMass) formData.muscleMass = muscleMass;
     if (bodyFatMass) formData.bodyFatMass = bodyFatMass;
     if (bodyFatPercentage) formData.bodyFatPercentage = bodyFatPercentage;
@@ -61,13 +59,11 @@ const Add: React.FC = () => {
       formData.entryPassword = entryPassword;
 
     try {
-      const response = await apiClient.post("/client/add/", formData);
-      console.log("서버 응답:", response.data);
-      alert("회원 등록이 성공적으로 완료되었습니다.");
+      const { data } = await apiClient.post("/client/add/", formData);
+      console.log(data);
       navigate("/", { replace: true });
     } catch (error) {
-      console.error("회원 등록 실패:", error);
-      alert("회원 등록에 실패했습니다.");
+      console.error(error);
     }
   };
 
