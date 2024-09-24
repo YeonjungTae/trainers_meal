@@ -22,26 +22,27 @@ const DeliveryDate: React.FC = () => {
   }
 
   const isMonday = (date: Date) => date.getDay() === 1;
+  const getNextMonday = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const nextMonday = new Date(today);
+
+    if (!isPastWednesdayCutoff()) {
+      nextMonday.setDate(today.getDate() + ((8 - dayOfWeek) % 7));
+    } else {
+      nextMonday.setDate(today.getDate() + ((15 - dayOfWeek) % 7));
+    }
+
+    nextMonday.setHours(0, 0, 0, 0);
+
+    return nextMonday;
+  };
 
   const isPastWednesdayCutoff = () => {
     const now = new Date();
     const isWednesday = now.getDay() === 3;
     const isAfter10PM = now.getHours() >= 22;
     return isWednesday && isAfter10PM;
-  };
-
-  const getNextMonday = () => {
-    const today = new Date();
-    const dayOfWeek = today.getDay();
-    const nextMonday = new Date(today);
-
-    if (dayOfWeek > 3 || (dayOfWeek === 3 && today.getHours() >= 22)) {
-      nextMonday.setDate(today.getDate() + ((15 - dayOfWeek) % 7));
-    } else {
-      nextMonday.setDate(today.getDate() + ((8 - dayOfWeek) % 7));
-    }
-
-    return nextMonday;
   };
 
   const handleDateChange = async (selectedDate: Date) => {
@@ -57,7 +58,7 @@ const DeliveryDate: React.FC = () => {
           clientId: state.clientId,
         });
 
-        console.log("서버 응답:", response.data);
+        console.log(response.data);
 
         navigate("/payment", {
           state: {
@@ -82,11 +83,17 @@ const DeliveryDate: React.FC = () => {
       <Calendar
         onClickDay={handleDateChange}
         value={getNextMonday()}
-        tileDisabled={({ date }) =>
-          !isMonday(date) ||
-          date < getNextMonday() ||
-          (isPastWednesdayCutoff() && date <= getNextMonday())
-        }
+        tileDisabled={({ date }) => {
+          const nextMonday = getNextMonday();
+          const selectedDate = new Date(date);
+          selectedDate.setHours(0, 0, 0, 0);
+
+          return (
+            !isMonday(date) ||
+            selectedDate < nextMonday ||
+            (isPastWednesdayCutoff() && selectedDate <= nextMonday)
+          );
+        }}
         locale="ko-KR"
         calendarType="gregory"
       />

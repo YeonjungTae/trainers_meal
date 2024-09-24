@@ -71,13 +71,11 @@ const Option: React.FC = () => {
         setVegOptions(data.veg || []);
         setFlavorOptions(data.flavor || []);
 
-        // 기본값 설정: 이전 선택된 블록 ID를 유지
         setSelectedBase(state?.blockIds?.base || data.base[0].id);
         setSelectedProtein(state?.blockIds?.protein || data.protein[0].id);
         setSelectedVeg(state?.blockIds?.veg || data.veg[0].id);
         setSelectedFlavor(state?.blockIds?.flavor || data.flavor[0].id);
 
-        // 추가 블록 옵션 초기화
         setAdditionalProtein(
           [state?.addBlockIds?.protein1, state?.addBlockIds?.protein2].filter(
             Boolean
@@ -92,11 +90,9 @@ const Option: React.FC = () => {
           [state?.addBlockIds?.flavor].filter(Boolean) as string[]
         );
       } catch (error) {
-        console.error("옵션 데이터를 불러오는데 실패했습니다:", error);
-        alert("옵션 데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
+        console.error(error);
       }
     };
-
     fetchOptions();
   }, [id]);
 
@@ -188,8 +184,7 @@ const Option: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // 선택된 옵션과 추가 옵션을 서버에 전송
-      const response = await apiClient.post(`/order/change/`, {
+      await apiClient.post(`/order/change/`, {
         clientId: state?.clientId,
         tabIndex: state?.tabIndex,
         menuIndex: state?.menuIndex,
@@ -205,9 +200,6 @@ const Option: React.FC = () => {
         addedCost,
       });
 
-      console.error(response.data);
-
-      // 서버로부터 업데이트된 데이터를 받았다면, 그 데이터를 diet 페이지로 보냄
       navigate("/diet", {
         state: {
           clientId: state?.clientId,
@@ -216,8 +208,7 @@ const Option: React.FC = () => {
         },
       });
     } catch (error) {
-      console.error("옵션을 저장하는데 실패했습니다:", error);
-      alert("옵션을 저장하는데 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
     }
   };
 
