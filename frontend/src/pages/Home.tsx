@@ -12,17 +12,14 @@ interface User {
   gym_name: string;
 }
 
-// 로컬스토리지에서 유저 정보 가져오기
 const getLoginTokenFromLocalStorage = () => {
   return localStorage.getItem("token");
 };
 
-// 로컬스토리지에서 유저 정보 가져오기
 const getUserDataFromLocalStorage = () => {
   return localStorage.getItem("user");
 };
 
-// 트레이너에 해당하는 모든 클라이언트 리스트 가져오기
 const getClients = async (token: string | null) => {
   try {
     const response = await apiClient.get(`/client/list?token=${token}`);

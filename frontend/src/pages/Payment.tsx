@@ -3,8 +3,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiClient } from "../api";
 import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
+import Input from "../components/ui/InputComponent";
 import styled from "styled-components";
 import { main } from "../styles/color";
+
+const PAYMENT_OPTIONS = [
+  { value: 0, label: "일반결제" },
+  { value: 1, label: "정기결제" },
+  { value: 2, label: "현장결제" },
+];
 
 const Payment: React.FC = () => {
   const navigate = useNavigate();
@@ -49,16 +56,13 @@ const Payment: React.FC = () => {
           },
         });
       } else if (paymentType === 2) {
-        // 현장결제 선택 시 모달 띄움
         setIsModalOpen(true);
       }
     } catch (error) {
-      console.error("결제 요청 생성에 실패했습니다:", error);
-      alert("결제 요청 생성에 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
     }
   };
 
-  // 모달에서 확인 버튼 클릭 시 실행되는 함수
   const handleConfirmPayment = async () => {
     try {
       await apiClient.post("/cash-payment/", {
@@ -67,12 +71,9 @@ const Payment: React.FC = () => {
         deliveryDate: state?.deliveryDate,
         deliveryType: state?.deliveryType,
       });
-
-      alert("현장 결제가 완료되었습니다.");
       navigate("/");
     } catch (error) {
       console.error("현장 결제 실패:", error);
-      alert("현장 결제 요청에 실패했습니다.");
     }
   };
 
@@ -91,40 +92,22 @@ const Payment: React.FC = () => {
         </div>
       </div>
       <div className="payment-type">
-        <label>
-          <input
-            type="radio"
-            value={0}
-            checked={paymentType === 0}
-            onChange={() => setPaymentType(0)}
-          />
-          일반결제
-        </label>
-        <label>
-          <input
-            type="radio"
-            value={1}
-            checked={paymentType === 1}
-            onChange={() => setPaymentType(1)}
-          />
-          정기결제
-        </label>
-        <label>
-          <input
-            type="radio"
-            value={2}
-            checked={paymentType === 2}
-            onChange={() => setPaymentType(2)}
-          />
-          현장결제
-        </label>
+        {PAYMENT_OPTIONS.map((option) => (
+          <label key={option.value}>
+            <Input
+              type="radio"
+              value={option.value.toString()}
+              checked={paymentType === option.value}
+              onChange={() => setPaymentType(option.value)}
+            />
+            {option.label}
+          </label>
+        ))}
       </div>
       <div className="button-wrapper">
         <Button onClick={handleMenu} text="다시 선택하기" color="sub" />
         <Button onClick={handlePayment} text="결제하기" color="main" />
       </div>
-
-      {/* Modal 컴포넌트 */}
       {isModalOpen && (
         <Modal
           title="현장 결제 확인"
@@ -207,5 +190,6 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
+    gap: 10px;
   }
 `;

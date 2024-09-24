@@ -46,7 +46,7 @@ const Login = () => {
       );
       navigate("/");
     } catch (error) {
-      console.error("로그인 실패:", error);
+      console.error(error);
     }
   };
 

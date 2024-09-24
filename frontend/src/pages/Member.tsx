@@ -82,7 +82,6 @@ const Member = () => {
   ];
 
   const handleEditClick = (section: string) => {
-    // 각 섹션을 수정할 수 있는 페이지로 이동
     navigate(`/edit/${clientId}/${section}`);
   };
 
