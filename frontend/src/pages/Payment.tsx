@@ -7,6 +7,12 @@ import Input from "../components/ui/InputComponent";
 import styled from "styled-components";
 import { main } from "../styles/color";
 
+const PAYMENT_OPTIONS = [
+  { value: 0, label: "일반결제" },
+  { value: 1, label: "정기결제" },
+  { value: 2, label: "현장결제" },
+];
+
 const Payment: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,12 +32,6 @@ const Payment: React.FC = () => {
   const { totalPrice, clientId } = state;
   const [paymentType, setPaymentType] = useState<number>(2); // 0: 일반결제, 1: 정기결제, 2: 현장결제
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  const paymentOptions = [
-    { value: 0, label: "일반결제" },
-    { value: 1, label: "정기결제" },
-    { value: 2, label: "현장결제" },
-  ];
 
   const handlePayment = async () => {
     try {
@@ -92,7 +92,7 @@ const Payment: React.FC = () => {
         </div>
       </div>
       <div className="payment-type">
-        {paymentOptions.map((option) => (
+        {PAYMENT_OPTIONS.map((option) => (
           <label key={option.value}>
             <Input
               type="radio"
