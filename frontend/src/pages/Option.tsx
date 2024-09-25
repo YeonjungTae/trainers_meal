@@ -64,7 +64,6 @@ const Option: React.FC = () => {
           `/order/option/?mealId=${state?.mealId}&tabIndex=${state?.tabIndex}&day=${state?.menuIndex}`
         );
         const data = JSON.parse(response.data);
-        console.log(data);
 
         setBaseOptions(data.base || []);
         setProteinOptions(data.protein || []);
@@ -336,7 +335,8 @@ const Option: React.FC = () => {
                     onChange={() => handleAdditionalChange("protein", block.id)}
                   />
                   <label htmlFor={`additionalProtein-${block.id}`}>
-                    {block.block_name} (+{block.price}원)
+                    {block.block_name} (+{Math.max((block.price ?? 0) - 300, 0)}
+                    원)
                   </label>
                 </div>
               ))}
@@ -355,7 +355,8 @@ const Option: React.FC = () => {
                     onChange={() => handleAdditionalChange("veg", block.id)}
                   />
                   <label htmlFor={`additionalVeg-${block.id}`}>
-                    {block.block_name} (+{block.price}원)
+                    {block.block_name} (+{Math.max((block.price ?? 0) - 300, 0)}
+                    원)
                   </label>
                 </div>
               ))}
@@ -374,7 +375,8 @@ const Option: React.FC = () => {
                     onChange={() => handleAdditionalChange("flavor", block.id)}
                   />
                   <label htmlFor={`additionalFlavor-${block.id}`}>
-                    {block.block_name} (+{block.price}원)
+                    {block.block_name} (+{Math.max((block.price ?? 0) - 100, 0)}
+                    원)
                   </label>
                 </div>
               ))}
