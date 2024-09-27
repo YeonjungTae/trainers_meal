@@ -105,20 +105,20 @@ const Option: React.FC = () => {
     const selectedFlavorPrice =
       flavorOptions.find((opt) => opt.id === selectedFlavor)?.difference || 0;
 
-    const additionalProteinPrice = additionalProtein.reduce(
-      (acc, id) =>
-        acc + (proteinOptions.find((opt) => opt.id === id)?.price || 0),
-      0
-    );
-    const additionalVegPrice = additionalVeg.reduce(
-      (acc, id) => acc + (vegOptions.find((opt) => opt.id === id)?.price || 0),
-      0
-    );
-    const additionalFlavorPrice = additionalFlavor.reduce(
-      (acc, id) =>
-        acc + (flavorOptions.find((opt) => opt.id === id)?.price || 0),
-      0
-    );
+    const additionalProteinPrice = additionalProtein.reduce((acc, id) => {
+      const option = proteinOptions.find((opt) => opt.id === id);
+      return acc + Math.max((option?.price ?? 0) - 300, 0);
+    }, 0);
+
+    const additionalVegPrice = additionalVeg.reduce((acc, id) => {
+      const option = vegOptions.find((opt) => opt.id === id);
+      return acc + Math.max((option?.price ?? 0) - 300, 0);
+    }, 0);
+
+    const additionalFlavorPrice = additionalFlavor.reduce((acc, id) => {
+      const option = flavorOptions.find((opt) => opt.id === id);
+      return acc + Math.max((option?.price ?? 0) - 100, 0);
+    }, 0);
 
     setAddedCost(
       selectedBasePrice +
@@ -137,6 +137,10 @@ const Option: React.FC = () => {
     additionalProtein,
     additionalVeg,
     additionalFlavor,
+    baseOptions,
+    proteinOptions,
+    vegOptions,
+    flavorOptions,
   ]);
 
   const handleAdditionalChange = (
@@ -319,7 +323,6 @@ const Option: React.FC = () => {
               ))}
           </div>
         </div>
-
         <div className="section-right">
           {/* 추가 옵션들 */}
           <div className="option-section">
@@ -341,7 +344,6 @@ const Option: React.FC = () => {
                 </div>
               ))}
           </div>
-
           <div className="option-section">
             <h2 className="option-title">추가 채소</h2>
             {Array.isArray(vegOptions) &&
@@ -361,7 +363,6 @@ const Option: React.FC = () => {
                 </div>
               ))}
           </div>
-
           <div className="option-section">
             <h2 className="option-title">추가 소스</h2>
             {Array.isArray(flavorOptions) &&
@@ -383,7 +384,6 @@ const Option: React.FC = () => {
           </div>
         </div>
       </div>
-
       <div className="button-wrapper">
         <div className="added-cost">
           <p>+{addedCost}원</p>
