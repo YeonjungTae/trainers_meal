@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { apiClient } from "../../api";
 import styled from "styled-components";
 import Input from "../ui/InputComponent";
 import Button from "../ui/Button";
-import { apiClient } from "../../api";
 
 interface GoalActivityInfoProps {
   activityLevel: string;
@@ -11,8 +12,8 @@ interface GoalActivityInfoProps {
   setGoal: (value: string) => void;
   notes: string;
   setNotes: (value: string) => void;
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
@@ -29,6 +30,7 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
 
   const [activityOptions, setActivityOptions] = useState<[]>([]);
   const [goalOptions, setGoalOptions] = useState<[]>([]);
+  const location = useLocation(); // 현재 경로를 가져오는 useLocation
 
   useEffect(() => {
     const fetchActivityOptions = async () => {
@@ -50,7 +52,7 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
       setErrorMessage("모든 필드를 입력해주세요.");
     } else {
       setErrorMessage("");
-      onNext();
+      if (onNext) onNext();
     }
   };
 
@@ -69,7 +71,6 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
           ))}
         </select>
       </div>
-
       <div className="select-wrapper">
         <label>운동 목표</label>
         <select value={goal} onChange={(e) => setGoal(e.target.value)}>
@@ -80,7 +81,6 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
           ))}
         </select>
       </div>
-
       <Input
         type="textarea"
         label="메모"
@@ -88,12 +88,13 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
       />
-
       {errorMessage && <Error>{errorMessage}</Error>}
-      <div className="button-group">
-        <Button onClick={onPrevious} text="이전" color="sub" />
-        <Button onClick={handleNext} text="다음" color="main" />
-      </div>
+      {location.pathname === "/add" && (
+        <div className="button-group">
+          <Button onClick={onPrevious} text="이전" color="sub" />
+          <Button onClick={handleNext} text="다음" color="main" />
+        </div>
+      )}
     </Container>
   );
 };
@@ -115,7 +116,7 @@ const Container = styled.div`
     }
 
     label::after {
-      content: ' *';
+      content: " *";
       color: #ff0000;
     }
 

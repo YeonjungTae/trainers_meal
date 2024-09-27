@@ -12,17 +12,14 @@ interface User {
   gym_name: string;
 }
 
-// 로컬스토리지에서 유저 정보 가져오기
 const getLoginTokenFromLocalStorage = () => {
   return localStorage.getItem("token");
 };
 
-// 로컬스토리지에서 유저 정보 가져오기
 const getUserDataFromLocalStorage = () => {
   return localStorage.getItem("user");
 };
 
-// 트레이너에 해당하는 모든 클라이언트 리스트 가져오기
 const getClients = async (token: string | null) => {
   try {
     const response = await apiClient.get(`/client/list?token=${token}`);
@@ -49,12 +46,10 @@ const Home: React.FC = () => {
         try {
           await apiClient.get(`/check_token/?token=${tokenData}`);
         } catch (error) {
-          alert("토큰이 만료되었습니다.");
           navigate(`/login`);
         }
 
         if (!tokenData) {
-          console.log("No login info found in localStorage");
           navigate(`/login`);
           return;
         }
@@ -211,10 +206,10 @@ const Home: React.FC = () => {
 export default Home;
 
 const Container = styled.div`
-  padding: 20px;
-  height: 100vh;
   display: flex;
   flex-direction: column;
+  height: 100dvh;
+  padding: 50px;
 
   .filter-search-bar {
     margin-bottom: 20px;

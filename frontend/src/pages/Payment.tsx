@@ -1,7 +1,17 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { apiClient } from "../api";
+import Button from "../components/ui/Button";
+import Modal from "../components/ui/Modal";
+import Input from "../components/ui/InputComponent";
 import styled from "styled-components";
-import { main, sub } from "../styles/color";
+import { main } from "../styles/color";
+
+const PAYMENT_OPTIONS = [
+  { value: 0, label: "일반결제" },
+  { value: 1, label: "정기결제" },
+  { value: 2, label: "현장결제" },
+];
 
 const Payment: React.FC = () => {
   const navigate = useNavigate();
@@ -20,36 +30,54 @@ const Payment: React.FC = () => {
   }
 
   const { totalPrice, clientId } = state;
-  const [paymentType, setPaymentType] = useState<number>(0); // 0: 일반결제, 1: 정기결제
+  const [paymentType, setPaymentType] = useState<number>(2); // 0: 일반결제, 1: 정기결제, 2: 현장결제
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handlePayment = async () => {
     try {
       if (paymentType === 0) {
-        // 결제가 성공적으로 생성되면 결제 확인 페이지로 이동
+        // 일반결제
         navigate("/normal-payment", {
           state: {
             clientId,
-            totalPrice: 100,
+            totalPrice,
             deliveryDate: state?.deliveryDate,
             deliveryType: state?.deliveryType,
           },
         });
-      } else {
-        // 결제가 성공적으로 생성되면 결제 확인 페이지로 이동
+      } else if (paymentType === 1) {
+        // 정기결제
         navigate("/regular-payment", {
           state: {
             clientId,
-            totalPrice: 100,
+            totalPrice,
             deliveryDate: state?.deliveryDate,
             deliveryType: state?.deliveryType,
           },
         });
+      } else if (paymentType === 2) {
+        setIsModalOpen(true);
       }
     } catch (error) {
-      console.error("결제 요청 생성에 실패했습니다:", error);
-      alert("결제 요청 생성에 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
     }
   };
+
+  const handleConfirmPayment = async () => {
+    try {
+      await apiClient.post("/cash-payment/", {
+        clientId,
+        totalPrice,
+        deliveryDate: state?.deliveryDate,
+        deliveryType: state?.deliveryType,
+      });
+      navigate("/");
+    } catch (error) {
+      console.error("현장 결제 실패:", error);
+    }
+  };
+
+  const handleMenu = (): void => navigate(-3);
 
   return (
     <Container>
@@ -64,29 +92,30 @@ const Payment: React.FC = () => {
         </div>
       </div>
       <div className="payment-type">
-        <label>
-          <input
-            type="radio"
-            value={0}
-            checked={paymentType === 0}
-            onChange={() => setPaymentType(0)}
-          />
-          일반결제
-        </label>
-        <label>
-          <input
-            type="radio"
-            value={1}
-            checked={paymentType === 1}
-            onChange={() => setPaymentType(1)}
-          />
-          정기결제
-        </label>
+        {PAYMENT_OPTIONS.map((option) => (
+          <label key={option.value}>
+            <Input
+              type="radio"
+              value={option.value.toString()}
+              checked={paymentType === option.value}
+              onChange={() => setPaymentType(option.value)}
+            />
+            {option.label}
+          </label>
+        ))}
       </div>
       <div className="button-wrapper">
-        <button onClick={handlePayment}>결제하기</button>
+        <Button onClick={handleMenu} text="다시 선택하기" color="sub" />
+        <Button onClick={handlePayment} text="결제하기" color="main" />
       </div>
-      <div className="payment-widget" />
+      {isModalOpen && (
+        <Modal
+          title="현장 결제 확인"
+          description="현장 결제를 진행하시겠습니까?"
+          onConfirm={handleConfirmPayment}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      )}
     </Container>
   );
 };
@@ -161,16 +190,6 @@ const Container = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
-
-    button {
-      padding: 15px 30px;
-      font-size: 20px;
-      color: white;
-      background: ${sub};
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+    gap: 10px;
   }
 `;

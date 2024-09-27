@@ -6,7 +6,6 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import Button from "../components/ui/Button";
 import { main } from "../styles/color";
 
-// OptionBlock 타입 정의
 interface OptionBlock {
   id: string;
   block_name: string;
@@ -22,6 +21,7 @@ const Option: React.FC = () => {
     mealId: string;
     tabIndex: number;
     menuIndex: number;
+    menuId: string;
     menuName: string;
     blockIds: {
       base?: string;
@@ -64,20 +64,17 @@ const Option: React.FC = () => {
           `/order/option/?mealId=${state?.mealId}&tabIndex=${state?.tabIndex}&day=${state?.menuIndex}`
         );
         const data = JSON.parse(response.data);
-        console.log(data);
 
         setBaseOptions(data.base || []);
         setProteinOptions(data.protein || []);
         setVegOptions(data.veg || []);
         setFlavorOptions(data.flavor || []);
 
-        // 기본값 설정: 이전 선택된 블록 ID를 유지
         setSelectedBase(state?.blockIds?.base || data.base[0].id);
         setSelectedProtein(state?.blockIds?.protein || data.protein[0].id);
         setSelectedVeg(state?.blockIds?.veg || data.veg[0].id);
         setSelectedFlavor(state?.blockIds?.flavor || data.flavor[0].id);
 
-        // 추가 블록 옵션 초기화
         setAdditionalProtein(
           [state?.addBlockIds?.protein1, state?.addBlockIds?.protein2].filter(
             Boolean
@@ -92,11 +89,9 @@ const Option: React.FC = () => {
           [state?.addBlockIds?.flavor].filter(Boolean) as string[]
         );
       } catch (error) {
-        console.error("옵션 데이터를 불러오는데 실패했습니다:", error);
-        alert("옵션 데이터를 불러오는데 실패했습니다. 다시 시도해주세요.");
+        console.error(error);
       }
     };
-
     fetchOptions();
   }, [id]);
 
@@ -110,20 +105,20 @@ const Option: React.FC = () => {
     const selectedFlavorPrice =
       flavorOptions.find((opt) => opt.id === selectedFlavor)?.difference || 0;
 
-    const additionalProteinPrice = additionalProtein.reduce(
-      (acc, id) =>
-        acc + (proteinOptions.find((opt) => opt.id === id)?.price || 0),
-      0
-    );
-    const additionalVegPrice = additionalVeg.reduce(
-      (acc, id) => acc + (vegOptions.find((opt) => opt.id === id)?.price || 0),
-      0
-    );
-    const additionalFlavorPrice = additionalFlavor.reduce(
-      (acc, id) =>
-        acc + (flavorOptions.find((opt) => opt.id === id)?.price || 0),
-      0
-    );
+    const additionalProteinPrice = additionalProtein.reduce((acc, id) => {
+      const option = proteinOptions.find((opt) => opt.id === id);
+      return acc + Math.max((option?.price ?? 0) - 300, 0);
+    }, 0);
+
+    const additionalVegPrice = additionalVeg.reduce((acc, id) => {
+      const option = vegOptions.find((opt) => opt.id === id);
+      return acc + Math.max((option?.price ?? 0) - 300, 0);
+    }, 0);
+
+    const additionalFlavorPrice = additionalFlavor.reduce((acc, id) => {
+      const option = flavorOptions.find((opt) => opt.id === id);
+      return acc + Math.max((option?.price ?? 0) - 100, 0);
+    }, 0);
 
     setAddedCost(
       selectedBasePrice +
@@ -142,6 +137,10 @@ const Option: React.FC = () => {
     additionalProtein,
     additionalVeg,
     additionalFlavor,
+    baseOptions,
+    proteinOptions,
+    vegOptions,
+    flavorOptions,
   ]);
 
   const handleAdditionalChange = (
@@ -188,11 +187,12 @@ const Option: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      // 선택된 옵션과 추가 옵션을 서버에 전송
-      const response = await apiClient.post(`/order/change/`, {
+      await apiClient.post(`/order/change/`, {
         clientId: state?.clientId,
         tabIndex: state?.tabIndex,
         menuIndex: state?.menuIndex,
+        menuId: state?.menuId,
+        menuName: state?.menuName,
         selectedBase,
         selectedProtein,
         selectedVeg,
@@ -203,25 +203,32 @@ const Option: React.FC = () => {
         addedCost,
       });
 
-      console.error(response.data);
-
-      // 서버로부터 업데이트된 데이터를 받았다면, 그 데이터를 diet 페이지로 보냄
       navigate("/diet", {
         state: {
           clientId: state?.clientId,
           selectedMeals: state?.mealId,
+          activeTab: state?.tabIndex,
         },
       });
     } catch (error) {
-      console.error("옵션을 저장하는데 실패했습니다:", error);
-      alert("옵션을 저장하는데 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
     }
+  };
+
+  const handleBack = () => {
+    navigate("/diet", {
+      state: {
+        clientId: state?.clientId,
+        selectedMeals: state?.mealId,
+        activeTab: state?.tabIndex,
+      },
+    });
   };
 
   return (
     <Container>
       <div className="header">
-        <div className="back-button" onClick={() => navigate(-1)}>
+        <div className="back-button" onClick={handleBack}>
           <IoMdArrowRoundBack />
         </div>
         <h1 className="title">{state?.menuName}</h1>
@@ -316,7 +323,6 @@ const Option: React.FC = () => {
               ))}
           </div>
         </div>
-
         <div className="section-right">
           {/* 추가 옵션들 */}
           <div className="option-section">
@@ -332,12 +338,12 @@ const Option: React.FC = () => {
                     onChange={() => handleAdditionalChange("protein", block.id)}
                   />
                   <label htmlFor={`additionalProtein-${block.id}`}>
-                    {block.block_name} (+{block.price}원)
+                    {block.block_name} (+{Math.max((block.price ?? 0) - 300, 0)}
+                    원)
                   </label>
                 </div>
               ))}
           </div>
-
           <div className="option-section">
             <h2 className="option-title">추가 채소</h2>
             {Array.isArray(vegOptions) &&
@@ -351,12 +357,12 @@ const Option: React.FC = () => {
                     onChange={() => handleAdditionalChange("veg", block.id)}
                   />
                   <label htmlFor={`additionalVeg-${block.id}`}>
-                    {block.block_name} (+{block.price}원)
+                    {block.block_name} (+{Math.max((block.price ?? 0) - 300, 0)}
+                    원)
                   </label>
                 </div>
               ))}
           </div>
-
           <div className="option-section">
             <h2 className="option-title">추가 소스</h2>
             {Array.isArray(flavorOptions) &&
@@ -370,14 +376,14 @@ const Option: React.FC = () => {
                     onChange={() => handleAdditionalChange("flavor", block.id)}
                   />
                   <label htmlFor={`additionalFlavor-${block.id}`}>
-                    {block.block_name} (+{block.price}원)
+                    {block.block_name} (+{Math.max((block.price ?? 0) - 100, 0)}
+                    원)
                   </label>
                 </div>
               ))}
           </div>
         </div>
       </div>
-
       <div className="button-wrapper">
         <div className="added-cost">
           <p>+{addedCost}원</p>
@@ -393,14 +399,14 @@ export default Option;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   height: 100dvh;
-  padding: 20px;
+  padding: 50px;
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 50px 0;
   }
 
   .back-button {

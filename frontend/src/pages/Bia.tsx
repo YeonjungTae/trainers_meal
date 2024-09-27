@@ -11,7 +11,7 @@ const Bia: React.FC = () => {
   const [bodyFatMass, setBodyFatMass] = useState<string>("");
   const [bodyFatPercentage, setBodyFatPercentage] = useState<string>("");
   const [biaData, setBiaData] = useState<any>(null);
-  const [isFormValid, setIsFormValid] = useState<boolean>(false); // 버튼 활성화 상태
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const navigate = useNavigate();
   const clientId = useParams().id;
 
@@ -19,13 +19,11 @@ const Bia: React.FC = () => {
   useEffect(() => {
     const fetchBodyCompositionData = async () => {
       try {
-        const response = await apiClient.get(
+        const { data } = await apiClient.get(
           `/client/bia/?client_id=${clientId}`
         );
-        const data = response.data;
         setBiaData(JSON.parse(data));
 
-        // 기존 데이터를 가져와서 상태에 설정
         if (biaData) {
           setWeight(biaData.weight);
           setMuscleMass(biaData.muscleMass);
@@ -33,10 +31,9 @@ const Bia: React.FC = () => {
           setBodyFatPercentage(biaData.bodyFatPercentage);
         }
       } catch (error) {
-        console.error("기존 체성분 데이터를 불러오는 데 실패했습니다:", error);
+        console.error(error);
       }
     };
-
     if (clientId) {
       fetchBodyCompositionData();
     }
@@ -55,7 +52,6 @@ const Bia: React.FC = () => {
     setValue: (value: string) => void
   ) => {
     const value = e.target.value;
-    // 숫자와 소수점만 허용하는 정규 표현식
     const onlyNumbers = value.replace(/[^0-9.]/g, "");
     setValue(onlyNumbers);
   };
@@ -86,7 +82,7 @@ const Bia: React.FC = () => {
       await apiClient.post(`/client/bia/`, updatedData);
       navigate(`/meal/${clientId}`);
     } catch (error) {
-      console.error("체성분 데이터 저장에 실패했습니다:", error);
+      console.error(error);
     }
   };
 
@@ -99,16 +95,16 @@ const Bia: React.FC = () => {
           {biaData ? (
             <>
               <p>
-                <strong>체중:</strong> {biaData.weight}kg
+                <strong>체중</strong> {biaData.weight}kg
               </p>
               <p>
-                <strong>골격근량:</strong> {biaData.muscleMass}kg
+                <strong>골격근량</strong> {biaData.muscleMass}kg
               </p>
               <p>
-                <strong>체지방량:</strong> {biaData.bodyFatMass}kg
+                <strong>체지방량</strong> {biaData.bodyFatMass}kg
               </p>
               <p>
-                <strong>체지방률:</strong> {biaData.bodyFatPercentage}%
+                <strong>체지방률</strong> {biaData.bodyFatPercentage}%
               </p>
             </>
           ) : (

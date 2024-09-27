@@ -35,8 +35,6 @@ const Login = () => {
         alert(response.data);
         return;
       }
-
-      // 로그인 성공 시 로컬 스토리지에 데이터 저장
       localStorage.setItem("token", response.data.token);
       localStorage.setItem(
         "user",
@@ -46,13 +44,9 @@ const Login = () => {
           username: response.data.user.username,
         })
       );
-
-      console.log("로그인 성공:", response.data.user);
-
       navigate("/");
     } catch (error) {
-      console.error("로그인 실패:", error);
-      alert("로그인에 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
     }
   };
 
@@ -82,12 +76,13 @@ const Login = () => {
         />
         <div className="sub-func-wrapper">
           <div className="checkbox-wrapper">
-            <Input 
-              type="checkbox" 
-              id="auto-login" 
+            <Input
+              type="checkbox"
+              id="auto-login"
               className="checkbox"
               checked={autoLogin}
-              onChange={handleAutoLogin} />
+              onChange={handleAutoLogin}
+            />
             <label htmlFor="auto-login">로그인 유지</label>
           </div>
           <Link to="/forgot-password">비밀번호 찾기</Link>

@@ -18,15 +18,14 @@ const Meal: React.FC = () => {
   const [week2Meal2, setWeek2Meal2] = useState<string>("");
   const navigate = useNavigate();
   const clientId = useParams().id;
-  
+
   useEffect(() => {
     const fetchMealOptions = async () => {
       try {
-        const response = await apiClient.get("/order/meal/");
-        setMealOptions(response.data);
+        const { data } = await apiClient.get("/order/meal/");
+        setMealOptions(data);
       } catch (error) {
-        console.error("식단 옵션을 불러오는데 실패했습니다:", error);
-        alert("식단 옵션을 불러오는데 실패했습니다. 다시 시도해주세요.");
+        console.error(error);
       }
     };
 
@@ -35,7 +34,7 @@ const Meal: React.FC = () => {
 
   const handleNext = async () => {
     if (mealCount === null) {
-      alert("식사 횟수를 선택하세요.");
+      console.log("식사 횟수를 선택하세요.");
       return;
     }
 
@@ -44,37 +43,29 @@ const Meal: React.FC = () => {
       week1Meal2,
       week2Meal1,
       week2Meal2,
-    ].filter((mealId) => mealId); // 고유 ID가 들어있는 배열
+    ].filter((mealId) => mealId);
 
     if (
       (mealCount === 1 && selectedMeals.length !== 2) ||
       (mealCount === 2 && selectedMeals.length !== 4)
-    ) {
-      alert(
-        `식사 횟수에 맞게 ${
-          mealCount === 1 ? "2개" : "4개"
-        }의 메뉴를 선택하세요.`
-      );
+    )
       return;
-    }
 
     try {
-      const response = await apiClient.post("/order/meal/", {
-        clientId, // 주문자 식별 위해 clientId를 함께 전송
+      await apiClient.post("/order/meal/", {
+        clientId,
         mealCount,
-        selectedMeals, // 고유 ID들이 담긴 배열을 전송
+        selectedMeals,
       });
-      console.log("식단 정보가 성공적으로 저장되었습니다:", response.data);
       navigate("/diet", {
         state: {
           clientId,
           mealCount,
-          selectedMeals, // 이 상태에서도 고유 ID들이 담긴 배열을 넘김
+          selectedMeals,
         },
       });
     } catch (error) {
-      console.error("식단 정보 저장에 실패했습니다:", error);
-      alert("식단 정보 저장에 실패했습니다. 다시 시도해주세요.");
+      console.error(error);
     }
   };
 
