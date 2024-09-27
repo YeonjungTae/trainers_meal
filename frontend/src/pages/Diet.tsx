@@ -9,7 +9,7 @@ import AddBlockInfo from "../components/menu/AddBlockInfo";
 import Button from "../components/ui/Button";
 import { main, sub } from "../styles/color";
 
-const getDayName = (day: number | string): string => {
+const GET_DAY = (day: number | string): string => {
   const days = ["월", "화", "수", "목", "금", "토"];
   const dayIndex = typeof day === "string" ? parseInt(day, 10) : day;
   return !isNaN(dayIndex) && dayIndex >= 0 && dayIndex <= 5
@@ -140,7 +140,7 @@ const Diet: React.FC = () => {
             onClick={() => handleOptionClick(activeTab, menuIndex)}
           >
             <div className="day-and-menu">
-              <span className="day-name">{getDayName(menu.day)}</span>
+              <span className="day-name">{GET_DAY(menu.day)}</span>
               <span className="menu-name">{menu.menu_name}</span>
             </div>
             <div className="option-details">
