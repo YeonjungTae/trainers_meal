@@ -73,29 +73,30 @@ class OrderClass:
                 block['flavor'] = {'id': str(order.flavor_util.flavor_util_id), 'name': order.flavor_util.block_name}
                 data['block'] = block
 
+                
                 try:
                     if Add_Pro.objects.filter(order_detail=order).exists():
-                        add_protein = Add_Pro.objects.filter(order_detail=order)
+                        add_protein = list(Add_Pro.objects.filter(order_detail=order))
                         for index, protein in enumerate(add_protein):
-                            add_block['protein' + str(index+1)] = {'id': str(protein.pro_util.pro_util_id), 'name': protein.pro_util.block_name}
-                            add_money += protein.pro_util.price
+                            add_block['protein' + str(index+1)] = {'id': str(protein.pro_util.pro_util_id), 'name': str(protein.pro_util.block_name)}
+                            add_money += int(protein.pro_util.price.price)
                 except:
                     pass
-
+                
                 try:
                     if Add_Veg.objects.filter(order_detail=order).exists():
-                        add_vegetables = Add_Veg.objects.filter(order_detail=order)
-                        for index, vegetables in enumerate(add_vegetables):
-                            add_block['veg' + str(index+1)] = {'id': str(vegetables.veg_util.veg_util_id), 'name': vegetables.veg_util.block_name}
-                            add_money += vegetables.veg_util.price
+                        add_vegetables = list(Add_Veg.objects.filter(order_detail=order))
+                        for index, veg in enumerate(add_vegetables):
+                            add_block['veg' + str(index+1)] = {'id': str(veg.veg_util.veg_util_id), 'name': str(veg.veg_util.block_name)}
+                            add_money += int(veg.veg_util.price.price)
                 except:
                     pass
 
                 try:
                     if Add_Flavor.objects.filter(order_detail=order).exists():
                         add_flavor = Add_Flavor.objects.filter(order_detail=order).first()
-                        add_block['flavor'] = {'id': str(add_flavor.flavor_util.flavor_util_id), 'name': add_flavor.flavor_util.block_name}
-                        add_money += add_flavor.flavor_util.price
+                        add_block['flavor'] = {'id': str(add_flavor.flavor_util.flavor_util_id), 'name': str(add_flavor.flavor_util.block_name)}
+                        add_money += int(add_flavor.flavor_util.price.price)
                 except:
                     pass
                     
@@ -204,6 +205,10 @@ class OrderClass:
         additionalVeg = request.data['additionalVeg']
         additionalFlavor = request.data['additionalFlavor']
 
+        print(additionalFlavor)
+        print(additionalProtein)
+        print(additionalVeg)
+
         addedPrice = request.data['addedCost']
 
         # 초기화
@@ -240,14 +245,17 @@ class OrderClass:
         # 추가 메뉴 저장
         if len(additionalProtein) > 0:
             for pro in additionalProtein:
+                print(pro)
                 Add_Pro.objects.create(pro_util=Pro_Util.objects.get(pro_util_id=pro), order_detail_id=order_detail_id).save()
 
         if len(additionalVeg) > 0:
             for veg in additionalVeg:
+                print(veg)
                 Add_Veg.objects.create(veg_util=Veg_Util.objects.get(veg_util_id=veg), order_detail_id=order_detail_id).save()
 
         if len(additionalFlavor) > 0:
             for flavor in additionalFlavor:
+                print(flavor)
                 Add_Flavor.objects.create(flavor_util=Flavor_Util.objects.get(flavor_util_id=flavor), order_detail_id=order_detail_id).save()
 
     def submit_order(request):
