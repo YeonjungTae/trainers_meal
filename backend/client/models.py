@@ -68,10 +68,9 @@ class Client(models.Model):
         
     client_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '등록 고객 고유 ID')
     name = models.CharField(max_length=30, verbose_name = '고객명')
-    contact = models.PositiveBigIntegerField(verbose_name = '연락처')
+    contact = models.CharField(max_length=15, verbose_name = '연락처')
     gender = models.IntegerField(choices=Gender.choices, null=True, verbose_name = '성별')
     birth = models.DateField(verbose_name = '생년월일')
-    height = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '신장')
     activity = models.IntegerField(choices=Activity.choices, null=True, verbose_name = '활동량')
     goal = models.IntegerField(choices=Goal.choices, null=True, verbose_name = '운동 목표')
     memo = models.TextField(null=True, verbose_name = '메모')
@@ -134,6 +133,7 @@ class Body_Data(models.Model):
         CLASS3 = 5, '3단계 비만 (고도)'
 
     body_data_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '신체 정보 고유 ID')
+    height = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '신장')
     weight = models.DecimalField(default=0, max_digits=5, decimal_places=2, verbose_name = '체중')
     skeletal_muscle = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '골격근량')
     body_fat = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name = '체지방량')
@@ -149,7 +149,7 @@ class Body_Data(models.Model):
         db_table = 'body_data'
 
     def __str__(self):
-        return '골격근량: ' + self.skeletal_muscle + ', 체지방량: ' + self.body_fat + ', 체지방률: ' + self.body_fat_ratio
+        return '골격근량: ' + str(self.skeletal_muscle) + ', 체지방량: ' + str(self.body_fat) + ', 체지방률: ' + str(self.body_fat_ratio)
 
 """
 Parameters
@@ -196,8 +196,8 @@ class Delivery(models.Model):
         INPUT = 1, '직접 입력'
 
     delivery_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '배송 정보 고유 ID')
-    address = models.CharField(max_length=200, verbose_name = '배송지 주소')
-    address_detail = models.CharField(max_length=50, verbose_name = '상세 주소')
+    address = models.CharField(max_length=200, null=True, verbose_name = '배송지 주소')
+    address_detail = models.CharField(max_length=50, null=True, verbose_name = '상세 주소')
     doorlock = models.IntegerField(null=True, verbose_name = '공동 현관 번호')
     doorlock_type = models.IntegerField(choices=Doorlock_Type.choices, verbose_name = '공동 현관 출입 방법')
     message = models.IntegerField(null=True, choices=Message.choices, verbose_name = '배송 메시지')

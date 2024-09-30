@@ -20,8 +20,8 @@ def get_text_value(TABLE_NAME, val):
     return result
 
 def get_label(TABLE_NAME, val):
+    print(val)
     for data in TABLE_NAME:
-        print(val)
         if data == val:
             result = data.label
     return result
@@ -50,7 +50,9 @@ class DeliverySerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = Delivery
 
-def ClientInfoSerializer(client_id):
+def ClientInfoSerializer(request):
+    client_id = request.GET.get('client_id')
+    section = request.GET.get('section')
     client = Client.objects.get(client_id=client_id)
 
     result = OrderedDict()
@@ -58,17 +60,24 @@ def ClientInfoSerializer(client_id):
     result['name'] = client.name
     result['gender'] = get_label(Client.Gender, client.gender)
     result['birthdate'] = str(client.birth)
-    result['height'] = str(client.height)
-    result['activityLevel'] = get_label(Client.Activity, client.activity)
-    result['goal'] = get_label(Client.Goal, client.goal)
+    if section == 'goal':
+        result['activityLevel'] = client.activity
+        result['goal'] = client.goal
+    else:
+        result['activityLevel'] = get_label(Client.Activity, client.activity)
+        result['goal'] = get_label(Client.Goal, client.goal)
 
-    if Delivery.objects.filter(client=client_id).exists():
-        delivery = Delivery.objects.get(client=client_id)
+    if Delivery.objects.filter(client_id=client_id).exists():
+        delivery = Delivery.objects.get(client_id=client_id)
 
         result['address'] = delivery.address
         result['detailAddress'] = delivery.address_detail
-        result['deliveryMessage'] = get_label(Delivery.Message, delivery.message)
-        result['entryMethod'] = get_label(Delivery.Doorlock_Type, delivery.doorlock_type)
+        if section == 'delivery':
+            result['deliveryMessage'] = delivery.message
+            result['entryMethod'] = delivery.doorlock_type
+        else:
+            result['deliveryMessage'] = get_label(Delivery.Message, delivery.message)
+            result['entryMethod'] = get_label(Delivery.Doorlock_Type, delivery.doorlock_type)
         if delivery.doorlock == 0:
             delivery.doorlock = ''
         result['entryPassword'] = delivery.doorlock
@@ -79,14 +88,15 @@ def ClientInfoSerializer(client_id):
         result['entryMethod'] = ''
         result['entryPassword'] = ''
 
-    if Body_Data.objects.filter(client=client_id).exists():
-        body_data = Body_Data.objects.filter(client=client_id).order_by('-update_dt').first()
-
+    if Body_Data.objects.filter(client_id=client_id).exists():
+        body_data = Body_Data.objects.filter(client_id=client_id).order_by('-update_dt').first()
+        result['height'] = str(body_data.height)
         result['weight'] = str(body_data.weight)
         result['muscleMass'] = str(body_data.skeletal_muscle)
         result['bodyFatMass'] = str(body_data.body_fat)
         result['bodyFatPercentage'] = str(body_data.body_fat_ratio)
     else:
+        result['height'] = str(0)
         result['weight'] = str(0)
         result['muscleMass'] = str(0)
         result['bodyFatMass'] = str(0)
@@ -99,11 +109,13 @@ def BodyInfoSerializer(client_id):
     if Body_Data.objects.filter(client=client_id).exists():
         body_data = Body_Data.objects.filter(client=client_id).order_by('-update_dt').first()
 
+        result['height'] = str(body_data.height)
         result['weight'] = str(body_data.weight)
         result['muscleMass'] = str(body_data.skeletal_muscle)
         result['bodyFatMass'] = str(body_data.body_fat)
         result['bodyFatPercentage'] = str(body_data.body_fat_ratio)
     else:
+        result['height'] = str(0)
         result['weight'] = str(0)
         result['muscleMass'] = str(0)
         result['bodyFatMass'] = str(0)

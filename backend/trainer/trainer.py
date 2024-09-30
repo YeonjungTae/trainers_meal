@@ -106,19 +106,6 @@ class TrainerClass:
                 Logger.print_error('아이디가 존재하지 않습니다.')
                 return '아이디가 존재하지 않습니다.'
             
-    def get_profile_img(**kwargs):
-        Logger.print_log('Getting Profile Image')
-
-        trainer_id = kwargs.get('trainer').trainer_id
-        username = kwargs.get('trainer').username
-        server = 'http://15.165.56.1:8000/media/'
-
-        try:
-            return server + str(Profile_Image.objects.get(title=username, trainer=trainer_id).title) + '.png'
-        
-        except:
-            return server + Profile_Image.objects.get(title='default') + '.png'
-
     def get_gym_list():
         return Gym.objects.all()
 
@@ -142,9 +129,17 @@ class TrainerClass:
         email = kwargs.get('email')
         gym = Gym.objects.get(gym_id=kwargs.get('gym'))
 
-        new_trainer = Trainer.objects.create(username=username, password=password, name=name, email=email, gym=gym, is_approved=False, create_dt=datetime.today(), update_dt=datetime.today())
+        new_trainer = Trainer.objects.create(
+            username=username, 
+            password=password, 
+            name=name, 
+            email=email, 
+            gym=gym, 
+            is_approved=True,
+            # is_approved=False, # 추후 수정
+            create_dt=datetime.today(), 
+            update_dt=datetime.today())
 
-        print(new_trainer)
         Logger.print_log('Successfully Signed Up')
 
     def get_authcode(**kwargs):

@@ -40,11 +40,30 @@ class add_client(APIView):
 
         except:
             raise ValueError('회원을 추가하는 데에 실패하였습니다.')
+        
+class update_client(APIView):
+    def patch(self, request):
+        try:
+            ClientClass.update_client(request)
+            return Response('회원 정보를 수정하였습니다.')
+
+        except:
+            raise ValueError('회원 정보를 수정하는 데에 실패하였습니다.')
+        
+class delete_client(APIView):
+    def delete(self, request):
+        try:
+            ClientClass.delete_client(request)
+            Logger.print_main_log('회원을 삭제하는 데에 성공하였습니다.')
+            return Response('회원 삭제가 완료되었습니다.')
+
+        except:
+            raise ValueError('회원을 삭제하는 데에 실패하였습니다.')
 
 class get_client_info(APIView):
     def get(self, request):
         try:
-            result = ClientInfoSerializer(request.GET.get('client_id'))
+            result = ClientInfoSerializer(request)
             Logger.print_main_log('회원 정보를 불러오는 데에 성공하였습니다.')
             return Response(result)
 
