@@ -28,8 +28,10 @@ const Register = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string>("");
 
   const validatePassword = (password: string) => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return regex.test(password);
+    return (
+      password.length >= 8 &&
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(password)
+    );
   };
 
   useEffect(() => {
