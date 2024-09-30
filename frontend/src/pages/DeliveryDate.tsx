@@ -73,10 +73,13 @@ const DeliveryDate: React.FC = () => {
     const today = getKSTDate();
     today.setHours(0, 0, 0, 0);
 
+    const minSelectableDate = new Date(today);
+    minSelectableDate.setDate(today.getDate() + 4); // 현재 날짜로부터 4일 뒤부터 선택 가능
+
     const selectedDate = new Date(date);
     selectedDate.setHours(0, 0, 0, 0);
 
-    return !isMonday(date) || selectedDate < today;
+    return !isMonday(date) || selectedDate < minSelectableDate;
   };
 
   return (
