@@ -73,7 +73,12 @@ class register(APIView):
     
     def post(self, request):
         try:
-            TrainerClass.register(**{'username': request.data['username'], 'password': request.data['password'], 'name': request.data['name'], 'email': request.data['email'], 'gym': request.data['selectedGym']})
+            TrainerClass.register(**{
+                'username': request.data['username'], 
+                'password': request.data['password'], 
+                'name': request.data['name'], 
+                'email': request.data['email'], 
+                'gym': request.data['selectedGym']})
             return Response('트레이너 등록이 완료되었습니다.')
             
         except:
