@@ -4,6 +4,10 @@ import "react-calendar/dist/Calendar.css";
 import styled from "styled-components";
 import { apiClient } from "../api";
 
+interface TileDisabledProps {
+  date: Date;
+}
+
 const DeliveryDate: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,33 +26,19 @@ const DeliveryDate: React.FC = () => {
   }
 
   const isMonday = (date: Date) => date.getDay() === 1;
-  const getNextMonday = () => {
-    const today = new Date();
-    const dayOfWeek = today.getDay();
-    const nextMonday = new Date(today);
 
-    if (!isPastWednesdayCutoff()) {
-      nextMonday.setDate(today.getDate() + ((8 - dayOfWeek) % 7));
-    } else {
-      nextMonday.setDate(today.getDate() + ((15 - dayOfWeek) % 7));
-    }
-
-    nextMonday.setHours(0, 0, 0, 0);
-
-    return nextMonday;
-  };
-
-  const isPastWednesdayCutoff = () => {
+  // 한국 시간 기준으로 현재 날짜 반환
+  const getKSTDate = () => {
     const now = new Date();
-    const isWednesday = now.getDay() === 3;
-    const isAfter10PM = now.getHours() >= 22;
-    return isWednesday && isAfter10PM;
+    const kstOffset = 9 * 60 * 60 * 1000; // KST는 UTC+9
+    const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    return new Date(utc + kstOffset);
   };
 
   const handleDateChange = async (selectedDate: Date) => {
     const formattedDate = selectedDate.toISOString().split("T")[0];
 
-    if (isMonday(selectedDate) && selectedDate >= getNextMonday()) {
+    if (isMonday(selectedDate) && selectedDate >= getKSTDate()) {
       try {
         const response = await apiClient.post("/order/submit/", {
           deliveryType: state.deliveryType,
@@ -64,7 +54,7 @@ const DeliveryDate: React.FC = () => {
           state: {
             totalPrice: state.totalPrice,
             clientId: state.clientId,
-            deliveryDate: formattedDate.toString(),
+            deliveryDate: formattedDate,
             deliveryType: state.deliveryType,
           },
         });
@@ -73,8 +63,23 @@ const DeliveryDate: React.FC = () => {
         alert("데이터 전송에 실패했습니다. 다시 시도해주세요.");
       }
     } else {
-      alert("월요일만 선택 가능합니다.");
+      alert("배송이 마감되었습니다.");
     }
+  };
+
+  const handleTileDisabled: (props: TileDisabledProps) => boolean = ({
+    date,
+  }) => {
+    const today = getKSTDate();
+    today.setHours(0, 0, 0, 0);
+
+    const minSelectableDate = new Date(today);
+    minSelectableDate.setDate(today.getDate() + 4); // 현재 날짜로부터 4일 뒤부터 선택 가능
+
+    const selectedDate = new Date(date);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return !isMonday(date) || selectedDate < minSelectableDate;
   };
 
   return (
@@ -82,18 +87,7 @@ const DeliveryDate: React.FC = () => {
       <h1>{state.deliveryType ? "배송일자 선택" : "픽업일자 선택"}</h1>
       <Calendar
         onClickDay={handleDateChange}
-        value={getNextMonday()}
-        tileDisabled={({ date }) => {
-          const nextMonday = getNextMonday();
-          const selectedDate = new Date(date);
-          selectedDate.setHours(0, 0, 0, 0);
-
-          return (
-            !isMonday(date) ||
-            selectedDate < nextMonday ||
-            (isPastWednesdayCutoff() && selectedDate <= nextMonday)
-          );
-        }}
+        tileDisabled={handleTileDisabled}
         locale="ko-KR"
         calendarType="gregory"
       />
