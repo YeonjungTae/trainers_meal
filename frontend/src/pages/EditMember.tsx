@@ -59,7 +59,7 @@ const EditMember = () => {
     const fetchMemberDetail = async () => {
       try {
         const response = await apiClient.get(
-          `client/detail?client_id=${clientId}&section=${section}`
+          `/client/edit?client_id=${clientId}&section=${section}`
         );
         setMemberDetail(JSON.parse(response.data));
       } catch (error) {
@@ -72,7 +72,7 @@ const EditMember = () => {
 
   const handleSave = async () => {
     try {
-      await apiClient.patch(`client/update/`, {
+      await apiClient.patch(`/client/edit/`, {
         section,
         ...memberDetail,
         ...updatedData,

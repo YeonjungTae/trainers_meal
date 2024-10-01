@@ -32,7 +32,16 @@ class get_delivery_options(APIView):
 
         return Response(data)
 
-class add_client(APIView):
+class edit_client(APIView):
+    def get(self, request):
+        try:
+            result = ClientInfoSerializer(request)
+            Logger.print_main_log('회원 정보를 불러오는 데에 성공하였습니다.')
+            return Response(result)
+
+        except:
+            raise ValueError('회원 정보를 불러오는 데에 실패하였습니다.')
+
     def post(self, request):
         try:
             ClientClass.add_client(request)
@@ -41,7 +50,6 @@ class add_client(APIView):
         except:
             raise ValueError('회원을 추가하는 데에 실패하였습니다.')
         
-class update_client(APIView):
     def patch(self, request):
         try:
             ClientClass.update_client(request)
@@ -50,7 +58,6 @@ class update_client(APIView):
         except:
             raise ValueError('회원 정보를 수정하는 데에 실패하였습니다.')
         
-class delete_client(APIView):
     def delete(self, request):
         try:
             ClientClass.delete_client(request)
@@ -60,15 +67,7 @@ class delete_client(APIView):
         except:
             raise ValueError('회원을 삭제하는 데에 실패하였습니다.')
 
-class get_client_info(APIView):
-    def get(self, request):
-        try:
-            result = ClientInfoSerializer(request)
-            Logger.print_main_log('회원 정보를 불러오는 데에 성공하였습니다.')
-            return Response(result)
-
-        except:
-            raise ValueError('회원 정보를 불러오는 데에 실패하였습니다.')
+# class get_client_info(APIView):
         
 class add_bia(APIView):
     def get(self, request):

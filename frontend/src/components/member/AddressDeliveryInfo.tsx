@@ -54,6 +54,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
         const response = await apiClient.get("/client/delivery/");
         setDeliveryOptions(response.data.deliveryMessage);
         setEntryOptions(response.data.entryMethod);
+        console.log(response.data.deliveryMessage)
       } catch (error) {
         console.error("옵션을 불러오는데 실패했습니다:", error);
         alert("옵션을 불러오는데 실패했습니다. 다시 시도해주세요.");
@@ -126,7 +127,6 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
             value={deliveryMessage}
             onChange={(e) => setDeliveryMessage(e.target.value)}
           >
-            <option value="">배송메시지를 선택해주세요.</option>
             {deliveryOptions.map((delivery: any) => (
               <option key={delivery.index} value={delivery.index}>
                 {delivery.data}

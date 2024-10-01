@@ -20,7 +20,6 @@ def get_text_value(TABLE_NAME, val):
     return result
 
 def get_label(TABLE_NAME, val):
-    print(val)
     for data in TABLE_NAME:
         if data == val:
             result = data.label
@@ -58,6 +57,7 @@ def ClientInfoSerializer(request):
     result = OrderedDict()
     result['client_id'] = client_id
     result['name'] = client.name
+    result['phone'] = client.contact
     result['gender'] = get_label(Client.Gender, client.gender)
     result['birthdate'] = str(client.birth)
     if section == 'goal':

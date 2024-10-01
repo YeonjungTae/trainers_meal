@@ -185,7 +185,7 @@ class ClientClass:
         elif section == 'goal':
             print(request.data.get('activityLevel'))
             activity = request.data.get('activityLevel')
-            goal = get_text_value(Client.Goal, request.data.get('goal'))
+            goal = request.data.get('goal')
 
             Client.objects.filter(client_id=client_id).update(
                 activity=activity,
@@ -202,8 +202,9 @@ class ClientClass:
                 detailAddress = request.data.get('detailAddress')
             else:
                 detailAddress = ''
-            if request.data.get('deliveryMessage'):
-                deliveryMessage = get_text_value(Delivery.Message, request.data.get('deliveryMessage'))
+            print(request.data.get('deliveryMessage'))
+            if request.data.get('deliveryMessage') != '':
+                deliveryMessage = request.data.get('deliveryMessage')
             else:
                 deliveryMessage = 0
             if request.data.get('entryMethod'):

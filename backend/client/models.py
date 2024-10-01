@@ -192,8 +192,9 @@ class Delivery(models.Model):
         NO_PASSWORD = 2, '자유출입가능'
 
     class Message(models.IntegerChoices):
-        AT_DOORWAY = 0, '문 앞에 놔주세요'
-        INPUT = 1, '직접 입력'
+        NOT_SELECTED = 0, '배송메시지를 선택해주세요.'
+        AT_DOORWAY = 1, '문 앞에 놔주세요'
+        INPUT = 2, '직접 입력'
 
     delivery_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '배송 정보 고유 ID')
     address = models.CharField(max_length=200, null=True, verbose_name = '배송지 주소')

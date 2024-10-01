@@ -36,7 +36,7 @@ const Member = () => {
     const fetchMemberDetail = async () => {
       try {
         const { data } = await apiClient.get(
-          `client/detail?client_id=${clientId}`
+          `/client/edit?client_id=${clientId}`
         );
         setMemberDetail(JSON.parse(data));
       } catch (error) {
@@ -92,7 +92,7 @@ const Member = () => {
   const handleConfirmDelete = async () => {
     try {
       await apiClient.delete(
-        `client/delete?client_id=${memberDetail.client_id}`
+        `/client/edit?client_id=${memberDetail.client_id}`
       );
       setIsModalOpen(false);
       navigate("/");
