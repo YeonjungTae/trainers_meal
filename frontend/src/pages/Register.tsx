@@ -30,7 +30,9 @@ const Register = () => {
   const validatePassword = (password: string) => {
     return (
       password.length >= 8 &&
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/.test(password)
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+={}\[\]:;"'<>,.?~`\\/-]*$/.test(
+        password
+      )
     );
   };
 
@@ -59,7 +61,7 @@ const Register = () => {
     }
 
     if (!validatePassword(password)) {
-      setPasswordError("비밀번호는 8자 이상 입력해주세요.");
+      setPasswordError("비밀번호는 8자 이상 영문, 숫자 조합으로 입력해주세요.");
       isValid = false;
     } else {
       setPasswordError("");
@@ -72,7 +74,6 @@ const Register = () => {
       setConfirmPasswordError("");
     }
 
-    // 이메일 도메인 결정 (직접 입력 or 선택)
     const finalEmailDomain =
       emailDomain === "custom" ? customDomain : emailDomain;
     const email = `${emailId}@${finalEmailDomain}`;

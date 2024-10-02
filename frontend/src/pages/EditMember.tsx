@@ -21,11 +21,13 @@ interface MemberProps {
   bodyFatPercentage: string;
   activityLevel: string;
   goal: string;
+  memo: string;
   address: string;
   detailAddress: string;
   deliveryMessage: string;
   entryMethod: string;
   entryPassword: string;
+  notes?: string;
 }
 
 const EditMember = () => {
@@ -46,6 +48,7 @@ const EditMember = () => {
     bodyFatPercentage: "",
     activityLevel: "",
     goal: "",
+    memo: "",
     address: "",
     detailAddress: "",
     deliveryMessage: "",
@@ -89,6 +92,8 @@ const EditMember = () => {
       ...updatedData,
       [field]: value,
     });
+
+    console.log(value);
   };
 
   if (!memberDetail) {
@@ -148,8 +153,10 @@ const EditMember = () => {
             }
             goal={updatedData.goal || memberDetail.goal || ""}
             setGoal={(goal) => handleChange("goal", goal)}
-            notes=""
-            setNotes={() => {}}
+            notes={updatedData.memo || memberDetail.memo || ""}
+            setNotes={(memo) => {
+              handleChange("notes", memo);
+            }}
           />
         );
       case "delivery":

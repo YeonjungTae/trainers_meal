@@ -19,6 +19,7 @@ interface MemberProps {
   bodyFatPercentage: string;
   activityLevel: string;
   goal: string;
+  memo: string; // 'notes'에서 'memo'로 변경
   address: string;
   detailAddress: string;
   deliveryMessage: string;
@@ -39,6 +40,7 @@ const Member = () => {
           `/client/edit?client_id=${clientId}`
         );
         setMemberDetail(JSON.parse(data));
+        console.log(11, data);
       } catch (error) {
         console.error("Error fetching member details:", error);
       }
@@ -69,6 +71,7 @@ const Member = () => {
   const goalInfo = [
     { label: "활동 수준", value: memberDetail.activityLevel },
     { label: "목표", value: memberDetail.goal },
+    { label: "메모", value: memberDetail.memo }, // 'notes'에서 'memo'로 변경
   ];
 
   const deliveryInfo = [

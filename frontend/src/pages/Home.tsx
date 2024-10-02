@@ -12,20 +12,20 @@ interface User {
   gym_name: string;
 }
 
-const getLoginTokenFromLocalStorage = () => {
+const GET_LOGIN_TOKEN_FROM_LOCALSTORAGE = () => {
   return localStorage.getItem("token");
 };
 
-const getUserDataFromLocalStorage = () => {
+const GET_USER_DATA_FROM_LOCALSTORAGE = () => {
   return localStorage.getItem("user");
 };
 
-const getClients = async (token: string | null) => {
+const GET_CLIENTS = async (token: string | null) => {
   try {
     const response = await apiClient.get(`/client/list?token=${token}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching clients:", error);
+    console.error(error);
     throw error;
   }
 };
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const tokenData = getLoginTokenFromLocalStorage();
+        const tokenData = GET_LOGIN_TOKEN_FROM_LOCALSTORAGE();
 
         try {
           await apiClient.get(`/check_token/?token=${tokenData}`);
@@ -54,17 +54,18 @@ const Home: React.FC = () => {
           return;
         }
 
-        const userData = getUserDataFromLocalStorage();
+        const userData = GET_USER_DATA_FROM_LOCALSTORAGE();
         if (userData) {
           setUserInfo(JSON.parse(userData));
         }
 
-        const clientsData = await getClients(tokenData);
+        const clientsData = await GET_CLIENTS(tokenData);
 
         const processedClients = clientsData.map((client: any) => ({
           ...client,
           isSubscribed: client.is_subscribed ?? false,
           isPaused: client.is_paused ?? false,
+          isReserved: client.is_reserved ?? false, // 구독 예약 상태 추가
         }));
 
         setAllMembers(processedClients);
@@ -95,14 +96,18 @@ const Home: React.FC = () => {
     if (status) {
       if (status === "Active") {
         filtered = filtered.filter(
-          (member) => member.isSubscribed && !member.isPaused
+          (member) =>
+            member.isSubscribed && !member.isPaused && !member.isReserved
         );
       } else if (status === "Paused") {
         filtered = filtered.filter((member) => member.isPaused);
       } else if (status === "Inactive") {
         filtered = filtered.filter(
-          (member) => !member.isSubscribed && !member.isPaused
+          (member) =>
+            !member.isSubscribed && !member.isPaused && !member.isReserved
         );
+      } else if (status === "Reserved") {
+        filtered = filtered.filter((member) => member.isReserved);
       }
     }
 
@@ -138,6 +143,7 @@ const Home: React.FC = () => {
           <option value="Active">구독중</option>
           <option value="Paused">구독중단</option>
           <option value="Inactive">구독안함</option>
+          <option value="Reserved">구독예약</option>
         </select>
         <InputComponent
           type="text"
@@ -175,6 +181,8 @@ const Home: React.FC = () => {
                       member.isSubscribed
                         ? member.isPaused
                           ? "Paused"
+                          : member.isReserved
+                          ? "Reserved"
                           : "Active"
                         : "Inactive"
                     }`}
@@ -292,6 +300,10 @@ const Container = styled.div`
 
     &.Inactive {
       background-color: red;
+    }
+
+    &.Reserved {
+      background-color: blue;
     }
   }
 `;

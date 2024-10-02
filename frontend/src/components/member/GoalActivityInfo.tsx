@@ -30,7 +30,7 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
 
   const [activityOptions, setActivityOptions] = useState<[]>([]);
   const [goalOptions, setGoalOptions] = useState<[]>([]);
-  const location = useLocation(); // 현재 경로를 가져오는 useLocation
+  const location = useLocation();
 
   useEffect(() => {
     const fetchActivityOptions = async () => {
@@ -46,6 +46,8 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
 
     fetchActivityOptions();
   }, []);
+
+  console.log(12313, notes);
 
   const handleNext = () => {
     if (!activityLevel || !goal) {
@@ -82,7 +84,7 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
         </select>
       </div>
       <Input
-        type="textarea"
+        type="text"
         label="메모"
         placeholder="추가 메모를 입력하세요"
         value={notes}
