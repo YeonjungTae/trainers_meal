@@ -21,6 +21,7 @@ interface MemberProps {
   bodyFatPercentage: string;
   activityLevel: string;
   goal: string;
+  memo: string;
   address: string;
   detailAddress: string;
   deliveryMessage: string;
@@ -47,6 +48,7 @@ const EditMember = () => {
     bodyFatPercentage: "",
     activityLevel: "",
     goal: "",
+    memo: "",
     address: "",
     detailAddress: "",
     deliveryMessage: "",
@@ -151,9 +153,9 @@ const EditMember = () => {
             }
             goal={updatedData.goal || memberDetail.goal || ""}
             setGoal={(goal) => handleChange("goal", goal)}
-            notes={updatedData.notes || memberDetail.notes || ""}
-            setNotes={(note) => {
-              handleChange("notes", note);
+            notes={updatedData.memo || memberDetail.memo || ""}
+            setNotes={(memo) => {
+              handleChange("notes", memo);
             }}
           />
         );
