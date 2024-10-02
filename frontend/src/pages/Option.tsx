@@ -55,6 +55,7 @@ const Option: React.FC = () => {
   const [additionalVeg, setAdditionalVeg] = useState<string[]>([]);
   const [additionalFlavor, setAdditionalFlavor] = useState<string[]>([]);
 
+  const [defaultCost, setDefaultCost] = useState<number>(0);
   const [addedCost, setAddedCost] = useState<number>(0);
 
   useEffect(() => {
@@ -129,6 +130,8 @@ const Option: React.FC = () => {
         additionalVegPrice +
         additionalFlavorPrice
     );
+
+    setDefaultCost(addedCost);
   }, [
     selectedBase,
     selectedProtein,
@@ -187,7 +190,7 @@ const Option: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      await apiClient.post(`/order/change/`, {
+      await apiClient.post(`/order/option/`, {
         clientId: state?.clientId,
         tabIndex: state?.tabIndex,
         menuIndex: state?.menuIndex,
@@ -200,6 +203,7 @@ const Option: React.FC = () => {
         additionalProtein,
         additionalVeg,
         additionalFlavor,
+        defaultCost,
         addedCost,
       });
 

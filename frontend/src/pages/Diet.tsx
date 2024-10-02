@@ -47,7 +47,7 @@ const Diet: React.FC = () => {
   const fetchMenus = async () => {
     try {
       const { data } = await apiClient.get(
-        `/order/list?clientId=${state?.clientId}`
+        `/order/register?clientId=${state?.clientId}`
       );
       const menus = JSON.parse(data);
       if (Array.isArray(menus)) {

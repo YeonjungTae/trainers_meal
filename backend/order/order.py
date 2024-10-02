@@ -10,6 +10,9 @@ from datetime import datetime, timedelta
 
 from common.logger import Logger
 
+def round_up(n):
+    return math.ceil(n * 0.01) * 100
+
 class OrderClass:
     def get_option_list(request):
         meal = Meal.objects.all()
@@ -48,7 +51,6 @@ class OrderClass:
         result = []
         for idx, week in enumerate(week_info):
             order_detail = Order_Detail.objects.filter(order_week_id=week.order_week_id).order_by('day')
-            add_money = 0
 
             week_dict = []
 
@@ -79,7 +81,6 @@ class OrderClass:
                         add_protein = list(Add_Pro.objects.filter(order_detail=order))
                         for index, protein in enumerate(add_protein):
                             add_block['protein' + str(index+1)] = {'id': str(protein.pro_util.pro_util_id), 'name': str(protein.pro_util.block_name)}
-                            add_money += int(protein.pro_util.price.price)
                 except:
                     pass
                 
@@ -88,7 +89,6 @@ class OrderClass:
                         add_vegetables = list(Add_Veg.objects.filter(order_detail=order))
                         for index, veg in enumerate(add_vegetables):
                             add_block['veg' + str(index+1)] = {'id': str(veg.veg_util.veg_util_id), 'name': str(veg.veg_util.block_name)}
-                            add_money += int(veg.veg_util.price.price)
                 except:
                     pass
 
@@ -96,12 +96,11 @@ class OrderClass:
                     if Add_Flavor.objects.filter(order_detail=order).exists():
                         add_flavor = Add_Flavor.objects.filter(order_detail=order).first()
                         add_block['flavor'] = {'id': str(add_flavor.flavor_util.flavor_util_id), 'name': str(add_flavor.flavor_util.block_name)}
-                        add_money += int(add_flavor.flavor_util.price.price)
                 except:
                     pass
                     
                 data['add_block'] = add_block
-                data['totalPrice'] = order_data.amount + add_money
+                data['totalPrice'] = order_data.amount
                 week_dict.append(data)
 
             result.append(week_dict)
@@ -109,8 +108,6 @@ class OrderClass:
         return json.dumps(result, ensure_ascii=False, indent=2)
     
     def get_order_option(request):
-        def round_up(n):
-            return math.ceil(n * 0.01) * 100
             
         tab_index = int(request.GET.get('tabIndex'))
         meal_id = request.GET.get('mealId').split(',')[tab_index]
@@ -205,19 +202,11 @@ class OrderClass:
         additionalVeg = request.data['additionalVeg']
         additionalFlavor = request.data['additionalFlavor']
 
-        print(additionalFlavor)
-        print(additionalProtein)
-        print(additionalVeg)
-
+        defaultPrice = request.data['defaultCost']
         addedPrice = request.data['addedCost']
+        print('addedPrice', addedPrice)
 
         # 초기화
-        cnt = len(Order_Week.objects.filter(order_id=order.order_id))
-        if cnt == 2:
-            order_detail.order_week.order.amount = 132000
-        else:
-            order_detail.order_week.order.amount = 132000 * 2
-
         try:
             Add_Pro.objects.filter(order_detail_id=order_detail_id).delete()
         except:
@@ -238,24 +227,24 @@ class OrderClass:
         order_detail.pro_util = Pro_Util.objects.get(pro_util_id=selectedProtein)
         order_detail.veg_util = Veg_Util.objects.get(veg_util_id=selectedVeg)
         order_detail.flavor_util = Flavor_Util.objects.get(flavor_util_id=selectedFlavor)
-        order.amount = order_detail.order_week.order.amount + addedPrice
+        print('original amount', order.amount)
+        print('order_detail', order_detail.order_week.order.amount)
+        order.amount = (order.amount - defaultPrice) + addedPrice
+        print('new price', order.amount)
         order.save()
         order_detail.save()
         
         # 추가 메뉴 저장
         if len(additionalProtein) > 0:
             for pro in additionalProtein:
-                print(pro)
                 Add_Pro.objects.create(pro_util=Pro_Util.objects.get(pro_util_id=pro), order_detail_id=order_detail_id).save()
 
         if len(additionalVeg) > 0:
             for veg in additionalVeg:
-                print(veg)
                 Add_Veg.objects.create(veg_util=Veg_Util.objects.get(veg_util_id=veg), order_detail_id=order_detail_id).save()
 
         if len(additionalFlavor) > 0:
             for flavor in additionalFlavor:
-                print(flavor)
                 Add_Flavor.objects.create(flavor_util=Flavor_Util.objects.get(flavor_util_id=flavor), order_detail_id=order_detail_id).save()
 
     def submit_order(request):

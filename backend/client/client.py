@@ -202,8 +202,7 @@ class ClientClass:
                 detailAddress = request.data.get('detailAddress')
             else:
                 detailAddress = ''
-            print(request.data.get('deliveryMessage'))
-            if request.data.get('deliveryMessage') != '':
+            if request.data.get('deliveryMessage') != 'N':
                 deliveryMessage = request.data.get('deliveryMessage')
             else:
                 deliveryMessage = 0

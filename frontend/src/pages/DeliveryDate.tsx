@@ -40,7 +40,7 @@ const DeliveryDate: React.FC = () => {
 
     if (isMonday(selectedDate) && selectedDate >= getKSTDate()) {
       try {
-        const response = await apiClient.post("/order/submit/", {
+        const response = await apiClient.post("/order/register/", {
           deliveryType: state.deliveryType,
           deliveryDate: formattedDate,
           selectedMenus: state.selectedMenus,
