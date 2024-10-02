@@ -18,7 +18,7 @@ const Login = () => {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     if (!id.length || !password.length) {
-      alert("아이디 및 비밀번호를 일벽해 주세요.");
+      alert("아이디 및 비밀번호를 입력해 주세요.");
       return;
     }
 
