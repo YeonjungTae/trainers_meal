@@ -51,44 +51,11 @@ class order_option(APIView):
         except:
             raise ValueError('식단 정보를 추가하는 데에 실패하였습니다.')
     
-# class edit_order_list(APIView):
-#     def post(self, request):
-#         try:
-#             OrderClass.edit_order_list(request)
-#             return Response('식단 정보를 추가하는 데에 성공하였습니다.')
-
-#         except:
-#             raise ValueError('식단 정보를 추가하는 데에 실패하였습니다.')
-        
-# class submit_order(APIView):
-#     def post(self, request):
-#         try:
-#             OrderClass.submit_order(request)
-#             return Response('주문 정보를 추가하는 데에 성공하였습니다.')
-
-#         except:
-#             raise ValueError('주문 정보를 추가하는 데에 실패하였습니다.')
-        
-class regular_payment(APIView):
-    def get(self, request):
-        result = RegularPaySerializer(request.GET.get('client_id'))
-
-        return Response(result)
-    
 class confirm_payment(APIView):
     def post(self, request):
         try: 
-            OrderClass.confirm_payment(request)
+            OrderClass.submit_order(request)
             return Response('결제가 성공적으로 이루어졌습니다.')
 
         except:
             raise ValueError('결제 실패하였습니다.')  
-        
-class submit_payment(APIView):
-    def post(self, request):
-        try:
-            OrderClass.submit_payment(request)
-            return Response('결제 정보를 추가하는 데에 성공하였습니다.')
-
-        except:
-            raise ValueError('결제 정보를 추가하는 데에 실패하였습니다.')        

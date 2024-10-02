@@ -3,15 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiClient } from "../api";
 import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
-// import Input from "../components/ui/InputComponent";
 import styled from "styled-components";
 import { main } from "../styles/color";
-
-// const PAYMENT_OPTIONS = [
-//   { value: 0, label: "일반결제" },
-//   { value: 1, label: "정기결제" },
-//   { value: 2, label: "현장결제" },
-// ];
 
 const Payment: React.FC = () => {
   const navigate = useNavigate();
@@ -30,34 +23,11 @@ const Payment: React.FC = () => {
   }
 
   const { totalPrice, clientId } = state;
-  // const [paymentType, setPaymentType] = useState<number>(2); // 0: 일반결제, 1: 정기결제, 2: 현장결제
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handlePayment = async () => {
     try {
-      // if (paymentType === 0) {
-      //   // 일반결제
-      //   navigate("/normal-payment", {
-      //     state: {
-      //       clientId,
-      //       totalPrice,
-      //       deliveryDate: state?.deliveryDate,
-      //       deliveryType: state?.deliveryType,
-      //     },
-      //   });
-      // } else if (paymentType === 1) {
-      //   // 정기결제
-      //   navigate("/regular-payment", {
-      //     state: {
-      //       clientId,
-      //       totalPrice,
-      //       deliveryDate: state?.deliveryDate,
-      //       deliveryType: state?.deliveryType,
-      //     },
-      //   });
-      // } else if (paymentType === 2) {
       setIsModalOpen(true);
-      // }
     } catch (error) {
       console.error(error);
     }
@@ -65,7 +35,7 @@ const Payment: React.FC = () => {
 
   const handleConfirmPayment = async () => {
     try {
-      await apiClient.post("/payment/", {
+      await apiClient.post("/order/confirm/", {
         clientId,
         totalPrice,
         deliveryDate: state?.deliveryDate,
@@ -91,19 +61,6 @@ const Payment: React.FC = () => {
           <p className="price">{totalPrice.toLocaleString()}원</p>
         </div>
       </div>
-      {/* <div className="payment-type">
-        {PAYMENT_OPTIONS.map((option) => (
-          <label key={option.value}>
-            <Input
-              type="radio"
-              value={option.value.toString()}
-              checked={paymentType === option.value}
-              onChange={() => setPaymentType(option.value)}
-            />
-            {option.label}
-          </label>
-        ))}
-      </div> */}
       <div className="button-wrapper">
         <Button onClick={handleMenu} text="다시 선택하기" color="sub" />
         <Button onClick={handlePayment} text="결제하기" color="main" />
