@@ -16,7 +16,8 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
+    localStorage.removeItem("paymentData");
+    localStorage.removeItem("@tosspayments/merchant-browser-id");
     navigate("/login");
   };
 
