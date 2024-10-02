@@ -5,6 +5,7 @@ import UserCard from "../components/auth/UserCard";
 import InputComponent from "../components/ui/InputComponent";
 import Button from "../components/ui/Button";
 import styled from "styled-components";
+import { main } from "../styles/color";
 
 interface User {
   username: string;
@@ -65,7 +66,7 @@ const Home: React.FC = () => {
           ...client,
           isSubscribed: client.is_subscribed ?? false,
           isPaused: client.is_paused ?? false,
-          isReserved: client.is_reserved ?? false, // 구독 예약 상태 추가
+          isSubscriptionAlert: client.is_reserved ?? false, // 구독 예약 상태 변경
         }));
 
         setAllMembers(processedClients);
@@ -97,17 +98,21 @@ const Home: React.FC = () => {
       if (status === "Active") {
         filtered = filtered.filter(
           (member) =>
-            member.isSubscribed && !member.isPaused && !member.isReserved
+            member.isSubscribed &&
+            !member.isPaused &&
+            !member.isSubscriptionAlert
         );
       } else if (status === "Paused") {
         filtered = filtered.filter((member) => member.isPaused);
       } else if (status === "Inactive") {
         filtered = filtered.filter(
           (member) =>
-            !member.isSubscribed && !member.isPaused && !member.isReserved
+            !member.isSubscribed &&
+            !member.isPaused &&
+            !member.isSubscriptionAlert
         );
-      } else if (status === "Reserved") {
-        filtered = filtered.filter((member) => member.isReserved);
+      } else if (status === "SubscriptionAlert") {
+        filtered = filtered.filter((member) => member.isSubscriptionAlert);
       }
     }
 
@@ -143,7 +148,7 @@ const Home: React.FC = () => {
           <option value="Active">구독중</option>
           <option value="Paused">구독중단</option>
           <option value="Inactive">구독안함</option>
-          <option value="Reserved">구독예약</option>
+          <option value="SubscriptionAlert">구독예약</option>
         </select>
         <InputComponent
           type="text"
@@ -181,8 +186,8 @@ const Home: React.FC = () => {
                       member.isSubscribed
                         ? member.isPaused
                           ? "Paused"
-                          : member.isReserved
-                          ? "Reserved"
+                          : member.isSubscriptionAlert
+                          ? "SubscriptionAlert"
                           : "Active"
                         : "Inactive"
                     }`}
@@ -302,8 +307,8 @@ const Container = styled.div`
       background-color: red;
     }
 
-    &.Reserved {
-      background-color: blue;
+    &.SubscriptionAlert {
+      background-color: ${main};
     }
   }
 `;
