@@ -14,8 +14,8 @@ interface AddressDeliveryInfoProps {
   setDetailAddress: (value: string) => void;
   deliveryMessage: string;
   setDeliveryMessage: (value: string) => void;
-  entryMethod: number;
-  setEntryMethod: (value: number) => void;
+  entryMethod: string;
+  setEntryMethod: (value: string) => void;
   entryPassword: string;
   setEntryPassword: (value: string) => void;
   onRegister?: () => void;
@@ -48,16 +48,20 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
   const [deliveryOptions, setDeliveryOptions] = useState<[]>([]);
   const [entryOptions, setEntryOptions] = useState<[]>([]);
 
+  const entryMethodMapping: { [key: number]: string } = {
+    0: "비밀번호",
+    1: "경비실 호출",
+    2: "자유출입가능",
+  };
+
   useEffect(() => {
     const fetchDeliveryOptions = async () => {
       try {
         const response = await apiClient.get("/client/delivery/");
         setDeliveryOptions(response.data.deliveryMessage);
         setEntryOptions(response.data.entryMethod);
-        console.log(response.data.deliveryMessage)
       } catch (error) {
         console.error("옵션을 불러오는데 실패했습니다:", error);
-        alert("옵션을 불러오는데 실패했습니다. 다시 시도해주세요.");
       }
     };
 
@@ -69,11 +73,12 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
       address &&
       detailAddress &&
       deliveryMessage &&
-      (entryMethod !== 0 || (entryMethod === 0 && entryPassword))
+      (entryMethod !== "비밀번호" ||
+        (entryMethod === "비밀번호" && entryPassword))
     ) {
-      setIsFormValid(true); // 모든 필드가 채워졌다면 폼 유효
+      setIsFormValid(true);
     } else {
-      setIsFormValid(false); // 하나라도 비어있다면 폼 유효하지 않음
+      setIsFormValid(false);
     }
   }, [address, detailAddress, deliveryMessage, entryMethod, entryPassword]);
 
@@ -128,7 +133,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
             onChange={(e) => setDeliveryMessage(e.target.value)}
           >
             {deliveryOptions.map((delivery: any) => (
-              <option key={delivery.index} value={delivery.index}>
+              <option key={delivery.index} value={delivery.data}>
                 {delivery.data}
               </option>
             ))}
@@ -141,16 +146,18 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
               <div key={entry.index}>
                 <Input
                   type="radio"
-                  id={entry.index}
+                  id={entry.data}
                   name="entry"
                   onChange={() => setEntryMethod(entry.index)}
-                  checked={entryMethod === entry.index}
+                  checked={
+                    entryMethodMapping[Number(entryMethod)] === entry.data
+                  }
                 />
-                <label htmlFor={entry.index}>{entry.data}</label>
+                <label htmlFor={entry.data}>{entry.data}</label>
               </div>
             ))}
           </div>
-          {entryMethod === 0 && (
+          {entryMethod === "비밀번호" && (
             <Input
               type="text"
               label="공동현관 비밀번호"

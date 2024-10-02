@@ -27,7 +27,6 @@ interface MemberProps {
   deliveryMessage: string;
   entryMethod: string;
   entryPassword: string;
-  notes?: string;
 }
 
 const EditMember = () => {
@@ -92,8 +91,6 @@ const EditMember = () => {
       ...updatedData,
       [field]: value,
     });
-
-    console.log(value);
   };
 
   if (!memberDetail) {
@@ -154,9 +151,7 @@ const EditMember = () => {
             goal={updatedData.goal || memberDetail.goal || ""}
             setGoal={(goal) => handleChange("goal", goal)}
             notes={updatedData.memo || memberDetail.memo || ""}
-            setNotes={(memo) => {
-              handleChange("notes", memo);
-            }}
+            setNotes={(memo) => handleChange("memo", memo)}
           />
         );
       case "delivery":
@@ -176,13 +171,9 @@ const EditMember = () => {
             setDeliveryMessage={(deliveryMessage) =>
               handleChange("deliveryMessage", deliveryMessage)
             }
-            entryMethod={
-              updatedData.entryMethod !== undefined
-                ? parseInt(updatedData.entryMethod)
-                : parseInt(memberDetail.entryMethod || "0")
-            }
+            entryMethod={updatedData.entryMethod || memberDetail.entryMethod}
             setEntryMethod={(entryMethod) =>
-              handleChange("entryMethod", entryMethod.toString())
+              handleChange("entryMethod", entryMethod)
             }
             entryPassword={
               updatedData.entryPassword || memberDetail.entryPassword || ""
