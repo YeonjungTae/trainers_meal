@@ -60,6 +60,7 @@ def ClientInfoSerializer(request):
     result['phone'] = client.contact
     result['gender'] = get_label(Client.Gender, client.gender)
     result['birthdate'] = str(client.birth)
+    result['memo'] = str(client.memo)
     if section == 'goal':
         result['activityLevel'] = client.activity
         result['goal'] = client.goal
