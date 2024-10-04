@@ -25,7 +25,7 @@ const DeliveryPickup: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const [detailAddress, setDetailAddress] = useState<string>("");
   const [deliveryMessage, setDeliveryMessage] = useState<string>("");
-  const [entryMethod, setEntryMethod] = useState<number>(0);
+  const [entryMethod, setEntryMethod] = useState<string>("0");
   const [entryPassword, setEntryPassword] = useState<string>("");
   const [isAddressFetched, setIsAddressFetched] = useState<boolean>(false); // 주소 정보가 있는지 여부
   const [isAddressRequired, setIsAddressRequired] = useState<boolean>(false); // 주소가 필요한지 여부
