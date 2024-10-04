@@ -29,7 +29,7 @@ const Add: React.FC = () => {
   const [goal, setGoal] = useState<string>("3");
   const [notes, setNotes] = useState<string>("");
   const [deliveryMessage, setDeliveryMessage] = useState<string>("");
-  const [entryMethod, setEntryMethod] = useState<number>(1);
+  const [entryMethod, setEntryMethod] = useState<string>("1");
   const [entryPassword, setEntryPassword] = useState<string>("");
   const tokenData = getLoginTokenFromLocalStorage();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const Add: React.FC = () => {
     if (detailAddress) formData.detailAddress = detailAddress;
     if (deliveryMessage) formData.deliveryMessage = deliveryMessage;
     if (entryMethod !== null) formData.entryMethod = entryMethod;
-    if (entryMethod === 0 && entryPassword)
+    if (entryMethod === "0" && entryPassword)
       formData.entryPassword = entryPassword;
 
     try {
