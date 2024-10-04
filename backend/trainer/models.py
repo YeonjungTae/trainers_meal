@@ -93,6 +93,7 @@ class Trainer(models.Model):
     email = models.EmailField(verbose_name = '이메일')
     sns_id = models.CharField(max_length=100, null=True, verbose_name = 'SNS 로그인 ID')
     sns_type = models.IntegerField(null=True, choices=SNS_Type.choices, verbose_name = 'SNS 종류')
+    is_admin = models.BooleanField(default=False, verbose_name = '관리자 유무')
     is_approved = models.BooleanField(default=False, verbose_name = '승인 유무')
     is_subscribed = models.BooleanField(default=False, verbose_name = '구독 유무')
     create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '등록일자')

@@ -11,20 +11,15 @@ class ClientClass:
     def get_client_list(request):
         token = bytes(request.GET.get('token'), 'utf-8')
         decode = jwt.decode(token, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithms=["HS256"])
-        is_subscribed = bool(request.GET.get('filterStatus'))
-        keyword = request.GET.get('searchTerm')
 
-        if keyword and is_subscribed:
-           client = Client.objects.filter(trainer_id=decode['trainer_id'], is_subscribed=is_subscribed, name__icontains=keyword)
+        trainer_info = Trainer.objects.get(trainer_id=decode['trainer_id'])
 
-        elif keyword:
-            client = Client.objects.filter(trainer_id=decode['trainer_id'], name__icontains=keyword)
-
-        elif is_subscribed:
-            client = Client.objects.filter(trainer_id=decode['trainer_id'], is_subscribed=is_subscribed)
-
-        else:
+        if trainer_info.is_admin == False:
             client = Client.objects.filter(trainer_id=decode['trainer_id']).order_by('name')
+        else:
+            gym_id = trainer_info.gym.gym_id
+            trainer_list = Trainer.objects.filter(gym_id=gym_id).values_list('trainer_id', flat=True)
+            client = Client.objects.filter(trainer_id__in=trainer_list).order_by('name')
         
         return client
 
@@ -183,13 +178,14 @@ class ClientClass:
                 client_id=client_id)
         
         elif section == 'goal':
-            print(request.data.get('activityLevel'))
             activity = request.data.get('activityLevel')
             goal = request.data.get('goal')
+            memo = request.data.get('memo')
 
             Client.objects.filter(client_id=client_id).update(
                 activity=activity,
                 goal=goal,
+                memo=memo,
                 update_dt=update_dt
             )
 
