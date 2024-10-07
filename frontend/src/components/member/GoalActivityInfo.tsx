@@ -39,15 +39,12 @@ const GoalActivityInfo: React.FC<GoalActivityInfoProps> = ({
         setActivityOptions(response.data.activity);
         setGoalOptions(response.data.goal);
       } catch (error) {
-        console.error("옵션을 불러오는데 실패했습니다:", error);
-        alert("옵션을 불러오는데 실패했습니다. 다시 시도해주세요.");
+        console.error(error);
       }
     };
 
     fetchActivityOptions();
   }, []);
-
-  console.log(12313, notes);
 
   const handleNext = () => {
     if (!activityLevel || !goal) {

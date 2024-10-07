@@ -40,15 +40,13 @@ const DeliveryDate: React.FC = () => {
 
     if (isMonday(selectedDate) && selectedDate >= getKSTDate()) {
       try {
-        const response = await apiClient.post("/order/register/", {
+        await apiClient.post("/order/register/", {
           deliveryType: state.deliveryType,
           deliveryDate: formattedDate,
           selectedMenus: state.selectedMenus,
           totalPrice: state.totalPrice,
           clientId: state.clientId,
         });
-
-        console.log(response.data);
 
         navigate("/payment", {
           state: {
@@ -59,8 +57,7 @@ const DeliveryDate: React.FC = () => {
           },
         });
       } catch (error) {
-        console.error("데이터 전송 실패:", error);
-        alert("데이터 전송에 실패했습니다. 다시 시도해주세요.");
+        console.error(error);
       }
     } else {
       alert("배송이 마감되었습니다.");

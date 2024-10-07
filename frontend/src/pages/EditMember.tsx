@@ -65,7 +65,7 @@ const EditMember = () => {
         );
         setMemberDetail(JSON.parse(response.data));
       } catch (error) {
-        console.error("Error fetching member details:", error);
+        console.error(error);
       }
     };
 
