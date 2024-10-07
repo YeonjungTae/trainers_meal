@@ -19,7 +19,7 @@ class ClientClass:
         else:
             gym_id = trainer_info.gym.gym_id
             trainer_list = Trainer.objects.filter(gym_id=gym_id).values_list('trainer_id', flat=True)
-            client = Client.objects.filter(trainer_id__in=trainer_list).order_by('name')
+            client = Client.objects.filter(trainer_id__in=trainer_list).distinct().order_by('name')
         
         return client
 
@@ -261,7 +261,7 @@ class ClientClass:
         client_id = request.data['clientId']
         address = request.data['address']
         detailAddress = request.data['detailAddress']
-        deliveryMessage = request.data['deliveryMessage']
+        deliveryMessage = get_text_value(Delivery.Message, request.data['deliveryMessage'])
         entryMethod = request.data['entryMethod']
         if request.data['entryPassword'] == '':
             entryPassword = 0

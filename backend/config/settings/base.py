@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     "trainer",
     "client",
     "order",
+    "lesik_admin",
     "rest_framework",
     'corsheaders',
 ]
@@ -59,13 +60,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static', 'common'), 
-#     # os.path.join(BASE_DIR, 'static', 'login'), 
-#     # os.path.join(BASE_DIR, 'static', 'client'), 
-#     # os.path.join(BASE_DIR, 'static', 'mail'), 
-#     # os.path.join(BASE_DIR, 'static', 'azure'), 
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static', 'common'), 
+]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

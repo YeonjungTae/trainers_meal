@@ -25,7 +25,7 @@ class OrderClass:
 
         amount = 132000 * int(meal_cnt)
 
-        order_data = Order.objects.create(amount=amount, is_pickup=False, delivery_dt=datetime.today(), create_dt=datetime.today(), client_id=client_id)
+        order_data = Order.objects.create(day_cnt=meal_cnt, default_amount=amount, total_amount=amount, is_pickup=False, delivery_dt=datetime.today(), create_dt=datetime.today(), client_id=client_id)
 
         for idx, meal_id in enumerate(meal_list):
             base_info = BaseInfo.objects.filter(is_default=True, meal=meal_id)
@@ -100,7 +100,7 @@ class OrderClass:
                     pass
                     
                 data['add_block'] = add_block
-                data['totalPrice'] = order_data.amount
+                data['totalPrice'] = order_data.total_amount
                 week_dict.append(data)
 
             result.append(week_dict)
@@ -201,8 +201,6 @@ class OrderClass:
         additionalProtein = request.data['additionalProtein']
         additionalVeg = request.data['additionalVeg']
         additionalFlavor = request.data['additionalFlavor']
-
-        defaultPrice = request.data['defaultCost']
         addedPrice = request.data['addedCost']
         print('addedPrice', addedPrice)
 
@@ -227,10 +225,10 @@ class OrderClass:
         order_detail.pro_util = Pro_Util.objects.get(pro_util_id=selectedProtein)
         order_detail.veg_util = Veg_Util.objects.get(veg_util_id=selectedVeg)
         order_detail.flavor_util = Flavor_Util.objects.get(flavor_util_id=selectedFlavor)
-        print('original amount', order.amount)
-        print('order_detail', order_detail.order_week.order.amount)
-        order.amount = (order.amount - defaultPrice) + addedPrice
-        print('new price', order.amount)
+
+        order.added_amount = addedPrice
+        order.total_amount = order.default_amount + order.added_amount
+
         order.save()
         order_detail.save()
         
@@ -254,4 +252,4 @@ class OrderClass:
         delivery_dt = request.data['deliveryDate']
 
         order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
-        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, amount=amount)
+        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, total_amount=amount)

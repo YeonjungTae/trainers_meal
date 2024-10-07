@@ -15,6 +15,7 @@ import DeliveryDate from "./pages/DeliveryDate";
 import Payment from "./pages/Payment";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import Confirmation from "./pages/Confirmation";
+import Admin from "./pages/Admin";
 import GlobalStyle from "./GlobalStyle";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/confirm" element={<Confirmation />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );

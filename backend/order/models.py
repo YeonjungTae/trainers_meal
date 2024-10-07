@@ -427,7 +427,10 @@ Note
 """   
 class Order(models.Model):
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '주문 고유 ID')
-    amount = models.IntegerField(verbose_name = '총 결제 금액', default=0)
+    day_cnt = models.IntegerField(verbose_name = '식수', default=1)
+    default_amount = models.IntegerField(verbose_name = '기본 금액', default=0)
+    added_amount = models.IntegerField(verbose_name = '추가 금액', default=0)
+    total_amount = models.IntegerField(verbose_name = '총 결제 금액', default=0)
     is_pickup = models.BooleanField(default=False, verbose_name = '픽업 유무')
     delivery_dt = models.DateField(verbose_name = '배송일자')
     create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '신청일자')
