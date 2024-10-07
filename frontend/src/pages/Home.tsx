@@ -72,7 +72,7 @@ const Home: React.FC = () => {
         setAllMembers(processedClients);
         setFilteredMembers(processedClients);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error);
       }
     };
 

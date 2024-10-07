@@ -59,8 +59,7 @@ const Add: React.FC = () => {
       formData.entryPassword = entryPassword;
 
     try {
-      const { data } = await apiClient.post("/client/edit/", formData);
-      console.log(data);
+      await apiClient.post("/client/edit/", formData);
       navigate("/", { replace: true });
     } catch (error) {
       console.error(error);

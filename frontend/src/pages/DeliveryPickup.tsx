@@ -71,7 +71,7 @@ const DeliveryPickup: React.FC = () => {
       setIsAddressModalOpen(false);
       setIsAddressFetched(true);
     } catch (error) {
-      console.error("주소 저장 실패:", error);
+      console.error(error);
     }
   };
 

@@ -42,8 +42,7 @@ const Register = () => {
         const response = await apiClient.get("/get_gym_list/");
         setGymOptions(response.data);
       } catch (error) {
-        console.error("헬스장 목록을 불러오는데 실패했습니다:", error);
-        alert("헬스장 목록을 불러오는데 실패했습니다. 다시 시도해주세요.");
+        console.error(error);
       }
     };
     fetchGymOptions();

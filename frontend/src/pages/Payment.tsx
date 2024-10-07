@@ -43,7 +43,7 @@ const Payment: React.FC = () => {
       });
       navigate("/");
     } catch (error) {
-      console.error("결제 실패:", error);
+      console.error(error);
     }
   };
 

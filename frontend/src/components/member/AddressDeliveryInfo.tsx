@@ -61,7 +61,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
         setDeliveryOptions(response.data.deliveryMessage);
         setEntryOptions(response.data.entryMethod);
       } catch (error) {
-        console.error("옵션을 불러오는데 실패했습니다:", error);
+        console.error(error);
       }
     };
 

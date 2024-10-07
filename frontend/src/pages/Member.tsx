@@ -40,9 +40,8 @@ const Member = () => {
           `/client/edit?client_id=${clientId}`
         );
         setMemberDetail(JSON.parse(data));
-        console.log(11, data);
       } catch (error) {
-        console.error("Error fetching member details:", error);
+        console.error(error);
       }
     };
 
@@ -100,8 +99,7 @@ const Member = () => {
       setIsModalOpen(false);
       navigate("/");
     } catch (error) {
-      console.error("Error deleting member:", error);
-      alert("회원 삭제에 실패했습니다.");
+      console.error(error);
     }
   };
 

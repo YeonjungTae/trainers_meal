@@ -7,33 +7,30 @@ const Confirmation: React.FC = () => {
   const location = useLocation();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  setSearchParams(location.search)
-  const amount = searchParams.get('amount')
-  const clientId = searchParams.get('clientId')
-  const orderId = searchParams.get('orderId')
-  const paymentKey = searchParams.get('paymentKey')
-  const deliveryDate = searchParams.get('deliveryDate')
-  const deliveryType = searchParams.get('deliveryType')
+  setSearchParams(location.search);
+  const amount = searchParams.get("amount");
+  const clientId = searchParams.get("clientId");
+  const orderId = searchParams.get("orderId");
+  const paymentKey = searchParams.get("paymentKey");
+  const deliveryDate = searchParams.get("deliveryDate");
+  const deliveryType = searchParams.get("deliveryType");
   const confirmDate = new Date();
 
   const handleConfirmation = async () => {
     try {
-      const response = await apiClient.post("/order/payment/", {
+      await apiClient.post("/order/payment/", {
         clientId,
         amount,
-        paymentKey, // 결제 유형 전송
+        paymentKey,
         orderId,
-        status: 'success',
+        status: "success",
         confirmDate,
       });
-
-      console.log("서버 응답:", response.data);
 
       navigate("/");
     } catch (error) {
       alert("데이터가 저장되지 않았습니다. 다시 시도해 주세요.");
     }
-
   };
 
   return (

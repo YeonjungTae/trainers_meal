@@ -34,7 +34,6 @@ const Meal: React.FC = () => {
 
   const handleNext = async () => {
     if (mealCount === null) {
-      console.log("식사 횟수를 선택하세요.");
       return;
     }
 
