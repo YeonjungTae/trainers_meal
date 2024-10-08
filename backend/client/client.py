@@ -20,10 +20,13 @@ class ClientClass:
             gym_id = trainer_info.gym.gym_id
             trainer_list = Trainer.objects.filter(gym_id=gym_id).values_list('trainer_id', flat=True)
             client = Client.objects.filter(trainer_id__in=trainer_list).distinct().order_by('name')
+
+        Logger.print_main_log('고객 목록 조회 완료')
         
         return client
 
     def add_client(request):
+        Logger.print_main_log('고객 추가')
         token = bytes(request.data['tokenData'], 'utf-8')
         decode = jwt.decode(token, 'myMGd=JH(yqqo19~ruQ[R)]*xqsK=T|%', algorithms=["HS256"])
         
@@ -98,7 +101,7 @@ class ClientClass:
             detailAddress = ''
         try:
             if request.data['deliveryMessage']:
-                deliveryMessage = request.data['deliveryMessage']
+                deliveryMessage = get_text_value(Delivery.Message, request.data['deliveryMessage'])
         except:
             deliveryMessage = 0
         try:
