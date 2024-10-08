@@ -19,12 +19,15 @@ interface MemberProps {
   bodyFatPercentage: string;
   activityLevel: string;
   goal: string;
-  memo: string; // 'notes'에서 'memo'로 변경
+  memo: string;
   address: string;
   detailAddress: string;
   deliveryMessage: string;
   entryMethod: string;
   entryPassword: string;
+  paymentDate: string;
+  paymentAmount: string;
+  deliveryPickupDate: string;
 }
 
 const Member = () => {
@@ -70,7 +73,7 @@ const Member = () => {
   const goalInfo = [
     { label: "활동 수준", value: memberDetail.activityLevel },
     { label: "목표", value: memberDetail.goal },
-    { label: "메모", value: memberDetail.memo }, // 'notes'에서 'memo'로 변경
+    { label: "메모", value: memberDetail.memo },
   ];
 
   const deliveryInfo = [
@@ -83,8 +86,16 @@ const Member = () => {
       : []),
   ];
 
+  const paymentInfo = [
+    { label: "결제일시", value: memberDetail.paymentDate },
+    { label: "결제 금액", value: memberDetail.paymentAmount },
+    { label: "배송/픽업 날짜", value: memberDetail.deliveryPickupDate },
+  ];
+
   const handleEditClick = (section: string) => {
-    navigate(`/edit/${clientId}/${section}`);
+    if (section !== "payment") {
+      navigate(`/edit/${clientId}/${section}`);
+    }
   };
 
   const handleDeleteClick = () => {
@@ -130,6 +141,7 @@ const Member = () => {
         data={deliveryInfo}
         onEditClick={() => handleEditClick("delivery")}
       />
+      <InfoGroup title="결제 정보" data={paymentInfo} />
       <div className="button-wrapper">
         <Button text="삭제하기" onClick={handleDeleteClick} color="sub" />
       </div>
