@@ -101,8 +101,6 @@ class OrderClass:
                     
                 data['add_block'] = add_block
                 data['totalPrice'] = order_data.total_amount
-                # print('amount', order.amount)
-                # print('added', order_data.added_amount)
                 week_dict.append(data)
 
             result.append(week_dict)

@@ -25,6 +25,7 @@ const DeliveryPickup: React.FC = () => {
   const [address, setAddress] = useState<string>("");
   const [detailAddress, setDetailAddress] = useState<string>("");
   const [deliveryMessage, setDeliveryMessage] = useState<string>("");
+  const [customDeliveryMessage, setCustomDeliveryMessage] = useState<string>("");
   const [entryMethod, setEntryMethod] = useState<string>("0");
   const [entryPassword, setEntryPassword] = useState<string>("");
   const [isAddressFetched, setIsAddressFetched] = useState<boolean>(false); // 주소 정보가 있는지 여부
@@ -62,6 +63,7 @@ const DeliveryPickup: React.FC = () => {
         address,
         detailAddress,
         deliveryMessage,
+        customDeliveryMessage,
         entryMethod,
         entryPassword,
       };
@@ -173,6 +175,8 @@ const DeliveryPickup: React.FC = () => {
               setDetailAddress={setDetailAddress}
               deliveryMessage={deliveryMessage}
               setDeliveryMessage={setDeliveryMessage}
+              customDeliveryMessage={customDeliveryMessage}
+              setCustomDeliveryMessage={setCustomDeliveryMessage}
               entryMethod={entryMethod}
               setEntryMethod={setEntryMethod}
               entryPassword={entryPassword}

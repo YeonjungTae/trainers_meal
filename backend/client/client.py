@@ -54,40 +54,32 @@ class ClientClass:
             create_dt=update_dt, 
             update_dt=update_dt, 
             trainer_id=decode['trainer_id'])
+        
+        Logger.print_log('고객 추가 완료')
 
-        if request.data['height']:
-            height = round(float(request.data['height']), 2)
-        else:
-            height = float(0)
-        if request.data['weight']:
-            weight = round(float(request.data['weight']), 2)
-        else:
-            weight = float(0)
+        print(request.data)
         try:
             if request.data['muscleMass']:
-                skeletal_muscle = round(float(request.data['muscleMass']), 2)
+                skeletal_muscle = request.data['muscleMass']
         except:
-            skeletal_muscle = float(0)
-        
+            skeletal_muscle = 0
         try:
             if request.data['bodyFatMass']:
-                body_fat = round(float(request.data['bodyFatMass']), 2)
+                body_fat = request.data['bodyFatMass']
         except:
-            body_fat = float(0)
+            body_fat = 0
         try:
             if request.data['bodyFatPercentage']:
-                body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
+                body_fat_ratio = request.data['bodyFatPercentage']
         except:
-            body_fat_ratio = float(0)
+            body_fat_ratio = 0
 
-        Body_Data.objects.create(
-            height=height,
-            weight=weight, 
-            skeletal_muscle=skeletal_muscle, 
-            body_fat=body_fat, 
-            body_fat_ratio=body_fat_ratio, 
-            update_dt=new_client.update_dt, 
-            client_id=new_client.client_id)
+        ClientClass.add_bia(**{'client_id': new_client.client_id, 
+                                'height': request.data['height'], 
+                                'weight': request.data['weight'], 
+                                'skeletal_muscle': skeletal_muscle, 
+                                'body_fat': body_fat, 
+                                'body_fat_ratio': body_fat_ratio})
 
         try:
             if request.data['address']:
@@ -104,6 +96,12 @@ class ClientClass:
                 deliveryMessage = get_text_value(Delivery.Message, request.data['deliveryMessage'])
         except:
             deliveryMessage = 0
+
+        try:
+            if request.data['customDeliveryMessage']:
+                customDeliveryMessage = request.data['customDeliveryMessage']
+        except:
+            customDeliveryMessage = ''
         try:
             if request.data['entryMethod']:
                 entryMethod = request.data['entryMethod']
@@ -119,13 +117,17 @@ class ClientClass:
             Delivery.objects.create(
                 address=address, 
                 address_detail=detailAddress, 
-                message=deliveryMessage, 
+                message=deliveryMessage,
+                message_detail=customDeliveryMessage,
                 doorlock=entryPassword, 
                 doorlock_type=entryMethod, 
                 client_id=new_client.client_id, 
                 update_dt=new_client.update_dt)
+            
+            Logger.print_log('주소 정보 입력 완료')
 
     def update_client(request):
+        Logger.print_main_log('고객 정보 업데이트 시작')
         print(request.data)
         section = request.data.get('section')
         client_id = request.data.get('client_id')
@@ -145,40 +147,15 @@ class ClientClass:
                 update_dt=update_dt
             )
 
-        elif section == 'physical':
-            if request.data.get('height'):
-                height = round(float(request.data.get('height')), 2)
-            else:
-                height = float(0)
-            if request.data.get('weight'):
-                weight = round(float(request.data.get('weight')), 2)
-            else:
-                weight = float(0)
-            try:
-                if request.data.get('muscleMass'):
-                    skeletal_muscle = round(float(request.data.get('muscleMass')), 2)
-            except:
-                skeletal_muscle = float(0)
-            
-            try:
-                if request.data.get('bodyFatMass'):
-                    body_fat = round(float(request.data.get('bodyFatMass')), 2)
-            except:
-                body_fat = float(0)
-            try:
-                if request.data.get('bodyFatPercentage'):
-                    body_fat_ratio = round(float(request.data.get('bodyFatPercentage')), 2)
-            except:
-                body_fat_ratio = float(0)
+            Logger.print_log('고객 정보 업데이트 끝')
 
-            Body_Data.objects.create(
-                height=height,
-                weight=weight, 
-                skeletal_muscle=skeletal_muscle, 
-                body_fat=body_fat, 
-                body_fat_ratio=body_fat_ratio, 
-                update_dt=update_dt, 
-                client_id=client_id)
+        elif section == 'physical':
+            ClientClass.add_bia(**{'client_id': client_id, 
+                                   'height': request.data.get('height'), 
+                                   'weight': request.data.get('weight'), 
+                                   'skeletal_muscle': request.data.get('muscleMass'), 
+                                   'body_fat': request.data.get('bodyFatMass'), 
+                                   'body_fat_ratio': request.data.get('bodyFatPercentage')})
         
         elif section == 'goal':
             activity = request.data.get('activityLevel')
@@ -192,63 +169,52 @@ class ClientClass:
                 update_dt=update_dt
             )
 
-        else:
-            if request.data.get('address'):
-                address = request.data.get('address')
-            else:
-                address = ''
-            if request.data.get('detailAddress'):
-                detailAddress = request.data.get('detailAddress')
-            else:
-                detailAddress = ''
-            if request.data.get('deliveryMessage') != 'N':
-                deliveryMessage = request.data.get('deliveryMessage')
-            else:
-                deliveryMessage = 0
-            if request.data.get('entryMethod'):
-                entryMethod = request.data.get('entryMethod')
-            else:
-                entryMethod = 2
-            if request.data.get('entryPassword'):
-                entryPassword = int(request.data.get('entryPassword'))
-            else:
-                entryPassword = 0
+            Logger.print_log('고객 목표 정보 및 메모 업데이트 끝')
 
-            if Delivery.objects.filter(client_id=client_id).exists():
-                Delivery.objects.filter(client_id=client_id).update(
-                    address=address, 
-                    address_detail=detailAddress, 
-                    message=deliveryMessage, 
-                    doorlock=entryPassword, 
-                    doorlock_type=entryMethod, 
-                    update_dt=update_dt
-                )
-            else:
-                Delivery.objects.create(
-                    address=address, 
-                    address_detail=detailAddress, 
-                    message=deliveryMessage, 
-                    doorlock=entryPassword, 
-                    doorlock_type=entryMethod, 
-                    client_id=client_id, 
-                    update_dt=update_dt
-                )
+        else:
+            ClientClass.add_address(**{'client_id': client_id, 
+                            'address': request.data.get('address'), 
+                            'address_detail': request.data.get('detailAddress'), 
+                            'message': request.data.get('deliveryMessage'),
+                            'message_detail': request.data.get('customDeliveryMessage'),
+                            'doorlock_type': request.data.get('entryMethod'), 
+                            'doorlock': request.data.get('entryPassword')})
 
             
     def delete_client(request):
+        Logger.print_main_log('고객 삭제')
         client_id = request.GET.get('client_id')
+        Logger.print_log('고객 ID:', client_id)
         Body_Data.objects.filter(client_id=client_id).delete()
         Delivery.objects.filter(client_id=client_id).delete()
         Client.objects.filter(client_id=client_id).delete()
 
-    def add_bia(request):
-        client_id = request.data['clientId']
-        height = float(Body_Data.objects.filter(client_id=client_id).latest('height').height)
-        weight = round(float(request.data['weight']), 2)
-        skeletal_muscle = round(float(request.data['muscleMass']), 2)
-        body_fat = round(float(request.data['bodyFatMass']), 2)
-        body_fat_ratio = round(float(request.data['bodyFatPercentage']), 2)
+    def add_bia(**kwargs):
+        Logger.print_main_log('고객 신체 정보 입력')
         update_dt = datetime.today()
+        if kwargs.get('height'):
+            height = round(float(kwargs.get('height')), 2)
+        else:
+            height = float(0)
+        if kwargs.get('weight'):
+            weight = round(float(kwargs.get('weight')), 2)
+        else:
+            weight = float(0)
+
+        if kwargs.get('skeletal_muscle'):
+            skeletal_muscle = round(float(kwargs.get('skeletal_muscle')), 2)
+        else:
+            skeletal_muscle = float(0)
+        
+        if kwargs.get('body_fat'):
+            body_fat = round(float(kwargs.get('body_fat')), 2)
+        else:
+            body_fat = float(0)
+
+        if kwargs.get('body_fat_ratio'):
+            body_fat_ratio = round(float(kwargs.get('body_fat_ratio')), 2)
+        else:
+            body_fat_ratio = float(0)
 
         Body_Data.objects.create(
             height=height,
@@ -257,26 +223,66 @@ class ClientClass:
             body_fat=body_fat, 
             body_fat_ratio=body_fat_ratio, 
             update_dt=update_dt, 
-            client_id=client_id)
-        Client.objects.filter(client_id=client_id).update(update_dt=update_dt)
-
-    def add_address(request):
-        client_id = request.data['clientId']
-        address = request.data['address']
-        detailAddress = request.data['detailAddress']
-        deliveryMessage = get_text_value(Delivery.Message, request.data['deliveryMessage'])
-        entryMethod = request.data['entryMethod']
-        if request.data['entryPassword'] == '':
-            entryPassword = 0
-        else:
-            entryPassword = request.data['entryPassword']
-        update_dt = datetime.today()
+            client_id=kwargs.get('client_id'))
         
-        Delivery.objects.filter(client_id=client_id).update(
-            address=address, 
-            address_detail=detailAddress, 
-            message=deliveryMessage, 
-            doorlock_type=entryMethod, 
-            doorlock=entryPassword, 
-            update_dt=update_dt)
-        Client.objects.filter(client_id=client_id).update(update_dt=update_dt)
+        Logger.print_log('고객 신체 정보 업데이트 끝')
+
+    def add_address(**kwargs):
+        Logger.print_main_log('고객 신체 정보 입력')
+        print(kwargs)
+        update_dt = datetime.today()
+
+        if kwargs.get('address'):
+            address = kwargs.get('address')
+        else:
+            address = ''
+        if kwargs.get('address_detail'):
+            address_detail = kwargs.get('address_detail')
+        else:
+            address_detail = ''
+        if kwargs.get('message') != '':
+            print(kwargs.get('message'))
+            try:
+                message = get_text_value(Delivery.Message, kwargs.get('message'))
+            except:
+                message = kwargs.get('message')
+        else:
+            message = 0
+        if kwargs.get('message_detail') != '':
+            message_detail = kwargs.get('message_detail')
+        else:
+            message_detail = ''
+        if kwargs.get('doorlock_type'):
+            doorlock_type = kwargs.get('doorlock_type')
+        else:
+            doorlock_type = 2
+        if kwargs.get('doorlock'):
+            doorlock = int(kwargs.get('doorlock'))
+        else:
+            doorlock = 0
+
+        if Delivery.objects.filter(client_id=kwargs.get('client_id')).exists():
+            Delivery.objects.filter(client_id=kwargs.get('client_id')).update(
+                address=address, 
+                address_detail=address_detail, 
+                message=message, 
+                message_detail=message_detail,
+                doorlock=doorlock, 
+                doorlock_type=doorlock_type, 
+                update_dt=update_dt
+            )
+            Logger.print_log('고객 주문 정보 업데이트 끝')
+        else:
+            Delivery.objects.create(
+                address=address, 
+                address_detail=address_detail, 
+                message=message,
+                message_detail=message_detail,
+                doorlock=doorlock, 
+                doorlock_type=doorlock_type, 
+                client_id=kwargs.get('client_id'), 
+                update_dt=update_dt
+            )
+            Logger.print_log('고객 주문 정보 생성 끝')
+
+        Client.objects.filter(client_id=kwargs.get('client_id')).update(update_dt=update_dt)

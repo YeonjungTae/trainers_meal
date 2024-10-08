@@ -14,6 +14,8 @@ interface AddressDeliveryInfoProps {
   setDetailAddress: (value: string) => void;
   deliveryMessage: string;
   setDeliveryMessage: (value: string) => void;
+  customDeliveryMessage: string;
+  setCustomDeliveryMessage: (value: string) => void;
   entryMethod: string;
   setEntryMethod: (value: string) => void;
   entryPassword: string;
@@ -29,6 +31,8 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
   setDetailAddress,
   deliveryMessage,
   setDeliveryMessage,
+  customDeliveryMessage,
+  setCustomDeliveryMessage,
   entryMethod,
   setEntryMethod,
   entryPassword,
@@ -41,8 +45,8 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
   const [entryOptions, setEntryOptions] = useState<[]>([]);
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
-  const [customDeliveryMessage, setCustomDeliveryMessage] =
-    useState<string>("");
+  // const [customDeliveryMessage, setCustomDeliveryMessage] =
+  //   useState<string>("");
 
   const handleAddressComplete = (data: any) => {
     setAddress(data.address);

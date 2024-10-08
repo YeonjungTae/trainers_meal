@@ -66,8 +66,6 @@ class edit_client(APIView):
 
         except:
             raise ValueError('회원을 삭제하는 데에 실패하였습니다.')
-
-# class get_client_info(APIView):
         
 class add_bia(APIView):
     def get(self, request):
@@ -80,7 +78,12 @@ class add_bia(APIView):
             raise ValueError('체성분 데이터를 추가하는 데에 실패하였습니다.')
     def post(self, request):
         try:
-            ClientClass.add_bia(request)
+            ClientClass.add_bia(**{'client_id': request.data['clientId'], 
+                                   'height': Body_Data.objects.filter(client_id=request.data['clientId']).latest('height').height, 
+                                   'weight': request.data['weight'], 
+                                   'skeletal_muscle': request.data['muscleMass'], 
+                                   'body_fat': request.data['bodyFatMass'], 
+                                   'body_fat_ratio': request.data['bodyFatPercentage']})
             return Response('체성분 데이터를 추가하는 데에 성공하였습니다.')
 
         except:
@@ -97,7 +100,14 @@ class get_address_info(APIView):
         
     def post(self, request):
         try:
-            ClientClass.add_address(request)
+            print(request.data)
+            ClientClass.add_address(**{'client_id': request.data['clientId'], 
+                                       'address': request.data['address'], 
+                                       'address_detail': request.data['detailAddress'], 
+                                       'message': request.data['deliveryMessage'], 
+                                       'message_detail': request.data['customDeliveryMessage'],
+                                       'doorlock_type': request.data['entryMethod'], 
+                                       'doorlock': request.data['entryPassword']})
             return Response('주소 데이터를 추가하는 데에 성공하였습니다.')
         
         except:

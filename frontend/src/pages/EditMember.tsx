@@ -25,6 +25,7 @@ interface MemberProps {
   address: string;
   detailAddress: string;
   deliveryMessage: string;
+  customDeliveryMessage: string;
   entryMethod: string;
   entryPassword: string;
 }
@@ -51,6 +52,7 @@ const EditMember = () => {
     address: "",
     detailAddress: "",
     deliveryMessage: "",
+    customDeliveryMessage: "",
     entryMethod: "",
     entryPassword: "",
   });
@@ -170,6 +172,12 @@ const EditMember = () => {
             }
             setDeliveryMessage={(deliveryMessage) =>
               handleChange("deliveryMessage", deliveryMessage)
+            }
+            customDeliveryMessage={
+              updatedData.customDeliveryMessage || memberDetail.customDeliveryMessage || ""
+            }
+            setCustomDeliveryMessage={(customDeliveryMessage) =>
+              handleChange("customDeliveryMessage", customDeliveryMessage)
             }
             entryMethod={updatedData.entryMethod || memberDetail.entryMethod}
             setEntryMethod={(entryMethod) =>

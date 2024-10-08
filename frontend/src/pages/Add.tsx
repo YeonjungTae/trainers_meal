@@ -29,6 +29,7 @@ const Add: React.FC = () => {
   const [goal, setGoal] = useState<string>("3");
   const [notes, setNotes] = useState<string>("");
   const [deliveryMessage, setDeliveryMessage] = useState<string>("");
+  const [customDeliveryMessage, setCustomDeliveryMessage] = useState<string>("");
   const [entryMethod, setEntryMethod] = useState<string>("1");
   const [entryPassword, setEntryPassword] = useState<string>("");
   const tokenData = getLoginTokenFromLocalStorage();
@@ -47,6 +48,8 @@ const Add: React.FC = () => {
       activityLevel,
     };
 
+    console.log(customDeliveryMessage)
+
     if (muscleMass) formData.muscleMass = muscleMass;
     if (bodyFatMass) formData.bodyFatMass = bodyFatMass;
     if (bodyFatPercentage) formData.bodyFatPercentage = bodyFatPercentage;
@@ -54,6 +57,7 @@ const Add: React.FC = () => {
     if (address) formData.address = address;
     if (detailAddress) formData.detailAddress = detailAddress;
     if (deliveryMessage) formData.deliveryMessage = deliveryMessage;
+    if (customDeliveryMessage) formData.customDeliveryMessage = customDeliveryMessage;
     if (entryMethod !== null) formData.entryMethod = entryMethod;
     if (entryMethod === "0" && entryPassword)
       formData.entryPassword = entryPassword;
@@ -121,6 +125,8 @@ const Add: React.FC = () => {
             setDetailAddress={setDetailAddress}
             deliveryMessage={deliveryMessage}
             setDeliveryMessage={setDeliveryMessage}
+            customDeliveryMessage={customDeliveryMessage}
+            setCustomDeliveryMessage={setCustomDeliveryMessage}
             entryMethod={entryMethod}
             setEntryMethod={setEntryMethod}
             entryPassword={entryPassword}
