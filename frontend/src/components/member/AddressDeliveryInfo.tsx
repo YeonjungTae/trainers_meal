@@ -37,29 +37,24 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
   onPrevious,
 }) => {
   const location = useLocation();
+  const [deliveryOptions, setDeliveryOptions] = useState<[]>([]);
+  const [entryOptions, setEntryOptions] = useState<[]>([]);
   const [isAddressOpen, setIsAddressOpen] = useState<boolean>(false);
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [customDeliveryMessage, setCustomDeliveryMessage] =
+    useState<string>("");
 
   const handleAddressComplete = (data: any) => {
     setAddress(data.address);
     setIsAddressOpen(false);
   };
 
-  const [deliveryOptions, setDeliveryOptions] = useState<[]>([]);
-  const [entryOptions, setEntryOptions] = useState<[]>([]);
-
-  const entryMethodMapping: { [key: number]: string } = {
-    0: "비밀번호",
-    1: "경비실 호출",
-    2: "자유출입가능",
-  };
-
   useEffect(() => {
     const fetchDeliveryOptions = async () => {
       try {
-        const response = await apiClient.get("/client/delivery/");
-        setDeliveryOptions(response.data.deliveryMessage);
-        setEntryOptions(response.data.entryMethod);
+        const { data } = await apiClient.get("/client/delivery/");
+        setDeliveryOptions(data.deliveryMessage);
+        setEntryOptions(data.entryMethod);
       } catch (error) {
         console.error(error);
       }
@@ -72,7 +67,7 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
     if (
       address &&
       detailAddress &&
-      deliveryMessage &&
+      (deliveryMessage || customDeliveryMessage) &&
       (entryMethod !== "비밀번호" ||
         (entryMethod === "비밀번호" && entryPassword))
     ) {
@@ -80,7 +75,16 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
     } else {
       setIsFormValid(false);
     }
-  }, [address, detailAddress, deliveryMessage, entryMethod, entryPassword]);
+  }, [
+    address,
+    detailAddress,
+    deliveryMessage,
+    customDeliveryMessage,
+    entryMethod,
+    entryPassword,
+  ]);
+
+  console.log(deliveryOptions);
 
   return (
     <Container>
@@ -123,14 +127,16 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
           onChange={(e) => setDetailAddress(e.target.value)}
         />
       </div>
-
       <div className="delivery-options">
         <div className="title">배송 요청사항</div>
         <div className="delivery-message">
           <label>배송메시지</label>
           <select
             value={deliveryMessage}
-            onChange={(e) => setDeliveryMessage(e.target.value)}
+            onChange={(e) => {
+              setDeliveryMessage(e.target.value);
+              setCustomDeliveryMessage("");
+            }}
           >
             {deliveryOptions.map((delivery: any) => (
               <option key={delivery.index} value={delivery.data}>
@@ -139,6 +145,16 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
             ))}
           </select>
         </div>
+        {deliveryMessage === "직접 입력" && (
+          <div className="custom-delivery-message">
+            <Input
+              type="text"
+              placeholder="배송 메시지를 입력해주세요"
+              value={customDeliveryMessage}
+              onChange={(e) => setCustomDeliveryMessage(e.target.value)}
+            />
+          </div>
+        )}
         <div className="entry-method">
           <label>공동현관 출입방법</label>
           <div>
@@ -148,24 +164,24 @@ const AddressDeliveryInfo: React.FC<AddressDeliveryInfoProps> = ({
                   type="radio"
                   id={entry.data}
                   name="entry"
-                  onChange={() => setEntryMethod(entry.index)}
-                  checked={
-                    entryMethodMapping[Number(entryMethod)] === entry.data
-                  }
+                  onChange={() => setEntryMethod(entry.index.toString())}
+                  checked={entryMethod === entry.index.toString()}
                 />
                 <label htmlFor={entry.data}>{entry.data}</label>
               </div>
             ))}
           </div>
-          {entryMethod === "비밀번호" && (
-            <Input
-              type="text"
-              label="공동현관 비밀번호"
-              placeholder="공동현관 비밀번호를 입력해주세요"
-              value={entryPassword}
-              onChange={(e) => setEntryPassword(e.target.value)}
-            />
-          )}
+          <div className="privacy">
+            {entryMethod === "0" && (
+              <Input
+                type="text"
+                label="공동현관 비밀번호"
+                placeholder="공동현관 비밀번호를 입력해주세요"
+                value={entryPassword}
+                onChange={(e) => setEntryPassword(e.target.value)}
+              />
+            )}
+          </div>
         </div>
       </div>
       {location.pathname === "/add" && (
@@ -232,6 +248,14 @@ const Container = styled.div`
       margin-bottom: 15px;
     }
 
+    .custom-delivery-message {
+      margin: 10px 0;
+
+      Input {
+        width: 250px;
+      }
+    }
+
     .delivery-message,
     .entry-method {
       margin-bottom: 15px;
@@ -240,14 +264,13 @@ const Container = styled.div`
     .entry-method div {
       display: flex;
       gap: 10px;
+      margin-top: 5px;
     }
 
     .privacy {
-      margin-top: 10px;
-
-      Input {
-        margin-right: 10px;
-      }
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px !important;
     }
   }
 
