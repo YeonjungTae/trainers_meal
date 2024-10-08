@@ -57,7 +57,6 @@ class ClientClass:
         
         Logger.print_log('고객 추가 완료')
 
-        print(request.data)
         try:
             if request.data['muscleMass']:
                 skeletal_muscle = request.data['muscleMass']
@@ -150,12 +149,28 @@ class ClientClass:
             Logger.print_log('고객 정보 업데이트 끝')
 
         elif section == 'physical':
+            try:
+                if request.data.get('muscleMass'):
+                    skeletal_muscle = request.data.get('muscleMass')
+            except:
+                skeletal_muscle = 0
+            try:
+                if request.data.get('bodyFatMass'):
+                    body_fat = request.data.get('bodyFatMass')
+            except:
+                body_fat = 0
+            try:
+                if request.data.get('bodyFatPercentage'):
+                    body_fat_ratio = request.data.get('bodyFatPercentage')
+            except:
+                body_fat_ratio = 0
+
             ClientClass.add_bia(**{'client_id': client_id, 
                                    'height': request.data.get('height'), 
                                    'weight': request.data.get('weight'), 
-                                   'skeletal_muscle': request.data.get('muscleMass'), 
-                                   'body_fat': request.data.get('bodyFatMass'), 
-                                   'body_fat_ratio': request.data.get('bodyFatPercentage')})
+                                   'skeletal_muscle': skeletal_muscle, 
+                                   'body_fat': body_fat, 
+                                   'body_fat_ratio': body_fat_ratio})
         
         elif section == 'goal':
             activity = request.data.get('activityLevel')
