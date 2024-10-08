@@ -101,6 +101,8 @@ class OrderClass:
                     
                 data['add_block'] = add_block
                 data['totalPrice'] = order_data.total_amount
+                # print('amount', order.amount)
+                # print('added', order_data.added_amount)
                 week_dict.append(data)
 
             result.append(week_dict)
@@ -187,6 +189,7 @@ class OrderClass:
         return json.dumps(result, ensure_ascii=False, indent=2)
     
     def edit_order_list(request):
+        Logger.print_main_log('Editing Order Info')
         client_id = request.data['clientId']
         order_detail_id = request.data['menuId']
 
@@ -226,6 +229,7 @@ class OrderClass:
         order_detail.flavor_util = Flavor_Util.objects.get(flavor_util_id=selectedFlavor)
 
         order_detail.amount = addedPrice
+        order_detail.save()
         amount_list = Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order=order).values_list('order_week_id', flat=True)).values_list('amount', flat=True)
         amount_added = 0
         for amount in amount_list:
@@ -234,7 +238,6 @@ class OrderClass:
         order.total_amount = order.default_amount + order.added_amount
 
         order.save()
-        order_detail.save()
         
         # 추가 메뉴 저장
         if len(additionalProtein) > 0:
