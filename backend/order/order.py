@@ -108,7 +108,6 @@ class OrderClass:
         return json.dumps(result, ensure_ascii=False, indent=2)
     
     def get_order_option(request):
-            
         tab_index = int(request.GET.get('tabIndex'))
         meal_id = request.GET.get('mealId').split(',')[tab_index]
         day = int(request.GET.get('day'))
@@ -226,7 +225,12 @@ class OrderClass:
         order_detail.veg_util = Veg_Util.objects.get(veg_util_id=selectedVeg)
         order_detail.flavor_util = Flavor_Util.objects.get(flavor_util_id=selectedFlavor)
 
-        order.added_amount = addedPrice
+        order_detail.amount = addedPrice
+        amount_list = Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order=order).values_list('order_week_id', flat=True)).values_list('amount', flat=True)
+        amount_added = 0
+        for amount in amount_list:
+            amount_added += amount
+        order.added_amount = amount_added
         order.total_amount = order.default_amount + order.added_amount
 
         order.save()

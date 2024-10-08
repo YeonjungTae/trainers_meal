@@ -484,6 +484,7 @@ Note
 class Order_Detail(models.Model):
     order_detail_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '주문 상세 고유 ID')
     day = models.IntegerField(choices=Day.choices, verbose_name = '요일')
+    amount = models.IntegerField(verbose_name = '추가 금액', default=0)
     base_util = models.ForeignKey(Base_Util, on_delete=models.CASCADE)
     veg_util = models.ForeignKey(Veg_Util, on_delete=models.CASCADE)
     pro_util = models.ForeignKey(Pro_Util, on_delete=models.CASCADE)
