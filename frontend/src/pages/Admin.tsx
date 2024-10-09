@@ -8,7 +8,7 @@ const Admin = () => {
   const handleDownload = async () => {
 
     try {
-      const response = await axios.post(import.meta.env.VITE_BASE_URL + "/admin/",
+      const response = await axios.post(import.meta.env.VITE_BASE_URL + "admin/",
         {responseType: 'blob'}
       );
 
