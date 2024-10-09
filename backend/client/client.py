@@ -50,7 +50,7 @@ class ClientClass:
             activity=activity, 
             goal=goal, 
             memo=notes, 
-            is_subscribed=False, 
+            is_subscribed=0, 
             create_dt=update_dt, 
             update_dt=update_dt, 
             trainer_id=decode['trainer_id'])
@@ -80,50 +80,14 @@ class ClientClass:
                                 'body_fat': body_fat, 
                                 'body_fat_ratio': body_fat_ratio})
 
-        try:
-            if request.data['address']:
-                address = request.data['address']
-        except:
-            address = ''
-        try:
-            if request.data['detailAddress']:
-                detailAddress = request.data['detailAddress']
-        except:
-            detailAddress = ''
-        try:
-            if request.data['deliveryMessage']:
-                deliveryMessage = get_text_value(Delivery.Message, request.data['deliveryMessage'])
-        except:
-            deliveryMessage = 0
-
-        try:
-            if request.data['customDeliveryMessage']:
-                customDeliveryMessage = request.data['customDeliveryMessage']
-        except:
-            customDeliveryMessage = ''
-        try:
-            if request.data['entryMethod']:
-                entryMethod = request.data['entryMethod']
-        except:
-            entryMethod = 2
-        try:
-            if request.data['entryPassword']:
-                entryPassword = int(request.data['entryPassword'])
-        except:
-            entryPassword = 0
-
-        if address != '':
-            Delivery.objects.create(
-                address=address, 
-                address_detail=detailAddress, 
-                message=deliveryMessage,
-                message_detail=customDeliveryMessage,
-                doorlock=entryPassword, 
-                doorlock_type=entryMethod, 
-                client_id=new_client.client_id, 
-                update_dt=new_client.update_dt)
-            
-            Logger.print_log('주소 정보 입력 완료')
+        if request.data['address'] != '':
+            ClientClass.add_address(**{'client_id': new_client.client_id, 
+                'address': request.data['address'], 
+                'address_detail': request.data['detailAddress'], 
+                'message': request.data['deliveryMessage'],
+                'message_detail': request.data['customDeliveryMessage'],
+                'doorlock_type': request.data['entryPassword'], 
+                'doorlock': request.data['entryPassword']})
 
     def update_client(request):
         Logger.print_main_log('고객 정보 업데이트 시작')

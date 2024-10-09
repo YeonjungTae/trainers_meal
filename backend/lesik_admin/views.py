@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.http import FileResponse
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .lesik_admin import Excel
@@ -67,9 +67,12 @@ from .lesik_admin import Excel
 #     return redirect('/')
 
 class excel(APIView):
-    def get(self, request):
-        output = Excel.save_list()
+    def post(self, request):
+        output = Excel().save_list()
+        print(output.read())
 
-        return HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        # return FileResponse(output.read())
+        return FileResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
 
         # return Response(serializer.data)

@@ -445,6 +445,7 @@ class Order(models.Model):
 class Order_Week(models.Model):
     order_week_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '주문한 주 고유 ID')
     week = models.IntegerField(default=0, verbose_name = '몇 번째 주')
+    meal_group = models.CharField(max_length=50, null=True, verbose_name = '식단 유형명')
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
     class Meta:
@@ -533,21 +534,12 @@ Note
 """   
 class Payment(models.Model):
     class Status(models.IntegerChoices):
-        READY = 0, '초기 상태'
-        IN_PROGRESS = 1, '결제 수단 인증 완료'
-        WAITING_FOR_DEPOSIT = 2, '가상계좌 입금 대기'
-        DONE = 3, '결제 승인'
-        CANCELED = 4, '결제 취소'
-        PARTIAL_CANCELED = 5, '결제 부분 취소'
-        ABORTED = 6, '결제 승인 실패'
-        EXPIRED = 7, '시간 초과'
+        ABORTED = 0, '결제 실패'
+        DONE = 1, '결제 승인'
+        EXPIRED = 2, '구독 기간 초과'
         
     payment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '결제 고유 ID')
     status = models.IntegerField(choices=Status.choices, null=True, verbose_name = '결제 처리 상태')
-    toss_order_id = models.CharField(max_length=100, verbose_name = '토스 주문 ID')
-    customer_key = models.CharField(max_length=100, null=True, verbose_name = '고객 KEY (정기 결제)')
-    billing_key = models.CharField(max_length=100, null=True, verbose_name = '카드 정보 암호화 KEY (정기 결제)')
-    payment_key = models.CharField(max_length=100, verbose_name = '결제 KEY')
     request_dt = models.DateTimeField(auto_now_add=True, verbose_name = '요청일자')
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
 

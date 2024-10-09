@@ -33,7 +33,7 @@ class OrderClass:
             veg_info = VegInfo.objects.filter(is_default=True, meal=meal_id)
             flavor_info = FlavorInfo.objects.filter(is_default=True, meal=meal_id)
 
-            week_info = Order_Week.objects.create(week=idx, order_id=order_data.order_id)
+            week_info = Order_Week.objects.create(week=idx, meal_group=Meal.objects.get(meal_id=meal_id).group, order_id=order_data.order_id)
 
             for index, value in enumerate(base_info):
                 Order_Detail.objects.create(day=index, base_util_id=base_info[index].base_util.base_util_id, pro_util_id=pro_info[index].pro_util.pro_util_id, veg_util_id=veg_info[index].veg_util.veg_util_id, flavor_util_id=flavor_info[index].flavor_util.flavor_util_id, order_week_id=week_info.order_week_id).save()
@@ -255,6 +255,9 @@ class OrderClass:
         amount = request.data['totalPrice']
         is_pickup = request.data['deliveryType']
         delivery_dt = request.data['deliveryDate']
+        update_dt = datetime.today()
 
         order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
-        Order.objects.filter(client=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, total_amount=amount)
+        Payment.objects.create(status=1, request_dt=update_dt, order_id=order_id)
+        Order.objects.filter(client_id=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, total_amount=amount)
+        Client.objects.filter(client_id=client_id).update(subscribe_dt=delivery_dt, is_subscribed=1, update_dt=update_dt)

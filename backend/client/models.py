@@ -65,6 +65,12 @@ class Client(models.Model):
         SLOW_INCREASE = 4, '천천한 체중 증량 (~0.25kg/주)'
         INCREASE = 5, '적당한 체중 증량 (~0.5kg/주)'
         SHARP_INCREASE = 6, '빠른 체중 증량 (~1kg/주)'
+    
+    class Subscribed(models.IntegerChoices):
+        NOT_SUBSCRIBED = 0, '구독 안 함'
+        SUBSCRIBED = 1, '구독 중'
+        NEED_PAYMENT = 2, '구독 알림'
+        CANCELED = 3, '구독 중단'
         
     client_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name = '등록 고객 고유 ID')
     name = models.CharField(max_length=30, verbose_name = '고객명')
@@ -74,7 +80,7 @@ class Client(models.Model):
     activity = models.IntegerField(choices=Activity.choices, null=True, verbose_name = '활동량')
     goal = models.IntegerField(choices=Goal.choices, null=True, verbose_name = '운동 목표')
     memo = models.TextField(null=True, verbose_name = '메모')
-    is_subscribed = models.BooleanField(default=False, verbose_name = '구독 유무')
+    is_subscribed = models.IntegerField(choices=Subscribed.choices, default=0, verbose_name = '구독 상태')
     subscribe_dt = models.DateTimeField(auto_now=True, verbose_name='구독일자')
     create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '등록일자')
     update_dt = models.DateTimeField(auto_now=True, verbose_name = '수정일자')
