@@ -154,6 +154,11 @@ class Excel:
             try:
                 if Payment.objects.filter(order=order_info).exists():
                     pass
+                else:
+                    Order_Detail.objects.filter(order_week=Order_Week.objects.filter(order=order_info)).delete()
+                    Order_Week.objects.filter(order=order_info).delete()
+                    Order.objects.filter(order=order_info).delete()
+                    continue
             except:
                 Order_Detail.objects.filter(order_week=Order_Week.objects.filter(order=order_info)).delete()
                 Order_Week.objects.filter(order=order_info).delete()
