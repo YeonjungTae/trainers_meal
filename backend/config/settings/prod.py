@@ -69,7 +69,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR, 'templates'), 
+            os.path.join(BASE_DIR, 'static/templates'), 
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -102,3 +102,7 @@ USE_TZ = False  # False로 설정해야 DB에 변경된 TIME_ZONE이 반영됨
 
 #클릭재킹 방지설정 변경
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale"),
+)
