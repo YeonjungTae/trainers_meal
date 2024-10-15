@@ -157,6 +157,7 @@ class Excel:
                 Order_Detail.objects.filter(order_week=Order_Week.objects.filter(order=order_info)).delete()
                 Order_Week.objects.filter(order=order_info).delete()
                 Order.objects.filter(order=order_info).delete()
+                continue
             for week_cnt, week_info in enumerate(Order_Week.objects.filter(order=order_info).order_by('week')):
                 for day_cnt, day_info in enumerate(Order_Detail.objects.filter(order_week=week_info).order_by('day')):
                     data = list()
