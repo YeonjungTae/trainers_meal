@@ -229,14 +229,15 @@ class Excel:
 
                     data.append(pickup)
                     print(data)
-                    week_cnt = int(week_cnt)+1
-                    if week_cnt == 3:
-                        week_cnt = 1
-                    elif week_cnt == 4:
-                        week_cnt = 2
-                    data.append(week_cnt)
+                    week_day = int(week_cnt)+1
+                    if week_day == 3:
+                        week_day = 1
+                    elif week_day == 4:
+                        week_day = 2
+                    data.append(week_day)
                     print(data)
-                    data.append(week_info.week)
+                    food_cnt = (week_info.week)+1
+                    data.append(food_cnt)
                     print(data)
                     data.append(Day(day_info.day).label)
                     print(data)
