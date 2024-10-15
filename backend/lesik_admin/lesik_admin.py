@@ -136,7 +136,7 @@ class Excel:
         idx_title = ['결제날짜', '배송시작날짜', '매장명', '담당 트레이너명', '회원명', '배송지주소', '상세주소', '공동현관 비밀번호', '연락처', '결제금액', 
                      '추가 블록시 금액', '합계금액', '배송,픽업', '주차', '식사(1식,2식)', '요일', '날짜', '식단', '베이스', '단백질', '채소', '소스', 
                      '추가단백질(1)', '추가단백질(2)', '추가야채(1)', '추가야채(2)', '추가소스']
-        one_order_list = Order.objects.filter(day_cnt=1).order_by('delivery_dt')
+        one_order_list = Order.objects.all().order_by('delivery_dt')
         two_order_list = Order.objects.filter(day_cnt=2).order_by('delivery_dt')
 
         workbook = Workbook()
@@ -150,6 +150,7 @@ class Excel:
         worksheet.append(idx_title)
 
         for order_cnt, order_info in enumerate(one_order_list):
+            print(order_info.order_id, order_info.create_dt)
             try:
                 if Payment.objects.filter(order=order_info).exists():
                     pass
@@ -161,13 +162,21 @@ class Excel:
             for week_cnt, week_info in enumerate(Order_Week.objects.filter(order=order_info).order_by('week')):
                 for day_cnt, day_info in enumerate(Order_Detail.objects.filter(order_week=week_info).order_by('day')):
                     data = list()
+                    print('making data list')
                     data.append(Payment.objects.filter(order=order_info).latest('request_dt').request_dt.strftime("%Y.%m.%d"))
+                    print(data)
                     data.append(order_info.delivery_dt.strftime("%Y.%m.%d"))
+                    print(data)
                     data.append(order_info.client.trainer.gym.name)
+                    print(data)
                     data.append(order_info.client.trainer.name)
+                    print(data)
                     data.append(order_info.client.name)
+                    print(data)
                     data.append(Delivery.objects.get(client_id=order_info.client.client_id).address)
+                    print(data)
                     data.append(Delivery.objects.get(client_id=order_info.client.client_id).address_detail)
+                    print(data)
 
                     if Delivery.objects.get(client_id=order_info.client.client_id).doorlock == 0:
                         doorlock = ''
@@ -175,6 +184,7 @@ class Excel:
                         doorlock = Delivery.objects.get(client_id=order_info.client.client_id).doorlock
 
                     data.append(doorlock)
+                    print(data)
                     default_contact = str(order_info.client.contact)
 
                     if order_info.client.contact[0] == '1':
@@ -186,9 +196,13 @@ class Excel:
                             contact = default_contact[:3] + '-' + default_contact[3:6] + '-' + default_contact[6:]
 
                     data.append(contact)
+                    print(data)
                     data.append(order_info.default_amount)
+                    print(data)
                     data.append(order_info.added_amount)
+                    print(data)
                     data.append(order_info.total_amount)
+                    print(data)
 
                     if order_info.is_delivery == True:
                         pickup = '배송'
@@ -196,22 +210,32 @@ class Excel:
                         pickup = '픽업'
 
                     data.append(pickup)
+                    print(data)
                     data.append(int(week_cnt)+1)
+                    print(data)
                     data.append(order_info.day_cnt)
+                    print(data)
                     data.append(Day(day_info.day).label)
+                    print(data)
 
                     date = order_info.delivery_dt + timedelta(days=day_cnt)
 
                     data.append(date.strftime("%Y.%m.%d"))
+                    print(data)
                     if week_info.meal_group == None or week_info.meal_group == '':
                         meal_group = ''
                     else:
                         meal_group = week_info.meal_group
                     data.append(meal_group)
+                    print(data)
                     data.append(day_info.base_util.code)
+                    print(data)
                     data.append(day_info.pro_util.code)
+                    print(data)
                     data.append(day_info.veg_util.code)
+                    print(data)
                     data.append(day_info.flavor_util.code)
+                    print(data)
                     
                     try:
                         add_pro_list = Add_Pro.objects.filter(order_detail=day_info)
@@ -224,6 +248,8 @@ class Excel:
                             data.append('')
                     except:
                         pass
+
+                    print(data)
                     
                     try:
                         add_veg_list = Add_Veg.objects.filter(order_detail=day_info)
@@ -236,11 +262,15 @@ class Excel:
                             data.append('')
                     except:
                         pass
+
+                    print(data)
                     
                     try:
                         data.append(Add_Flavor.objects.get(order_detail=day_info).flavor_util.code)
                     except:
                         pass
+
+                    print(data)
 
                     worksheet.append(data)
         import os
