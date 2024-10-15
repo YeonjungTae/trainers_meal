@@ -5,24 +5,24 @@ from django.shortcuts import render, redirect
 from .lesik_admin import Excel
 
 # # 로그인 함수
-# def index(request):
-#     """
-#     Parameters
-#     ----------
-#     request
-#         불러와진 페이지에서 전달 받은 데이터
+def index(request):
+    """
+    Parameters
+    ----------
+    request
+        불러와진 페이지에서 전달 받은 데이터
 
-#     Returns
-#     ----------
-#     render
-#         페이지에 전달할 데이터
-#     redirect
-#         페이지 이동 데이터
+    Returns
+    ----------
+    render
+        페이지에 전달할 데이터
+    redirect
+        페이지 이동 데이터
         
-#     Note
-#     ----
-#     login page를 띄우는 함수
-#     """
+    Note
+    ----
+    admin page를 띄우는 함수
+    """
 #     # 로그인 정보가 있다면
 #     # if request.session.get('user'):
 #     #     return redirect('mail/') # 메인 페이지로 넘긴다
@@ -40,7 +40,7 @@ from .lesik_admin import Excel
 #     else:
 #         form = LoginForm()
 
-#     return render(request, 'login.html', {'form': form, 'page': 'login'})
+    return render(request, 'lesik_admin.html', {'page': 'lesik_admin'})
 
 # # 로그아웃 함수    
 # def logout(request):
@@ -66,13 +66,50 @@ from .lesik_admin import Excel
 #     # 로그아웃 후 로그인 페이지로 이동  
 #     return redirect('/')
 
-class excel(APIView):
-    def post(self, request):
-        output = Excel().save_list()
-        print(output.read())
+def excel(request):
+    output = Excel().save_list()
 
-        # return FileResponse(output.read())
-        return FileResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    return HttpResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+# def excel(request):
+#         # output = Excel().save_list()
+#         # print(output.read())
+
+#     output = Excel().save_list()
+
+#         # response = HttpResponse(content_type='text/csv')
+#         # response['Content-Disposition'] = 'attachment; filename="mydata.csv"'
+#         # response = HttpResponse(content=output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#         # response["Content-Disposition"] = "attachment; filename*=utf-8''{}".format('text.xlsx')
 
 
-        # return Response(serializer.data)
+#         # output.close(response)
+#         # response = HttpResponse(content=output.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#         # response["Content-Disposition"] = "attachment; filename*=utf-8''{}".format('text.xlsx')
+
+#         # return response
+
+#     return FileResponse(output.getvalue(), as_attachment=True, filename='test.xlsx')
+
+    # writer = csv.writer(response)
+    # writer.writerow(['ID', 'Name', 'Email'])
+
+    # for obj in MyModel.objects.all():
+    #     writer.writerow([obj.id, obj.name, obj.email])
+
+    # return output
+
+    # response = HttpResponse(
+    #     content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    # )
+    # response['Content-Disposition'] = 'attachment; filename="myfile.xlsx"'
+
+    # return response
+
+    # writer = csv.writer(response)
+
+    # return FileResponse(output.read())
+    # return FileResponse(output.read(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+
+    # return Response(serializer.data)

@@ -431,7 +431,7 @@ class Order(models.Model):
     default_amount = models.IntegerField(verbose_name = '기본 금액', default=0)
     added_amount = models.IntegerField(verbose_name = '추가 금액', default=0)
     total_amount = models.IntegerField(verbose_name = '총 결제 금액', default=0)
-    is_pickup = models.BooleanField(default=False, verbose_name = '픽업 유무')
+    is_delivery = models.BooleanField(default=False, verbose_name = '픽업 유무')
     delivery_dt = models.DateField(verbose_name = '배송일자')
     create_dt = models.DateTimeField(auto_now_add=True, verbose_name = '신청일자')
     client = models.ForeignKey(Client, on_delete=models.CASCADE)

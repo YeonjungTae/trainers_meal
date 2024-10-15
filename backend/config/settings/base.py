@@ -61,7 +61,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static', 'common'), 
+    os.path.join(BASE_DIR, 'static', 'common'),
+    os.path.join(BASE_DIR, 'static', 'lesik_admin'), 
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')

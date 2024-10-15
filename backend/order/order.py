@@ -25,7 +25,7 @@ class OrderClass:
 
         amount = 132000 * int(meal_cnt)
 
-        order_data = Order.objects.create(day_cnt=meal_cnt, default_amount=amount, total_amount=amount, is_pickup=False, delivery_dt=datetime.today(), create_dt=datetime.today(), client_id=client_id)
+        order_data = Order.objects.create(day_cnt=meal_cnt, default_amount=amount, total_amount=amount, is_delivery=False, delivery_dt=datetime.today(), create_dt=datetime.today(), client_id=client_id)
 
         for idx, meal_id in enumerate(meal_list):
             base_info = BaseInfo.objects.filter(is_default=True, meal=meal_id)
@@ -253,11 +253,11 @@ class OrderClass:
     def submit_order(request):
         client_id = request.data['clientId']
         amount = request.data['totalPrice']
-        is_pickup = request.data['deliveryType']
+        is_delivery = request.data['deliveryType']
         delivery_dt = request.data['deliveryDate']
         update_dt = datetime.today()
 
         order_id = Order.objects.filter(client=client_id).order_by('-create_dt').values_list('order_id', flat=True).first()
         Payment.objects.create(status=1, request_dt=update_dt, order_id=order_id)
-        Order.objects.filter(client_id=client_id, order_id=order_id).update(is_pickup=is_pickup, delivery_dt=delivery_dt, total_amount=amount)
+        Order.objects.filter(client_id=client_id, order_id=order_id).update(is_delivery=is_delivery, delivery_dt=delivery_dt, total_amount=amount)
         Client.objects.filter(client_id=client_id).update(subscribe_dt=delivery_dt, is_subscribed=1, update_dt=update_dt)

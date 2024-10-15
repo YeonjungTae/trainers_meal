@@ -1,0 +1,87 @@
+
+@font-face {
+    font-family: 'Pretendard Variable';
+    font-style: normal;
+    display: swap;
+    src: url('/static/fonts/PretendardVariable.woff2'),
+    url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css") format('font-woff2');
+    /* unicode-range: U+0061-007A, U+0041-005A; */
+}
+
+/* ========= 페이지 전체 설정 ========= */
+* {
+    --main: #242bb7;
+    --point: #e0f7fa;
+
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: nowrap;
+    font-family: 'Pretendard Variable', 'Apple SD Gothic Neo';
+    font-size: 1.3em;
+    font-weight: 300;
+}
+
+img {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+.btn {
+    width: 200px;
+    border: 2px solid var(--main);
+    padding: .375rem .75rem !important;
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: 4px 30px;
+}
+
+.btn:focus {
+    box-shadow: none;
+}
+
+.white_btn {
+    background: var(--bs-white);
+    color: var(--main);
+}
+
+.dark_btn {
+    background: var(--main);
+    color: var(--bs-white);
+}
+
+.white_btn:hover, .dark_btn:hover,
+.white_btn:focus, .dark_btn:focus {
+    background: var(--bs-white);
+    color: var(--main);
+}
+
+/* ========= 페이지 전체 설정 ========= */
+section {
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+}

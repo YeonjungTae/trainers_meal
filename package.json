@@ -2,8 +2,11 @@
   "dependencies": {
     "@tosspayments/tosspayments-sdk": "^2.2.4",
     "@types/node": "^22.5.0",
+    "file-saver": "^2.0.5",
+    "react-excel-renderer": "^1.1.0",
     "react-uuid": "^2.0.0",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "vite-plugin-favicon": "^1.0.8"
