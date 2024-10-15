@@ -157,12 +157,12 @@ class Excel:
                 else:
                     Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order=order_info).values_list('order_week_id', flat=True)).delete()
                     Order_Week.objects.filter(order=order_info).delete()
-                    Order.objects.filter(order=order_info).delete()
+                    Order.objects.filter(order_id=order_info.order_id).delete()
                     continue
             except:
                 Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order=order_info).values_list('order_week_id', flat=True)).delete()
                 Order_Week.objects.filter(order=order_info).delete()
-                Order.objects.filter(order=order_info).delete()
+                Order.objects.filter(order_id=order_info.order_id).delete()
                 continue
             for week_cnt, week_info in enumerate(Order_Week.objects.filter(order=order_info).order_by('week')):
                 for day_cnt, day_info in enumerate(Order_Detail.objects.filter(order_week=week_info).order_by('day')):
