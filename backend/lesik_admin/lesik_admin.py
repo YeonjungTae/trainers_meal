@@ -239,6 +239,9 @@ class Excel:
                     elif week_day == 4:
                         week_count = 2
                         food_count = 2
+                    else:
+                        week_count = 1
+                        food_count = 1
                     data.append(week_count)
                     print(data)
                     data.append(food_count)
