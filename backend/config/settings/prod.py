@@ -65,12 +65,40 @@ DATABASES = {
     }
 }
 
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [
+            os.path.join(BASE_DIR, 'templates'), 
+        ],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
 STATIC_URL = "static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Media files (Downloaded Files)
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 SITE_ID = 1
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 HOST_SCHEME = "http://"
+
+# Internationalization
+LANGUAGE_CODE = "ko"
+TIME_ZONE = "Asia/Seoul"
+USE_I18N = True
+USE_L10N = True
+USE_TZ = False  # False로 설정해야 DB에 변경된 TIME_ZONE이 반영됨
+
+#클릭재킹 방지설정 변경
+X_FRAME_OPTIONS = 'SAMEORIGIN'
