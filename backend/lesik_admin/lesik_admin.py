@@ -178,9 +178,15 @@ class Excel:
                     print(data)
                     data.append(order_info.client.name)
                     print(data)
-                    data.append(Delivery.objects.get(client_id=order_info.client.client_id).address)
+                    try:
+                        data.append(Delivery.objects.get(client_id=order_info.client.client_id).address)
+                    except:
+                        data.append('')
                     print(data)
-                    data.append(Delivery.objects.get(client_id=order_info.client.client_id).address_detail)
+                    try:
+                        data.append(Delivery.objects.get(client_id=order_info.client.client_id).address_detail)
+                    except:
+                        data.append('')
                     print(data)
 
                     if Delivery.objects.get(client_id=order_info.client.client_id).doorlock == 0:
