@@ -155,12 +155,12 @@ class Excel:
                 if Payment.objects.filter(order=order_info).exists():
                     pass
                 else:
-                    Order_Detail.objects.filter(order_week=Order_Week.objects.filter(order=order_info)).delete()
+                    Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order=order_info).values_list('order_week_id', flat=True)).delete()
                     Order_Week.objects.filter(order=order_info).delete()
                     Order.objects.filter(order=order_info).delete()
                     continue
             except:
-                Order_Detail.objects.filter(order_week=Order_Week.objects.filter(order=order_info)).delete()
+                Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order=order_info).values_list('order_week_id', flat=True)).delete()
                 Order_Week.objects.filter(order=order_info).delete()
                 Order.objects.filter(order=order_info).delete()
                 continue
