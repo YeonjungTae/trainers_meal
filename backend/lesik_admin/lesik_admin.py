@@ -201,7 +201,7 @@ class Excel:
                     print(data)
                     default_contact = str(order_info.client.contact)
 
-                    if len(default_contact) == 10 and order_info.client.contact[0] == '1':
+                    if order_info.client.contact[0] == '1':
                         contact = '0' + default_contact[:2] + '-' + default_contact[3:7] + '-' + default_contact[7:]
                     else:
                         if len(default_contact) < 10:
