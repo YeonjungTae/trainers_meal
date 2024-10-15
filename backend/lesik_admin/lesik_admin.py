@@ -136,7 +136,7 @@ class Excel:
         idx_title = ['결제날짜', '배송시작날짜', '매장명', '담당 트레이너명', '회원명', '배송지주소', '상세주소', '공동현관 비밀번호', '연락처', '결제금액', 
                      '추가 블록시 금액', '합계금액', '배송,픽업', '주차', '식사(1식,2식)', '요일', '날짜', '식단', '베이스', '단백질', '채소', '소스', 
                      '추가단백질(1)', '추가단백질(2)', '추가야채(1)', '추가야채(2)', '추가소스']
-        one_order_list = Order.objects.filter(client_id__in=Client.objects.filter(trainer=Trainer.objects.filter(gym=Gym.objects.filter(name='COZY원흥'))).values_list('client_id', flat=True)).order_by('delivery_dt')
+        one_order_list = Order.objects.filter(client_id__in=Client.objects.filter(trainer_id=Trainer.objects.filter(gym_id=Gym.objects.get(name='COZY원흥').gym_id).values_list('trainer_id', flat=True)).values_list('client_id', flat=True)).order_by('delivery_dt')
         two_order_list = Order.objects.filter(day_cnt=2).order_by('delivery_dt')
 
         workbook = Workbook()
