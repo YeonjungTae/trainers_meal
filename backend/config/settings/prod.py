@@ -39,6 +39,7 @@ MIDDLEWARE = [
 # CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "config.urls"
 
@@ -46,6 +47,27 @@ ROOT_URLCONF = "config.urls"
 # CSRF_TRUSTED_ORIGINS = ['http://15.165.56.1:8000/', 'http://15.165.56.1:3000/']
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['http://*']
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
 
 WSGI_APPLICATION = "config.wsgi.application"
 
