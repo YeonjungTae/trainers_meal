@@ -34,18 +34,18 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# CORS_ORIGIN_WHITELIST = ('http://15.165.56.1:8000', 'http://15.165.56.1:3000', 'http://localhost:5173')
+CORS_ORIGIN_WHITELIST = ('http://3.37.154.71:8000', 'http://3.37.154.71:3000/', 'http://localhost:5173')
 # CORS_ORIGIN_WHITELIST = ('*')
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "config.urls"
 
 # ALLOWED_HOSTS = ['15.165.56.1', 'localhost']
 # CSRF_TRUSTED_ORIGINS = ['http://15.165.56.1:8000/', 'http://15.165.56.1:3000/']
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['http://*']
+ALLOWED_HOSTS = ['*', '3.37.154.71']
+CSRF_TRUSTED_ORIGINS = ['http://*', 'http://3.37.154.71:8000', 'http://3.37.154.71:3000']
 
 WSGI_APPLICATION = "config.wsgi.application"
 
