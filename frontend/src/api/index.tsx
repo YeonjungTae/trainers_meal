@@ -8,7 +8,7 @@ export const apiClient = axios.create({
   
     // 추가  
     // "Access-Control-Allow-Origin": `http://3.37.154.71:3000`,
-    'Access-Control-Allow-Credentials':"true",
+    // 'Access-Control-Allow-Credentials':"true",
   },
   withCredentials: true
 });
