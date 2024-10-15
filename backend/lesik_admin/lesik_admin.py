@@ -207,7 +207,7 @@ class Excel:
                         if len(default_contact) < 10:
                             contact = default_contact[:2] + '-' + default_contact[2:5] + '-' + default_contact[5:]
                         elif len(default_contact) == 8 and order_info.client.contact[0] == '2':
-                            contact = '0' + default_contact[:1] + '-' + default_contact[1:4] + '-' default_contact[4:]
+                            contact = '0' + default_contact[:1] + '-' + default_contact[1:4] + '-' + default_contact[4:]
                         else:
                             contact = default_contact[:3] + '-' + default_contact[3:6] + '-' + default_contact[6:]
 
