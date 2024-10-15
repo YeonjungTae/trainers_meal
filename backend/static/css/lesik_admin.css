@@ -12,6 +12,7 @@
 * {
     --main: #242bb7;
     --point: #e0f7fa;
+    --white: #ffffff;
 
 }
 
@@ -62,18 +63,18 @@ a:hover {
 }
 
 .white_btn {
-    background: var(--bs-white);
+    background: var(--white);
     color: var(--main);
 }
 
 .dark_btn {
     background: var(--main);
-    color: var(--bs-white);
+    color: var(--white);
 }
 
 .white_btn:hover, .dark_btn:hover,
 .white_btn:focus, .dark_btn:focus {
-    background: var(--bs-white);
+    background: var(--white);
     color: var(--main);
 }
 
