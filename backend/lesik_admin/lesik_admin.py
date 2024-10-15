@@ -189,12 +189,15 @@ class Excel:
                         data.append('')
                     print(data)
 
-                    if Delivery.objects.get(client_id=order_info.client.client_id).doorlock == 0:
-                        doorlock = ''
-                    else:
-                        doorlock = Delivery.objects.get(client_id=order_info.client.client_id).doorlock
+                    try:
+                        if Delivery.objects.get(client_id=order_info.client.client_id).doorlock == 0:
+                            doorlock = ''
+                        else:
+                            doorlock = Delivery.objects.get(client_id=order_info.client.client_id).doorlock
 
-                    data.append(doorlock)
+                        data.append(doorlock)
+                    except:
+                        data.append('')
                     print(data)
                     default_contact = str(order_info.client.contact)
 
