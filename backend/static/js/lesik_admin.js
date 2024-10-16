@@ -66,6 +66,7 @@ function excelDownload() {
         }
     };
 
+    xhttp.withCredentials = true;
     xhttp.open('POST', 'download/', true);
     xhttp.setRequestHeader('X-CSRFToken', csrftoken);
     xhttp.responseType = 'blob';
