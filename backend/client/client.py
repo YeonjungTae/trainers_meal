@@ -1,4 +1,5 @@
 from .models import *
+from order.models import *
 from .serializers import *
 
 import os, jwt
@@ -79,15 +80,17 @@ class ClientClass:
                                 'skeletal_muscle': skeletal_muscle, 
                                 'body_fat': body_fat, 
                                 'body_fat_ratio': body_fat_ratio})
-
-        if request.data['address'] != '':
-            ClientClass.add_address(**{'client_id': new_client.client_id, 
-                'address': request.data['address'], 
-                'address_detail': request.data['detailAddress'], 
-                'message': request.data['deliveryMessage'],
-                'message_detail': request.data['customDeliveryMessage'],
-                'doorlock_type': request.data['entryPassword'], 
-                'doorlock': request.data['entryPassword']})
+        try:
+            if request.data['address'] != '':
+                ClientClass.add_address(**{'client_id': new_client.client_id, 
+                    'address': request.data['address'], 
+                    'address_detail': request.data['detailAddress'], 
+                    'message': request.data['deliveryMessage'],
+                    'message_detail': request.data['customDeliveryMessage'],
+                    'doorlock_type': request.data['entryPassword'], 
+                    'doorlock': request.data['entryPassword']})
+        except:
+            pass
 
     def update_client(request):
         Logger.print_main_log('고객 정보 업데이트 시작')
@@ -163,9 +166,31 @@ class ClientClass:
     def delete_client(request):
         Logger.print_main_log('고객 삭제')
         client_id = request.GET.get('client_id')
-        Logger.print_log('고객 ID:', client_id)
-        Body_Data.objects.filter(client_id=client_id).delete()
-        Delivery.objects.filter(client_id=client_id).delete()
+        Logger.print_log('고객 ID:' + str(client_id))
+        try:
+            Body_Data.objects.filter(client_id=client_id).delete()
+        except:
+            pass
+        try:
+            Delivery.objects.filter(client_id=client_id).delete()
+        except:
+            pass
+        try:
+            Order_Detail.objects.filter(order_week_id__in=Order_Week.objects.filter(order_id__in=Order.objects.filter(client_id=client_id).values_list('order_id', flat=True)).values_list('order_week_id', flat=True))
+        except:
+            pass
+        try:
+            Order_Week.objects.filter(order_id__in=Order.objects.filter(client_id=client_id).values_list('order_id', flat=True))
+        except:
+            pass
+        try:
+            Payment.objects.filter(order_id__in=Order.objects.filter(client_id=client_id).values_list('payment_id', flat=True))
+        except:
+            pass
+        try:
+            Order.objects.filter(client_id=client_id).delete()
+        except:
+            pass
         Client.objects.filter(client_id=client_id).delete()
 
     def add_bia(**kwargs):
